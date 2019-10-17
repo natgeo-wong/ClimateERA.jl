@@ -1,0 +1,39 @@
+#(1)Mode (2)ID (3)IDnc (4)era5 (5)erai (6)Full (7)Units
+dsfc,u_sfc,u10,10m_u_component_of_wind,165.128,Surface u-Wind,m s^{-1}
+dsfc,v_sfc,v10,10m_v_component_of_wind,166.128,Surface v-Wind,m s^{-1}
+dsfc,t_sfc,t2m,2m_temperature,167.128,Surface Temperature,K
+dsfc,t_sst,sst,sea_surface_temperature,34.128,Sea Surface Temperature,K
+dsfc,pre_sfc,sp,surface_pressure,134.128,Surface Pressure,hPa
+dsfc,pre_msl,msl,mean_sea_level_pressure,151.128,Sea Level Pressure,hPa
+dsfc,z_sfc,z,orography,129.128,Orography Geopotential,m^2 s^{-2}
+dpre,u_air,u,u_component_of_wind,131.128,u-Wind,m s^{-1}
+dpre,v_air,v,v_component_of_wind,132.128,v-Wind,m s^{-1}
+dpre,w_air,w,vertical_velocity,135.128,w-Wind,m s^{-1}
+dpre,t_air,t,temperature,130.128,Temperature,K
+dpre,z_air,z,geopotential,129.128,Pressure Level Geopotential,m^2 s^{-2}
+dpre,div,d,divergence,155.128,Divergence,s^{-1}
+dpre,vort,pv,potential_vorticity,60.128,Potential Vorticity,K m^{-2} kg^{-1} s^{-1}
+msfc,prcp_tot,tp,total_precipitation,228.128,Total Precipitation,m
+msfc,prcp_conv,cp,convective_precipitation,143.128,Convective Precipitation,m
+msfc,prcp_ls,lsp,large_scale_precipitation,142.128,Large-Scale Precipitation,m
+msfc,cld_tot,cc,total_cloud_cover,164.128,Total Cloud Cover,%%
+msfc,tcw,tcw,total_column_water,136.128,Total Column Water,m
+msfc,tcwv,tcwv,total_column_water_vapour,137.128,Total Column Water Vapour,m
+msfc,t_dew,d2m,2m_dewpoint_temperature,168.128,Surface Dewpoint Temperature,K
+msfc,cape,cape,convective_available_potential_energy,59.128,CAPE,J kg^{-1}
+mpre,rhum,r,relative_humidity,157.128,Relative Humidity,%%
+mpre,shum,q,specific_humidity,133.128,Specific Humidity,kg kg^{-1}
+mpre,cld_air,cc,fraction_of_cloud_cover,248.128,Cloud Cover Fraction,%%
+csfc,troph,NA,NA,NA,Tropopause Height,m
+csfc,gtrop,NA,NA,NA,Tropopause Height Gradient,m d^{-1}
+csfc,Pi,NA,NA,NA,Pi Constant (ZWD to PWD),m/m
+csfc,t_mwv,NA,NA,NA,Water Vapour Weighted Column Temperature,K
+csfc,eke,NA,NA,NA,Eddy Intensity,m^2 s^{-2}
+cpre,psi_u,NA,NA,NA,Zonal Streamfunction,kg s^{-1}
+cpre,psi_v,NA,NA,NA,Meridional Streamfunction,kg s^{-1}
+cpre,psi_h,NA,NA,NA,Horizontal Streamfunction,kg s^{-1}
+cpre,flux_uv,NA,NA,NA,Eddy Momentum Flux,m^2 s^{-2}
+cpre,flux_uT,NA,NA,NA,Zonal Heat Flux,K m s^{-1}
+cpre,flux_vT,NA,NA,NA,Poleward Heat Flux,K m s^{-1}
+cpre,flux_uq,NA,NA,NA,Zonal Moisture Flux,K m s^{-1}
+cpre,flux_vq,NA,NA,NA,Poleward Moisture Flux,K m s^{-1}
