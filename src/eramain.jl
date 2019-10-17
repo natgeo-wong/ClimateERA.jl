@@ -1,6 +1,6 @@
 """
-This file initializes the ClimateERA module by providing the basic functions
-that are applicable to all the different uses.  Current functionalities include:
+This file holds most of the basic functions in the ClimateERA module that are
+applicable to all the different uses.  Current functionalities include:
     - loading of parameters and their properties
     - folder creation
     - ERA-specific read/write of NetCDF files
