@@ -15,6 +15,8 @@ export
 ## Including other files in the module
 
 #include("eramain.jl")
+#include("erastartup.jl")
+#include("erainitialize.jl")
 #include("eradwn.jl")
 #include("eracalc.jl")
 #include("eraana.jl")
