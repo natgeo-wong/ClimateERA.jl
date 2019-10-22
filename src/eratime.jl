@@ -4,12 +4,18 @@ erainitialize module.
 
 """
 
-function eratime(timeID::Int64)
-    if timeID == 0, return Dict("Begin"=>1979,"End"=>Dates.year(Dates.now())-1);
-    else            return Dict("Begin"=>timeID,"End"=>timeID)
+function eratime(timeID::Int64,init)
+    if timeID == 0; fin = Dates.year(Dates.now())-1;
+        return Dict("Begin"=>1979,"End"=>fin);
+        @info "$(Dates.now()) - User has chosen to $(init["action"]) $(init["dataset"]) datasets from 1979 to $(fin)."
+    else
+        return Dict("Begin"=>timeID,"End"=>timeID)
+        @info "$(Dates.now()) - User has chosen to $(init["action"]) $(init["dataset"]) datasets in $(timeID)."
     end
 end
 
-function eratime(init,timeID::Array)
-    return Dict("Begin"=>minimum(timeID),"End"=>maximum(timeID))
+function eratime(timeID::Array,init)
+    beg = minimum(timeID); fin = maximum(timeID)
+    return Dict("Begin"=>beg,"End"=>fin)
+    @info "$(Dates.now()) - User has chosen to $(init["action"]) $(init["dataset"]) datasets from $(beg) to $(fin)."
 end
