@@ -4,7 +4,7 @@ into the erainitialize module.
 
 """
 
-function eramoduledisp(init)
+function eramoduledisp(init::Dict)
 
     if init["actionID"] == 1; len = 6; elseif init["actionID"] == 2; len = 4; end
     @info "$(Dates.now()) - There are $(len) types of modules that ClimateERA can $(init["action"])."
@@ -23,7 +23,7 @@ function eramoduledisp(init)
 
 end
 
-function eramodule(init,moduleID)
+function eramodule(moduleID::Int64,init::Dict)
 
     init["moduleID"] = moduleID; len = eramoduledisp(init["actionID"]);
     if !(moduleID in 1:len); @error "$(Dates.now()) - Module ID $(moduleID) not defined for action '$(init["action"])'."  end;

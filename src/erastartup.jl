@@ -31,7 +31,7 @@ function eraroot()
 
 end
 
-function eramkroot(eroot)
+function eramkroot(eroot::AbstractString)
 
     eiroot = "$(eroot)/erai"; e5root = "$(eroot)/era5"; eproot = "$(eroot)/plot";
 
@@ -54,13 +54,13 @@ function eramkroot(eroot)
 
 end
 
-function eraaction(actionID)
+function eraaction(actionID::Int64)
     if     actionID == 1; return Dict("ID"=>1,"name"=>"download");
     elseif actionID == 2; return Dict("ID"=>2,"name"=>"analyse");
     end
 end
 
-function eradataset(datasetID)
+function eradataset(datasetID::Int64)
     if     datasetID == 1; return Dict("ID"=>1,"name"=>"ERA5");
     elseif datasetID == 2; return Dict("ID"=>2,"name"=>"ERA-Interim");
     end
@@ -68,7 +68,7 @@ end
 
 # Startup ClimateERA
 
-function erastartup(actionID::UInt8,datasetID::UInt8)
+function erastartup(actionID::Int64,datasetID::Int64)
 
     if !(actionID  in [1,2]); @error "$(Dates.now()) - Please input a valid action-type."  end;
     if !(datasetID in [1,2]); @error "$(Dates.now()) - Please input a valid dataset-type." end;
