@@ -4,7 +4,7 @@ authors = ["Nathanael Wong <natgeo.wong@outlook.com>"]
 version = "0.1.0"
 
 [deps]
-ClimateTools = "4f4ee721-4970-5af2-8560-6c1d960e3231"
+ClimateEasy = "47ceb0c8-0fe6-4c49-a4a1-92bc59187c00"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 NetCDF = "30363a11-5582-574a-97bb-aa9a979735b9"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
