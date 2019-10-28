@@ -5,21 +5,22 @@ module ClimateERA
 
 ## Modules Used
 using Dates, Printf
-using NetCDF
-using ClimateTools
+using NetCDF, Glob
+using ClimateEasy
 
 ## Exporting the following functions:
 export
-        eramodule, eraparameters, eratime, eraregion,
-        erastartup, erainitialize, eroot
+        eramodule, eraparameters, erapressure, eratime, eraregion,
+        erastartup, erainitialize, eroot,
+        erafolder, eratmp2raw, eradownload
 
 ## Including other files in the module
 
 include("erastartup.jl")
 include("erainitialize.jl")
-#include("eradwn.jl")
-#include("eracalc.jl")
-#include("eraana.jl")
+#include("eradownload.jl")
+#include("eracalculate.jl")
+#include("eraanalysis.jl")
 #include("eragnss.jl")
 
 end # module
