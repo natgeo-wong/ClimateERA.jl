@@ -6,11 +6,19 @@ version = "0.1.0"
 [deps]
 ClimateEasy = "47ceb0c8-0fe6-4c49-a4a1-92bc59187c00"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
+Glob = "c27321d9-0574-5035-807b-f59d2c89b15c"
+JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 NetCDF = "30363a11-5582-574a-97bb-aa9a979735b9"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
 [compat]
 julia = "1"
+ClimateEasy = "0.1"
+FileIO = "1"
+Glob = "1.2"
+JLD2 = "0.1"
+NetCDF = "0.8"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
