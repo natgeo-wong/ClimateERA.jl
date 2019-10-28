@@ -33,18 +33,19 @@ end
 
 function eramkroot(eroot::AbstractString)
 
-    eiroot = "$(eroot)/erai"; e5root = "$(eroot)/era5"; eproot = "$(eroot)/plot";
-
+    eiroot = joinpath(eroot,"erai");
     if !isdir(eiroot)
         mkpath(eiroot); @info "$(Dates.now()) - Created root folder for ERA-Interim reanalysis data $(eiroot)."
     else;               @info "$(Dates.now()) - Root folder for ERA-Interim reanalysis data $(eiroot) exists."
     end
 
+    e5root = joinpath(eroot,"era5");
     if !isdir(e5root)
         mkpath(e5root); @info "$(Dates.now()) - Created root folder for ERA5 reanalysis data $(e5root)."
     else;               @info "$(Dates.now()) - Root folder for ERA5 reanalysis data $(e5root) exists."
     end
 
+    eproot = joinpath(eroot,"plot");
     if !isdir(eproot)
         mkpath(eproot); @info "$(Dates.now()) - Created root folder for ERA plotting data $(eproot)."
     else;               @info "$(Dates.now()) - Root folder for ERA plotting data $(eproot) exists."
@@ -81,7 +82,8 @@ function erastartup(actionID::Int64,datasetID::Int64)
 
     action = eraaction(actionID); dataset = eradataset(datasetID);
     @info "$(Dates.now()) - This script will $(action["name"]) $(dataset["name"]) data."
-    cd(eroot["era"]); return Dict("actionID"=>actionID,"action"=>action["name"],
-                                  "datasetID"=>datasetID,"dataset"=>dataset["name"]);
+    init = Dict("actionID"=>actionID,"action"=>action["name"],
+                "datasetID"=>datasetID,"dataset"=>dataset["name"]),
+    cd(eroot["era"]); return init,eroot
 
 end
