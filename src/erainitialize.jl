@@ -47,6 +47,22 @@ function eraparametersdisp(parlist::AbstractArray,init::Dict)
     for ii = 1 : size(parlist,1); @info "$(Dates.now()) - $(ii)) $(parlist[ii,6])" end
 end
 
+function erapressure(emod::Dict)
+    if (emod["moduleID"] in [2,4,6]);
+        @info "$(Dates.now()) - A pressure module was selected, and therefore all available pressure levels will be saved into the parameter Dictionary."
+        emod["levels"] = erapressureload();
+    else
+        @info "$(Dates.now()) - A surface module was selected, and therefore we will save 'sfc' into the parameter level Dictionary."
+        emod["levels"] = "sfc";
+    end
+end
+
+function erapressureload()
+    return [1,2,3,5,7,10,20,30,50,70,100,125,150,175,200,
+            225,250,300,350,400,450,500,550,600,650,700,750,
+            775,800,825,850,875,900,925,950,975,1000]
+end
+
 # ClimateERA Region Setup
 
 function eraregionload(regionID::Int64,init::Dict)
@@ -141,6 +157,14 @@ function eramodule(moduleID::Int64,init::Dict)
         end
     end
 
+    if moduleID in [2,4,6];
+        @info "$(Dates.now()) - A pressure module was selected, and therefore all available pressure levels will be saved into the parameter Dictionary."
+        init["levels"] = erapressureload();
+    else
+        @info "$(Dates.now()) - A surface module was selected, and therefore we will save 'sfc' into the parameter level Dictionary."
+        init["levels"] = "sfc";
+    end
+
     return init
 
 end
@@ -181,7 +205,9 @@ function eraregion(regionID::Int64,init::Dict)
 end
 
 function erainitialize(moduleID::Int64,parameterID::Int64,timeID::Int64,regionID::Int64,init::Dict)
-    emod = eramodule(moduleID,init); epar = eraparameters(parameterID,emod)
-    time = eratime(timeID,init); ereg = eraregion(regionID,emod)
-    return emod,epar,time,ereg
+    emod = eramodule(moduleID,init);
+    epar = eraparameters(parameterID,emod);
+    time = eratime(timeID,init);
+    ereg = eraregion(regionID,emod);
+    return emod,epar,ereg,time
 end
