@@ -181,7 +181,7 @@ function eradownload(emod::Dict,epar::Dict,ereg::Dict,time::Dict,eroot::Dict)
 
         @info "$(Dates.now()) - Moving download scripts to tmp directories ..."
         mv(fname,joinpath(fol["tmp"],fname),force=true);
-        cp(dwnsh,joinpath(fol["tmp"],"erad.sh"),force=true);
+        if isfile(dwnsh); cp(dwnsh,joinpath(fol["tmp"],"erad.sh"),force=true); end
 
     end
 
