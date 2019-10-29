@@ -77,7 +77,7 @@ function eraregionload(regionID::Int64,init::Dict)
     else;             regglbe = false;
     end
 
-    @info "$(Dates.now()) - Storing region information ..."
+    @info "$(Dates.now()) - Storing region properties and information for $(regfull) ..."
     return Dict("region"=>regname,"grid"=>reggrid,"name"=>regfull,"isglobe"=>regglbe)
 
 end
@@ -105,6 +105,7 @@ end
 
 function eraregionvec(reg::Dict,init::Dict)
 
+    @info "$(Dates.now()) - Determining spacing between grid points in the region ..."
     if     reg["isglobe"] == true && init["datasetID"] == 1; step = 1.0;
     elseif reg["isglobe"] == true && init["datasetID"] == 2; step = 0.75;
     else;  step = 0.25;
@@ -112,6 +113,7 @@ function eraregionvec(reg::Dict,init::Dict)
     reg["step"] = step
 
     N,S,E,W = reg["grid"];
+    @info "$(Dates.now()) - Creating longitude and latitude vectors for the region ..."
     lon = convert(Array,W:step:E);  nlon = size(lon,1);
     lat = convert(Array,N:-step:S); nlat = size(lat,1);
     reg["lon"] = lon; reg["lat"] = lat; reg["size"] = [nlon,nlat];
@@ -121,18 +123,22 @@ function eraregionvec(reg::Dict,init::Dict)
 end
 
 function eraregionparent(regionID::Int64,init::Dict)
+    @info "$(Dates.now()) - Extracting parent region properties/information ..."
     parentID = regionparent(regionID); return eraregion(parentID,init);
 end
 
 function eraregionparent(regionID::Int64,reginfo::AbstractArray,init::Dict)
+    @info "$(Dates.now()) - Extracting parent region properties/information ..."
     parentID = regionparent(regionID,reginfo); return eraregion(parentID,init);
 end
 
 function eraregionextract(data::AbstractArray,regionID::Int64,init::Dict)
+    @info "$(Dates.now()) - Extracting regional data from parent region ..."
     preg = eraregionparent(regionID,init); return regionextractgrid(data,reg,plon,plat)
 end
 
 function eraregionextract(data::AbstractArray,preg::Dict,init::Dict)
+    @info "$(Dates.now()) - Extracting regional data from parent region ..."
     return regionextractgrid(data,reg,preg["lon"],preg["lat"])
 end
 
@@ -185,9 +191,16 @@ function eraparameters(parameterID::Int64,init::Dict)
 end
 
 function eratime(timeID::Int64,init::Dict)
-    if timeID == 0; fin = Dates.year(Dates.now())-1;
+    if timeID == 0;
+
+        if init["datasetID"] == 1
+              fin = Dates.year(Dates.now())-1;
+        else; fin = 2018
+        end
+
         return Dict("Begin"=>1979,"End"=>fin);
         @info "$(Dates.now()) - User has chosen to $(init["action"]) $(init["dataset"]) datasets from 1979 to $(fin)."
+        
     else
         return Dict("Begin"=>timeID,"End"=>timeID)
         @info "$(Dates.now()) - User has chosen to $(init["action"]) $(init["dataset"]) datasets in $(timeID)."
