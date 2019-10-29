@@ -167,7 +167,11 @@ end
 
 function eradownload(emod::Dict,epar::Dict,ereg::Dict,time::Dict,eroot::Dict)
 
-    prelist = emod["levels"]; dwnsh = joinpath(@__DIR__,"./extra/erad.sh");
+    prelist = emod["levels"]; modID = emod["moduleID"];
+
+    if modID == 1; dwnsh = joinpath(@__DIR__,"./extra/erad5.sh");
+    else;          dwnsh = joinpath(@__DIR__,"./extra/eradi.sh");
+    end
 
     for preii in prelist; epar["level"] = preii;
 
@@ -180,7 +184,7 @@ function eradownload(emod::Dict,epar::Dict,ereg::Dict,time::Dict,eroot::Dict)
         cp(dwnsh,joinpath(fol["tmp"],"erad.sh"),force=true);
 
     end
-    
+
     fol = erafolder(emod,epar,ereg,eroot);
     @info "$(Dates.now()) - Saving information and moving info files to directories ..."
     @save "info_par.jld2" emod epar; @save "info_reg.jld2" ereg;
