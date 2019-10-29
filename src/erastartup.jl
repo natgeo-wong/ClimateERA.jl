@@ -76,15 +76,15 @@ function erastartup(actionID::Int64,datasetID::Int64)
 
     eroot = eraroot();
 
-    if     datasetID == 1; eroot["era"]=eroot["era5"]; delete!(eroot,"era5","erai");
-    elseif datasetID == 2; eroot["era"]=eroot["erai"]; delete!(eroot,"era5","erai");
+    if     datasetID == 1; eroot["era"]=eroot["era5"]; delete!(eroot,["era5","erai"]);
+    elseif datasetID == 2; eroot["era"]=eroot["erai"]; delete!(eroot,["era5","erai"]);
     end
 
     action = eraaction(actionID); dataset = eradataset(datasetID);
     @info "$(Dates.now()) - This script will $(action["name"]) $(dataset["name"]) data."
     init = Dict("actionID"=>actionID,"action"=>action["name"],
                 "datasetID"=>datasetID,"dataset"=>dataset["name"],
-                "prefix"=>dataset["short"]),
+                "prefix"=>dataset["short"])
     cd(eroot["era"]); return init,eroot
 
 end

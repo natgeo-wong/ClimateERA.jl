@@ -5,7 +5,7 @@ are to be extracted from.  Functionalities include:
     - Setting up of reanalysis module type
     - Setting up of reanalysis parameters to be analyzed
     - Setting up of time steps upon which data are to be downloaded
-    - Setting up of region of analysis based on ClimateTools
+    - Setting up of region of analysis based on ClimateEasy
 
 """
 
@@ -53,7 +53,7 @@ function erapressure(emod::Dict)
         emod["levels"] = erapressureload();
     else
         @info "$(Dates.now()) - A surface module was selected, and therefore we will save 'sfc' into the parameter level Dictionary."
-        emod["levels"] = "sfc";
+        emod["levels"] = ["sfc"];
     end
 end
 
@@ -67,8 +67,8 @@ end
 
 function eraregionload(regionID::Int64,init::Dict)
 
-    @info "$(Dates.now()) - Loading available regions from the ClimateTools.jl module."
-    reginfo = regionload(); reginfo = eraregiondisp(reginfo,init);
+    @info "$(Dates.now()) - Loading available regions from the ClimateEasy.jl module."
+    reginfo = regionload(); eraregiondisp(regionID,reginfo,init);
     regname = regionshortname(regionID,reginfo);
     regfull = regionfullname(regionID,reginfo)
     reggrid = regionbounds(regionID,reginfo)
@@ -85,7 +85,7 @@ end
 function eraregiondisp(regionID::Int64,reginfo::AbstractArray,init::Dict)
 
     if regionID > size(reginfo,1);
-        @error "$(Dates.now()) - $(regionID) is not a valid Region ID in ClimateTools.jl."
+        @error "$(Dates.now()) - $(regionID) is not a valid Region ID in ClimateEasy.jl."
     end
 
     if init["actionID"] == 1
@@ -109,12 +109,12 @@ function eraregionvec(reg::Dict,init::Dict)
     elseif reg["isglobe"] == true && init["datasetID"] == 2; step = 0.75;
     else;  step = 0.25;
     end
-    reg["step"=>step]
+    reg["step"] = step
 
     N,S,E,W = reg["grid"];
     lon = convert(Array,W:step:E);  nlon = size(lon,1);
     lat = convert(Array,N:-step:S); nlat = size(lat,1);
-    reg["lon"=>lon,"lat"=>lat,"size"=>[nlon,nlat]]
+    reg["lon"] = lon; reg["lat"] = lat; reg["size"] = [nlon,nlat];
 
     return reg
 
@@ -140,7 +140,7 @@ end
 
 function eramodule(moduleID::Int64,init::Dict)
 
-    init["moduleID"] = moduleID; len = eramoduledisp(init["actionID"]);
+    init["moduleID"] = moduleID; len = eramoduledisp(init);
     if !(moduleID in 1:len); @error "$(Dates.now()) - Module ID $(moduleID) not defined for action '$(init["action"])'."  end;
 
     if     moduleID == 1; init["moduletype"] = "dsfc"; init["modulename"] = "dry surface";
@@ -162,7 +162,7 @@ function eramodule(moduleID::Int64,init::Dict)
         init["levels"] = erapressureload();
     else
         @info "$(Dates.now()) - A surface module was selected, and therefore we will save 'sfc' into the parameter level Dictionary."
-        init["levels"] = "sfc";
+        init["levels"] = ["sfc"];
     end
 
     return init
@@ -177,10 +177,10 @@ function eraparameters(parameterID::Int64,init::Dict)
     if !(parameterID in 1:npar); @error "$(Dates.now()) - Invalid parameter choice for $(eramod["name"])."  end;
 
     parinfo = parlist[parameterID,:];
-    @info "$(Dates.now()) - ClimateERA will $(init["action"]) $(parinfo[:,6]) data."
-    return Dict("ID"  =>parinfo[:,2],"IDnc"=>parinfo[:,3],
-                "era5"=>parinfo[:,4],"erai"=>parinfo[:,5],
-                "name"=>parinfo[:,6],"unit"=>parinfo[:,7]);
+    @info "$(Dates.now()) - ClimateERA will $(init["action"]) $(parinfo[6]) data."
+    return Dict("ID"  =>parinfo[2],"IDnc"=>parinfo[3],
+                "era5"=>parinfo[4],"erai"=>parinfo[5],
+                "name"=>parinfo[6],"unit"=>parinfo[7]);
 
 end
 

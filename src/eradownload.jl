@@ -15,7 +15,7 @@ function eradscriptcreate(modID::Int64,emod::Dict,epar::Dict,ereg::Dict)
     else; fname = "$(emod["prefix"])-$(ereg["region"])-$(epar["ID"])-$(epar["level"])";
     end
 
-    fID = open("$(name).py","w");
+    fID = open("$(fname).py","w");
 
     write(fID,"#!/usr/bin/env python\n");
 
@@ -47,7 +47,7 @@ function eradscriptheader(fID,modID::Int64,emod::Dict,epar::Dict)
 
         if !(parID == "cape") && !(parID[1:4] == "prcp")
               write(fID,"    \"type\": \"an\",\n");
-        else, write(fID,"    \"type\": \"fc\",\n");
+        else; write(fID,"    \"type\": \"fc\",\n");
         end
 
         write(fID,"    \"type\": \"an\",\n");
@@ -58,14 +58,14 @@ end
 
 function eradscriptpprint(fID,modID::Int64,emod::Dict,epar::Dict)
 
-    pre = par.pre;
+    pre = epar["level"];
 
     if modID == 1; var = epar["era5"];
         write(fID,"        \"variable\": $(var),\n");
-        if ~isnan(p), write(fID,"        \"pressure_level\": $(pre),\n"); end
+        if !(pre == "sfc"); write(fID,"        \"pressure_level\": $(pre),\n"); end
     else; var = epar["erai"];
         write(fID,"    \"param\": $(var),\n");
-        if isnan(p)
+        if pre == "sfc"
             write(fID,"    \"levtype\": \"sfc\",\n");
         else
             write(fID,"    \"levtype\": \"pl\",\n");
@@ -151,7 +151,7 @@ function eradscript(emod::Dict,epar::Dict,ereg::Dict,time::Dict)
     modID = emod["moduleID"];
     fname,fID = eradscriptcreate(modID,emod,epar,ereg);
 
-    for year = time["beg"] : time["fin"]
+    for year = time["Begin"] : time["End"]
 
         eradscriptheader(fID,modID,emod,epar);
         eradscriptpprint(fID,modID,emod,epar);
@@ -161,28 +161,31 @@ function eradscript(emod::Dict,epar::Dict,ereg::Dict,time::Dict)
 
     end
 
-    close(fID); return "$(fname).nc"
+    close(fID); return "$(fname).py"
 
 end
 
 function eradownload(emod::Dict,epar::Dict,ereg::Dict,time::Dict,eroot::Dict)
 
-    prelist = emod["levels"]
+    prelist = emod["levels"]; dwnsh = joinpath(@__DIR__,"./extra/erad.sh");
 
     for preii in prelist; epar["level"] = preii;
 
         @info "$(Dates.now()) - Creating download scripts and directories ..."
-        fname,fID = eradscript(emod,epar,ereg,time);
+        fname = eradscript(emod,epar,ereg,time);
         fol = erafolder(emod,epar,ereg,eroot);
 
         @info "$(Dates.now()) - Moving download scripts to tmp directories ..."
-        mv(fname,fol["tmp"]); mv(joinpath(@__DIR__,"./extra/erad.sh"),fol["tmp"])
+        mv(fname,joinpath(fol["tmp"],fname),force=true);
+        cp(dwnsh,joinpath(fol["tmp"],"erad.sh"),force=true);
 
     end
-
+    
+    fol = erafolder(emod,epar,ereg,eroot);
     @info "$(Dates.now()) - Saving information and moving info files to directories ..."
-    @save "info_par.jld2" emod epar; mv("info_par.jld2",fol["var"])
-    @save "info_reg.jld2" ereg;      mv("info_reg.jld2",fol["reg"])
+    @save "info_par.jld2" emod epar; @save "info_reg.jld2" ereg;
+    mv("info_par.jld2",joinpath(fol["var"],"info_par.jld2"),force=true)
+    mv("info_reg.jld2",joinpath(fol["reg"],"info_reg.jld2"),force=true)
 
 end
 
