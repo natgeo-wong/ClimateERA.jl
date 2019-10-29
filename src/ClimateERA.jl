@@ -4,8 +4,8 @@ module ClimateERA
 # reanalysis data.
 
 ## Modules Used
-using Dates, Printf
-using NetCDF, Glob
+using Dates, DelimitedFiles, Printf
+using NetCDF, Glob, JLD2, FileIO
 using ClimateEasy
 
 ## Exporting the following functions:
