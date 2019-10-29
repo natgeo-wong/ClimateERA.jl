@@ -6,19 +6,183 @@ data, which includes the following functionalities:
 
 """
 
+# Creation of ClimateERA Download Scripts
+
+function eradscriptcreate(modID::Int64,emod::Dict,epar::Dict,ereg::Dict)
+
+    if !(epar["level"] == "sfc")
+          fname = "$(emod["prefix"])-$(ereg["region"])-$(epar["ID"])-$(epar["level"])hPa";
+    else; fname = "$(emod["prefix"])-$(ereg["region"])-$(epar["ID"])-$(epar["level"])";
+    end
+
+    fID = open("$(name).py","w");
+
+    write(fID,"#!/usr/bin/env python\n");
+
+    if modID == 1
+        write(fID,"import cdsapi\n");
+        write(fID,"c = cdsapi.Client()\n\n");
+    else
+        write(fID,"from ecmwfapi import ECMWFDataServer\n");
+        write(fID,"server = ECMWFDataServer()\n\n");
+    end
+
+    return fname,fID
+
+end
+
+function eradscriptheader(fID,modID::Int64,emod::Dict,epar::Dict)
+
+    parID = epar["ID"];
+
+    if modID == 1
+        write(fID,"c.retrieve($(emod["moduleprint"]),\n");
+        write(fID,"    {\n");
+        write(fID,"        \"product_type\": \"reanalysis\",\n");
+    else
+        write(fID,"server.retrieve({\n");
+        write(fID,"    \"class\": \"ei\",\n");
+        write(fID,"    \"dataset\": \"interim\",\n");
+        write(fID,"    \"stream\": \"oper\",\n");
+
+        if !(parID == "cape") && !(parID[1:4] == "prcp")
+              write(fID,"    \"type\": \"an\",\n");
+        else, write(fID,"    \"type\": \"fc\",\n");
+        end
+
+        write(fID,"    \"type\": \"an\",\n");
+        write(fID,"    \"expver\": \"1\",\n");
+    end
+
+end
+
+function eradscriptpprint(fID,modID::Int64,emod::Dict,epar::Dict)
+
+    pre = par.pre;
+
+    if modID == 1; var = epar["era5"];
+        write(fID,"        \"variable\": $(var),\n");
+        if ~isnan(p), write(fID,"        \"pressure_level\": $(pre),\n"); end
+    else; var = epar["erai"];
+        write(fID,"    \"param\": $(var),\n");
+        if isnan(p)
+            write(fID,"    \"levtype\": \"sfc\",\n");
+        else
+            write(fID,"    \"levtype\": \"pl\",\n");
+            write(fID,"    \"levelist\": \"$(pre)\",\n");
+        end
+    end
+
+end
+
+function eradscriptregion(fID,modID::Int64,emod::Dict,ereg::Dict)
+
+    estep = ereg["step"];
+    if modID == 1
+        if !ereg["isglobe"]; N,S,E,W = ereg["grid"];
+              write(fID,"        \"area\": [$(N),$(W),$(S),$(E)],\n");
+        end
+        write(fID,"        \"grid\": [$(estep),$(estep)],\n");
+    else
+        if !ereg["isglobe"]; N,S,E,W = ereg["grid"];
+              write(fID,"    \"area\": \"$(N)/$(W)/$(S)/$(E)\",\n");
+        end
+        write(fID,"    \"grid\": \"$(estep)/$(estep)\",\n");
+    end
+
+end
+
+function eradscriptdprint(fID,modID::Int64,epar::Dict,year::Int64)
+
+    parID = epar["ID"];
+
+    if modID == 1
+        write(fID,"        \"year\": \"$(year)\",\n");
+        write(fID,"        \"month\":[\n");
+        write(fID,"            \"01\",\"02\",\"03\",\"04\",\"05\",\"06\",\n");
+        write(fID,"            \"07\",\"08\",\"09\",\"10\",\"11\",\"12\"\n");
+        write(fID,"        ],\n");
+        write(fID,"        \"day\":[\n");
+        write(fID,"            \"01\",\"02\",\"03\",\"04\",\"05\",\"06\",\n");
+        write(fID,"            \"07\",\"08\",\"09\",\"10\",\"11\",\"12\",\n");
+        write(fID,"            \"13\",\"14\",\"15\",\"16\",\"17\",\"18\",\n");
+        write(fID,"            \"19\",\"20\",\"21\",\"22\",\"23\",\"24\",\n");
+        write(fID,"            \"25\",\"26\",\"27\",\"28\",\"29\",\"30\",\n");
+        write(fID,"            \"31\"\n");
+        write(fID,"        ],\n");
+        write(fID,"        \"time\":[\n");
+        write(fID,"            \"00:00\",\"01:00\",\"02:00\",\"03:00\",\"04:00\",\n");
+        write(fID,"            \"05:00\",\"06:00\",\"07:00\",\"08:00\",\"09:00\",\n");
+        write(fID,"            \"10:00\",\"11:00\",\"12:00\",\"13:00\",\"14:00\",\n");
+        write(fID,"            \"15:00\",\"16:00\",\"17:00\",\"18:00\",\"19:00\",\n");
+        write(fID,"            \"20:00\",\"21:00\",\"22:00\",\"23:00\"\n");
+        write(fID,"        ],\n");
+    else
+        write(fID,"    \"date\": \"$(year)-01-01/to/$(year)-12-31\",\n");
+        if !(parID == "cape") && !(parID[1:4] == "prcp")
+            write(fID,"    \"time\": \"00:00:00/06:00:00/12:00:00/18:00:00\",\n");
+            write(fID,"    \"step\": \"0\",\n");
+        else
+            write(fID,"    \"time\": \"00:00:00/12:00:00\",\n");
+            write(fID,"    \"step\": \"3/6/9/12\",\n");
+        end
+    end
+
+end
+
+function eradscripttarget(fID,modID::Int64,fname::AbstractString,year::Int64)
+
+    if modID == 1
+        write(fID,"        \"format\": \"netcdf\"\n");
+        write(fID,"    },\n");
+        write(fID,"    \"$(fname)-$(year).nc\")\n\n");
+    else
+        write(fID,"    \"format\": \"netcdf\",\n");
+        write(fID,"    \"target\": \"$(fname)-$(year).nc\",\n");
+        write(fID,"})\n\n");
+    end
+
+end
+
+# Master ClimateERA Download Scripts.end
+
+function eradscript(emod::Dict,epar::Dict,ereg::Dict,time::Dict)
+
+    modID = emod["moduleID"];
+    fname,fID = eradscriptcreate(modID,emod,epar,ereg);
+
+    for year = time["beg"] : time["fin"]
+
+        eradscriptheader(fID,modID,emod,epar);
+        eradscriptpprint(fID,modID,emod,epar);
+        eradscriptregion(fID,modID,emod,ereg);
+        eradscriptdprint(fID,modID,epar,year);
+        eradscripttarget(fID,modID,fname,year);
+
+    end
+
+    close(fID); return "$(fname).nc"
+
+end
+
 function eradownload(emod::Dict,epar::Dict,ereg::Dict,time::Dict,eroot::Dict)
 
     prelist = emod["levels"]
 
     for preii in prelist; epar["level"] = preii;
 
-        fname,fID = eradscript(emod,epar,ereg,time)
+        @info "$(Dates.now()) - Creating download scripts and directories ..."
+        fname,fID = eradscript(emod,epar,ereg,time);
         fol = erafolder(emod,epar,ereg,eroot);
+
+        @info "$(Dates.now()) - Moving download scripts to tmp directories ..."
+        mv(fname,fol["tmp"]); mv(joinpath(@__DIR__,"./extra/erad.sh"),fol["tmp"])
 
     end
 
-    @save "info_par.jld2" emod epar
-    @save "info_reg.jld2" ereg
+    @info "$(Dates.now()) - Saving information and moving info files to directories ..."
+    @save "info_par.jld2" emod epar; mv("info_par.jld2",fol["var"])
+    @save "info_reg.jld2" ereg;      mv("info_reg.jld2",fol["reg"])
 
 end
 
@@ -28,7 +192,7 @@ function erafolder(emod::Dict,epar::Dict,ereg::Dict,eroot::Dict)
 
     folreg = joinpath(eroot["era"],ereg["region"]);
     if !isdir(folreg)
-        @info "$(Dates.now()) - Creating folder for the $(ereg["name"]) region at $(folreg) ...";
+        @info "$(Dates.now()) - Creating folder for the $(ereg["name"]) region at $(folreg) ..."
         mkpath(folreg);
     else; @info "$(Dates.now()) - The folder for the $(ereg["name"]) region $(folreg) exists."
     end

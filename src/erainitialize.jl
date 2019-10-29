@@ -105,7 +105,7 @@ end
 
 function eraregionvec(reg::Dict,init::Dict)
 
-    if     reg["isglobe"] == true && init["datasetID"] == 1; step = 0.5;
+    if     reg["isglobe"] == true && init["datasetID"] == 1; step = 1.0;
     elseif reg["isglobe"] == true && init["datasetID"] == 2; step = 0.75;
     else;  step = 0.25;
     end

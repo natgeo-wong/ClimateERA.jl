@@ -18,7 +18,7 @@ export
 
 include("erastartup.jl")
 include("erainitialize.jl")
-#include("eradownload.jl")
+include("eradownload.jl")
 #include("eracalculate.jl")
 #include("eraanalysis.jl")
 #include("eragnss.jl")

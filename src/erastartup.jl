@@ -62,8 +62,8 @@ function eraaction(actionID::Int64)
 end
 
 function eradataset(datasetID::Int64)
-    if     datasetID == 1; return Dict("ID"=>1,"name"=>"ERA5");
-    elseif datasetID == 2; return Dict("ID"=>2,"name"=>"ERA-Interim");
+    if     datasetID == 1; return Dict("ID"=>1,"short"=>"era5","name"=>"ERA5");
+    elseif datasetID == 2; return Dict("ID"=>2,"short"=>"erai","name"=>"ERA-Interim");
     end
 end
 
@@ -83,7 +83,8 @@ function erastartup(actionID::Int64,datasetID::Int64)
     action = eraaction(actionID); dataset = eradataset(datasetID);
     @info "$(Dates.now()) - This script will $(action["name"]) $(dataset["name"]) data."
     init = Dict("actionID"=>actionID,"action"=>action["name"],
-                "datasetID"=>datasetID,"dataset"=>dataset["name"]),
+                "datasetID"=>datasetID,"dataset"=>dataset["name"],
+                "prefix"=>dataset["short"]),
     cd(eroot["era"]); return init,eroot
 
 end
