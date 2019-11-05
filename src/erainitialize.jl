@@ -65,7 +65,7 @@ end
 
 # ClimateERA Region Setup
 
-function eraregionload(regionID::Int64,init::Dict)
+function eraregionload(regionID::Integer,init::Dict)
 
     @info "$(Dates.now()) - Loading available regions from the ClimateEasy.jl module."
     reginfo = regionload(); eraregiondisp(regionID,reginfo,init);
@@ -82,7 +82,7 @@ function eraregionload(regionID::Int64,init::Dict)
 
 end
 
-function eraregiondisp(regionID::Int64,reginfo::AbstractArray,init::Dict)
+function eraregiondisp(regionID::Integer,reginfo::AbstractArray,init::Dict)
 
     if regionID > size(reginfo,1);
         @error "$(Dates.now()) - $(regionID) is not a valid Region ID in ClimateEasy.jl."
@@ -122,17 +122,17 @@ function eraregionvec(reg::Dict,init::Dict)
 
 end
 
-function eraregionparent(regionID::Int64,init::Dict)
+function eraregionparent(regionID::Integer,init::Dict)
     @info "$(Dates.now()) - Extracting parent region properties/information ..."
     parentID = regionparent(regionID); return eraregion(parentID,init);
 end
 
-function eraregionparent(regionID::Int64,reginfo::AbstractArray,init::Dict)
+function eraregionparent(regionID::Integer,reginfo::AbstractArray,init::Dict)
     @info "$(Dates.now()) - Extracting parent region properties/information ..."
     parentID = regionparent(regionID,reginfo); return eraregion(parentID,init);
 end
 
-function eraregionextract(data::AbstractArray,regionID::Int64,init::Dict)
+function eraregionextract(data::AbstractArray,regionID::Integer,init::Dict)
     @info "$(Dates.now()) - Extracting regional data from parent region ..."
     preg = eraregionparent(regionID,init); return regionextractgrid(data,reg,plon,plat)
 end
@@ -144,7 +144,7 @@ end
 
 # Initialization
 
-function eramodule(moduleID::Int64,init::Dict)
+function eramodule(moduleID::Integer,init::Dict)
 
     init["moduleID"] = moduleID; len = eramoduledisp(init);
     if !(moduleID in 1:len); @error "$(Dates.now()) - Module ID $(moduleID) not defined for action '$(init["action"])'."  end;
@@ -175,7 +175,7 @@ function eramodule(moduleID::Int64,init::Dict)
 
 end
 
-function eraparameters(parameterID::Int64,init::Dict)
+function eraparameters(parameterID::Integer,init::Dict)
 
     parlist = eraparametersload(init); eraparametersdisp(parlist,init)
     npar = size(parlist,1);
@@ -190,7 +190,7 @@ function eraparameters(parameterID::Int64,init::Dict)
 
 end
 
-function eratime(timeID::Int64,init::Dict)
+function eratime(timeID::Integer,init::Dict)
     if timeID == 0;
 
         if init["datasetID"] == 1
@@ -200,7 +200,7 @@ function eratime(timeID::Int64,init::Dict)
 
         return Dict("Begin"=>1979,"End"=>fin);
         @info "$(Dates.now()) - User has chosen to $(init["action"]) $(init["dataset"]) datasets from 1979 to $(fin)."
-        
+
     else
         return Dict("Begin"=>timeID,"End"=>timeID)
         @info "$(Dates.now()) - User has chosen to $(init["action"]) $(init["dataset"]) datasets in $(timeID)."
@@ -213,11 +213,11 @@ function eratime(timeID::Array,init::Dict)
     @info "$(Dates.now()) - User has chosen to $(init["action"]) $(init["dataset"]) datasets from $(beg) to $(fin)."
 end
 
-function eraregion(regionID::Int64,init::Dict)
+function eraregion(regionID::Integer,init::Dict)
     reg = eraregionload(regionID,init); reg = eraregionvec(reg,init); return reg;
 end
 
-function erainitialize(moduleID::Int64,parameterID::Int64,timeID::Int64,regionID::Int64,init::Dict)
+function erainitialize(moduleID::Integer,parameterID::Integer,timeID::Integer,regionID::Integer,init::Dict)
     emod = eramodule(moduleID,init);
     epar = eraparameters(parameterID,emod);
     time = eratime(timeID,init);

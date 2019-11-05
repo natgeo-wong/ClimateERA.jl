@@ -8,7 +8,7 @@ data, which includes the following functionalities:
 
 # Creation of ClimateERA Download Scripts
 
-function eradscriptcreate(modID::Int64,emod::Dict,epar::Dict,ereg::Dict)
+function eradscriptcreate(modID::Integer,emod::Dict,epar::Dict,ereg::Dict)
 
     if !(epar["level"] == "sfc")
           fname = "$(emod["prefix"])-$(ereg["region"])-$(epar["ID"])-$(epar["level"])hPa";
@@ -31,7 +31,7 @@ function eradscriptcreate(modID::Int64,emod::Dict,epar::Dict,ereg::Dict)
 
 end
 
-function eradscriptheader(fID,modID::Int64,emod::Dict,epar::Dict)
+function eradscriptheader(fID,modID::Integer,emod::Dict,epar::Dict)
 
     parID = epar["ID"];
 
@@ -56,7 +56,7 @@ function eradscriptheader(fID,modID::Int64,emod::Dict,epar::Dict)
 
 end
 
-function eradscriptpprint(fID,modID::Int64,emod::Dict,epar::Dict)
+function eradscriptpprint(fID,modID::Integer,emod::Dict,epar::Dict)
 
     pre = epar["level"];
 
@@ -75,7 +75,7 @@ function eradscriptpprint(fID,modID::Int64,emod::Dict,epar::Dict)
 
 end
 
-function eradscriptregion(fID,modID::Int64,emod::Dict,ereg::Dict)
+function eradscriptregion(fID,modID::Integer,emod::Dict,ereg::Dict)
 
     estep = ereg["step"];
     if modID == 1
@@ -92,7 +92,7 @@ function eradscriptregion(fID,modID::Int64,emod::Dict,ereg::Dict)
 
 end
 
-function eradscriptdprint(fID,modID::Int64,epar::Dict,year::Int64)
+function eradscriptdprint(fID,modID::Integer,epar::Dict,year::Integer)
 
     parID = epar["ID"];
 
@@ -130,7 +130,7 @@ function eradscriptdprint(fID,modID::Int64,epar::Dict,year::Int64)
 
 end
 
-function eradscripttarget(fID,modID::Int64,fname::AbstractString,year::Int64)
+function eradscripttarget(fID,modID::Integer,fname::AbstractString,year::Integer)
 
     if modID == 1
         write(fID,"        \"format\": \"netcdf\"\n");

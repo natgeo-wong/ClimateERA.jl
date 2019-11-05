@@ -55,13 +55,13 @@ function eramkroot(eroot::AbstractString)
 
 end
 
-function eraaction(actionID::Int64)
+function eraaction(actionID::Integer)
     if     actionID == 1; return Dict("ID"=>1,"name"=>"download");
     elseif actionID == 2; return Dict("ID"=>2,"name"=>"analyse");
     end
 end
 
-function eradataset(datasetID::Int64)
+function eradataset(datasetID::Integer)
     if     datasetID == 1; return Dict("ID"=>1,"short"=>"era5","name"=>"ERA5");
     elseif datasetID == 2; return Dict("ID"=>2,"short"=>"erai","name"=>"ERA-Interim");
     end
@@ -69,7 +69,7 @@ end
 
 # Startup ClimateERA
 
-function erastartup(actionID::Int64,datasetID::Int64)
+function erastartup(actionID::Integer,datasetID::Integer)
 
     if !(actionID  in [1,2]); @error "$(Dates.now()) - Please input a valid action-type."  end;
     if !(datasetID in [1,2]); @error "$(Dates.now()) - Please input a valid dataset-type." end;
