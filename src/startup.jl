@@ -9,25 +9,17 @@ include:
 
 function eraroot()
 
-    svrstr = "/n/kuangdss01/users/nwong/ecmwf/";
-    svrrun = "/n/holylfs/LABS/kuang_lab/nwong/ecmwf/";
-    dskdir = "/Volumes/CliNat-ERA/";
-    docdir = "/Users/natgeo-wong/Documents/research/ecmwf/";
+    path = joinpath("$(homedir)","research","ecmwf";
+    @info "$(Dates.now()) - No directory path was given.  Setting to default path: $(path) for ClimateERA data downloads."
 
-    if     isdir(svrstr); return eramkroot(svrstr);
-        @info "$(Dates.now()) - The path $(svrdir) exists and therefore can be used as a directory for ClimateERA data downloads."
-    elseif isdir(svrrun); return eramkroot(svrrun);
-        @warn "$(Dates.now()) - The path $(svrdir) is not readable."
-        @info "$(Dates.now()) - The path $(svrrun) exists and therefore can be used as a directory for ClimateERA data downloads."
-    elseif isdir(dskdir); return eramkroot(dskdir);
-        @info "$(Dates.now()) - Not running on remote server.  Checking for external disks."
-        @info "$(Dates.now()) - External disk $(dskdir) exists and therefore can be used as a directory for ClimateERA data downloads."
-    elseif isdir(docdir); return eramkroot(docdir);
-        @info "$(Dates.now()) - Not running on remote server.  Checking for external disks."
-        @info "$(Dates.now()) - External disks not found.  Using local research data directory $(docdir) for ClimateERA data downloads."
+    if isdir(path)
+        @info "$(Dates.now()) - The default path $(path) exists and therefore can be used as a directory for ClimateERA data downloads."
     else
-        @error "$(Dates.now()) - The predefined directories in eraroot.jl do not exist.  They are user-dependent, so please modify/customize accordingly."
+        @warn "$(Dates.now()) - The path $(path) does not exist.  Creating now ..."
+        mkpath(path);
     end
+
+    return path
 
 end
 

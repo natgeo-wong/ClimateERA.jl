@@ -16,11 +16,10 @@ export
 
 ## Including other files in the module
 
-include("erastartup.jl")
-include("erainitialize.jl")
-include("eradownload.jl")
-#include("eracalculate.jl")
-#include("eraanalysis.jl")
-#include("eragnss.jl")
+include("startup.jl")
+include("initialize.jl")
+include("download.jl")
+#include("calculate.jl")
+#include("analysis.jl")
 
 end # module
