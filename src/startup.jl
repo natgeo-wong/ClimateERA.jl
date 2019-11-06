@@ -7,19 +7,41 @@ include:
 
 """
 
-function eraroot()
+function eraroot(actionID)
 
-    path = joinpath("$(homedir)","research","ecmwf";
-    @info "$(Dates.now()) - No directory path was given.  Setting to default path: $(path) for ClimateERA data downloads."
+    path = joinpath("$(homedir)","research","ecmwf");
+    @warn "$(Dates.now()) - No directory path was given.  Setting to default path: $(path) for ClimateERA data downloads."
 
     if isdir(path)
         @info "$(Dates.now()) - The default path $(path) exists and therefore can be used as a directory for ClimateERA data downloads."
     else
-        @warn "$(Dates.now()) - The path $(path) does not exist.  Creating now ..."
-        mkpath(path);
+        if actionID != 1
+            error("$(Dates.now()) - The path $(path) does not exist.  If you are doing analysis, please point towards the correct path before proceeding ..."
+        else
+            @warn "$(Dates.now()) - The path $(path) does not exist.  A new directory will be created here.  Therefore if you already have an existing repository for ClimateERA data, make sure that $(path) is the correct location."
+            @info "$(Dates.now()) - Creating path $(path) ..."
+            mkpath(path);
+        end
     end
 
-    return path
+    return eramkroot(path)
+
+end
+
+function eraroot(path::AbstractString,actionID::Integer)
+
+    if isdir(path)
+        @info "$(Dates.now()) - The default path $(path) exists and therefore can be used as a directory for ClimateERA data downloads."
+    else
+        if actionID != 1
+            error("$(Dates.now()) - The path $(path) does not exist.  If you are doing analysis, please point towards the correct path before proceeding ..."
+        else
+            @warn "$(Dates.now()) - The path $(path) does not exist.  A new directory will be created here.  Therefore if you already have an existing repository for ClimateERA data, make sure that $(path) is the correct location."
+            mkpath(path);
+        end
+    end
+
+    return eramkroot(path)
 
 end
 
@@ -66,7 +88,27 @@ function erastartup(actionID::Integer,datasetID::Integer)
     if !(actionID  in [1,2]); @error "$(Dates.now()) - Please input a valid action-type."  end;
     if !(datasetID in [1,2]); @error "$(Dates.now()) - Please input a valid dataset-type." end;
 
-    eroot = eraroot();
+    eroot = eraroot(actionID);
+
+    if     datasetID == 1; eroot["era"]=eroot["era5"]; delete!(eroot,["era5","erai"]);
+    elseif datasetID == 2; eroot["era"]=eroot["erai"]; delete!(eroot,["era5","erai"]);
+    end
+
+    action = eraaction(actionID); dataset = eradataset(datasetID);
+    @info "$(Dates.now()) - This script will $(action["name"]) $(dataset["name"]) data."
+    init = Dict("actionID"=>actionID,"action"=>action["name"],
+                "datasetID"=>datasetID,"dataset"=>dataset["name"],
+                "prefix"=>dataset["short"])
+    cd(eroot["era"]); return init,eroot
+
+end
+
+function erastartup(actionID::Integer,datasetID::Integer,path::AbstractString)
+
+    if !(actionID  in [1,2]); @error "$(Dates.now()) - Please input a valid action-type."  end;
+    if !(datasetID in [1,2]); @error "$(Dates.now()) - Please input a valid dataset-type." end;
+
+    eroot = eraroot(actionID,path);
 
     if     datasetID == 1; eroot["era"]=eroot["era5"]; delete!(eroot,["era5","erai"]);
     elseif datasetID == 2; eroot["era"]=eroot["erai"]; delete!(eroot,["era5","erai"]);
