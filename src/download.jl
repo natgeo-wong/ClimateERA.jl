@@ -193,44 +193,6 @@ function eradownload(emod::Dict,epar::Dict,ereg::Dict,time::Dict,eroot::Dict)
 
 end
 
-function erafolder(emod::Dict,epar::Dict,ereg::Dict,eroot::Dict)
-
-    pre = epar["level"];
-
-    folreg = joinpath(eroot["era"],ereg["region"]);
-    if !isdir(folreg)
-        @info "$(Dates.now()) - Creating folder for the $(ereg["name"]) region at $(folreg) ..."
-        mkpath(folreg);
-    else; @info "$(Dates.now()) - The folder for the $(ereg["name"]) region $(folreg) exists."
-    end
-
-    folvar = joinpath(eroot["era"],ereg["region"],epar["ID"]);
-    if !isdir(folvar)
-        @info "$(Dates.now()) - Creating variable folder for the $(epar["name"]) parameter at $(folvar) ..."
-        mkpath(folvar);
-    else; @info "$(Dates.now()) - The folder for the $(epar["name"]) parameter $(folvar) exists."
-    end
-
-    folraw = joinpath(folvar,"raw"); foltmp = joinpath(folvar,"tmp");
-    folana = joinpath(folvar,"ana"); folimg = joinpath(folvar,"img");
-    if !(pre == "sfc"); phPa = "$(epar["ID"])-$(pre)hPa"
-        folraw = joinpath(folraw,phPa); foltmp = joinpath(foltmp,phPa);
-        folana = joinpath(folana,phPa); folimg = joinpath(folimg,phPa);
-    end
-
-    @info "$(Dates.now()) - Creating relevant subdirectories for data downloading, temporary storage, analysis and image creation."
-    if !isdir(folraw); @info "$(Dates.now()) - Creating folder $(folraw)"; mkpath(folraw) end
-    if !isdir(folana); @info "$(Dates.now()) - Creating folder $(folana)"; mkpath(folana) end
-    if !isdir(folimg); @info "$(Dates.now()) - Creating folder $(folimg)"; mkpath(folimg) end
-    if emod["actionID"] == 1
-        if !isdir(foltmp); @info "$(Dates.now()) - Creating folder $(foltmp)"; mkpath(foltmp) end
-    end
-
-    return Dict("reg"=>folreg,"var"=>folvar,"raw"=>folraw,
-                "tmp"=>foltmp,"ana"=>folana,"img"=>folimg);
-
-end
-
 function eratmp2raw(efol::Dict)
 
     @info "$(Dates.now()) - Retrieving list of downloaded data files in ERA reanalysis tmp folder."
