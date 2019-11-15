@@ -4,14 +4,14 @@ module ClimateERA
 # reanalysis data.
 
 ## Modules Used
-using Dates, DelimitedFiles, Printf
+using Dates, DelimitedFiles, Printf, Statistics
 using NetCDF, Glob, JLD2, FileIO
 using ClimateEasy
 
 ## Exporting the following functions:
 export
         eramodule, eraparameters, erapressure, eratime, eraregion,
-        erastartup, erainitialize, eroot,
+        erastartup, erainitialize, eroot, erancread,
         erafolder, eratmp2raw, eradownload
 
 ## Including other files in the module
