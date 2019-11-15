@@ -1,4 +1,6 @@
-#(1)Mode (2)ID (3)IDnc (4)era5 (5)erai (6)Full (7)Units
+##(1)Mode (2)ID (3)IDnc (4)era5 (5)erai (6)Full (7)Units
+
+# Dry Variables
 dsfc,u_sfc,u10,10m_u_component_of_wind,165.128,Surface u-Wind,m s^{-1}
 dsfc,v_sfc,v10,10m_v_component_of_wind,166.128,Surface v-Wind,m s^{-1}
 dsfc,t_sfc,t2m,2m_temperature,167.128,Surface Temperature,K
@@ -13,6 +15,8 @@ dpre,t_air,t,temperature,130.128,Temperature,K
 dpre,z_air,z,geopotential,129.128,Pressure Level Geopotential,m^2 s^{-2}
 dpre,div,d,divergence,155.128,Divergence,s^{-1}
 dpre,vort,pv,potential_vorticity,60.128,Potential Vorticity,K m^{-2} kg^{-1} s^{-1}
+
+# Moist Variables
 msfc,prcp_tot,tp,total_precipitation,228.128,Total Precipitation,m
 msfc,prcp_conv,cp,convective_precipitation,143.128,Convective Precipitation,m
 msfc,prcp_ls,lsp,large_scale_precipitation,142.128,Large-Scale Precipitation,m
@@ -26,7 +30,6 @@ mpre,shum,q,specific_humidity,133.128,Specific Humidity,kg kg^{-1}
 mpre,cld_air,cc,fraction_of_cloud_cover,248.128,Cloud Cover Fraction,%%
 csfc,troph,NA,NA,NA,Tropopause Height,m
 csfc,gtrop,NA,NA,NA,Tropopause Height Gradient,m d^{-1}
-csfc,Pi,NA,NA,NA,Pi Constant (ZWD to PWD),m/m
 csfc,t_mwv,NA,NA,NA,Water Vapour Weighted Column Temperature,K
 csfc,eke,NA,NA,NA,Eddy Intensity,m^2 s^{-2}
 cpre,psi_u,NA,NA,NA,Zonal Streamfunction,kg s^{-1}
@@ -37,3 +40,22 @@ cpre,flux_uT,NA,NA,NA,Zonal Heat Flux,K m s^{-1}
 cpre,flux_vT,NA,NA,NA,Poleward Heat Flux,K m s^{-1}
 cpre,flux_uq,NA,NA,NA,Zonal Moisture Flux,K m s^{-1}
 cpre,flux_vq,NA,NA,NA,Poleward Moisture Flux,K m s^{-1}
+
+#For GNSS Analysis
+gnss,t_mwv_DPA,NA,NA,NA,Water Vapour Weighted Column Temperature,K
+gnss,t_mwv_DVA,NA,NA,NA,Water Vapour Weighted Column Temperature,K
+gnss,t_mwv_DPD,NA,NA,NA,Water Vapour Weighted Column Temperature,K
+gnss,t_mwv_DVD,NA,NA,NA,Water Vapour Weighted Column Temperature,K
+gnss,t_mwv_BB,NA,NA,NA,Water Vapour Weighted Column Temperature,K
+gnss,t_mwv_BM,NA,NA,NA,Water Vapour Weighted Column Temperature,K
+gnss,t_mwv_GA,NA,NA,NA,Water Vapour Weighted Column Temperature,K
+gnss,t_mwv_G2,NA,NA,NA,Water Vapour Weighted Column Temperature,K
+gnss,Pi_ADPA,NA,NA,NA,Pi Constant (ZWD to PWD),m/m
+gnss,Pi_ADVA,NA,NA,NA,Pi Constant (ZWD to PWD),m/m
+gnss,Pi_ADPD,NA,NA,NA,Pi Constant (ZWD to PWD),m/m
+gnss,Pi_ADVD,NA,NA,NA,Pi Constant (ZWD to PWD),m/m
+gnss,Pi_ABB,NA,NA,NA,Pi Constant (ZWD to PWD),m/m
+gnss,Pi_ABM,NA,NA,NA,Pi Constant (ZWD to PWD),m/m
+gnss,Pi_AGA,NA,NA,NA,Pi Constant (ZWD to PWD),m/m
+gnss,Pi_AG2,NA,NA,NA,Pi Constant (ZWD to PWD),m/m
+gnss,Pi_MN,NA,NA,NA,Pi Constant (ZWD to PWD),m/m
