@@ -9,7 +9,7 @@ include:
 
 function eraroot(actionID)
 
-    path = joinpath("$(homedir)","research","ecmwf");
+    path = joinpath("$(homedir())","research","ecmwf");
     @warn "$(Dates.now()) - No directory path was given.  Setting to default path: $(path) for ClimateERA data downloads."
 
     if isdir(path)
