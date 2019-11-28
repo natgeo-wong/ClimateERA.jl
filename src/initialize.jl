@@ -13,7 +13,7 @@ are to be extracted from.  Functionalities include:
 
 function eramoduledisp(init::Dict)
 
-    if init["actionID"] == 1; len = 6; elseif init["actionID"] == 2; len = 4; end
+    if init["actionID"] == 1; len = 4; elseif init["actionID"] == 2; len = 6; end
     @info "$(Dates.now()) - There are $(len) types of modules that ClimateERA can $(init["action"])."
 
     @info "$(Dates.now()) - 1) Dry Surface Modules    (e.g. Surface Winds)"
@@ -217,10 +217,13 @@ function eraregion(regionID::Integer,init::Dict)
     reg = eraregionload(regionID,init); reg = eraregionvec(reg,init); return reg;
 end
 
-function erainitialize(moduleID::Integer,parameterID::Integer,timeID::Integer,regionID::Integer,init::Dict)
+function erainitialize(moduleID::Integer,parameterID::Integer,regionID::Integer,timeID::Integer,
+                       init::Dict)
+
     emod = eramodule(moduleID,init);
     epar = eraparameters(parameterID,emod);
-    time = eratime(timeID,init);
     ereg = eraregion(regionID,emod);
+    time = eratime(timeID,init);
     return emod,epar,ereg,time
+
 end
