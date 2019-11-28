@@ -108,7 +108,7 @@ function erastartup(actionID::Integer,datasetID::Integer,path::AbstractString)
     if !(actionID  in [1,2]); @error "$(Dates.now()) - Please input a valid action-type."  end;
     if !(datasetID in [1,2]); @error "$(Dates.now()) - Please input a valid dataset-type." end;
 
-    eroot = eraroot(actionID,path);
+    eroot = eraroot(path,actionID);
 
     if     datasetID == 1; eroot["era"]=eroot["era5"]; delete!(eroot,["era5","erai"]);
     elseif datasetID == 2; eroot["era"]=eroot["erai"]; delete!(eroot,["era5","erai"]);
