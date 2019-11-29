@@ -200,7 +200,7 @@ function eratmp2raw(efol::Dict)
 
     if lf > 0
         @info "$(Dates.now()) - Moving ERA reanalysis data from tmp to raw folder."
-        for ii = 1 : lf; mv(fnc[ii],joinpath(efol["raw"],fnc[ii])); end
+        for ii = 1 : lf; mv(fnc[ii],joinpath(efol["raw"],fnc[ii]),,force=true); end
         @info "$(Dates.now()) - Downloaded ERA reanalysis data has been moved raw folder."
     else
         @info "$(Dates.now()) - ERA reanalysis tmp folder is empty.  Nothing to shift."
