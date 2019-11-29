@@ -196,11 +196,11 @@ end
 function eratmp2raw(efol::Dict)
 
     @info "$(Dates.now()) - Retrieving list of downloaded data files in ERA reanalysis tmp folder."
-    fnc = glob("*.nc",efol["tmp"]); lf = size(fnc,1);
+    tfnc = glob("*.nc",efol["tmp"]); lf = size(tfnc,1); rfnc = replace.(tfnc,"tmp".=>"raw");
 
     if lf > 0
         @info "$(Dates.now()) - Moving ERA reanalysis data from tmp to raw folder."
-        for ii = 1 : lf; mv(fnc[ii],joinpath(efol["raw"],fnc[ii]),force=true); end
+        for ii = 1 : lf; mv(tfnc[ii],rfnc[ii],force=true); end
         @info "$(Dates.now()) - Downloaded ERA reanalysis data has been moved raw folder."
     else
         @info "$(Dates.now()) - ERA reanalysis tmp folder is empty.  Nothing to shift."
