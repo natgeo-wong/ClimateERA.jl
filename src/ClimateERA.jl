@@ -5,7 +5,7 @@ module ClimateERA
 
 ## Modules Used
 using Dates, DelimitedFiles, Printf, Statistics
-using NetCDF, Glob, JLD2, FileIO
+using NetCDF, NCDatasets, Glob, JLD2, FileIO
 using ClimateEasy
 
 ## Exporting the following functions:
