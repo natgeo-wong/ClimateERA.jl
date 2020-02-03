@@ -61,7 +61,7 @@ function eradscriptpprint(fID,modID::Integer,emod::Dict,epar::Dict)
     pre = epar["level"];
 
     if modID == 1; var = epar["era5"];
-        write(fID,"        \"variable\": $(var),\n");
+        write(fID,"        \"variable\": \"$(var)\",\n");
         if !(pre == "sfc"); write(fID,"        \"pressure_level\": $(pre),\n"); end
     else; var = epar["erai"];
         write(fID,"    \"param\": $(var),\n");
@@ -92,16 +92,13 @@ function eradscriptregion(fID,modID::Integer,emod::Dict,ereg::Dict)
 
 end
 
-function eradscriptdprint(fID,modID::Integer,epar::Dict,year::Integer)
+function eradscriptdprint(fID,modID::Integer,epar::Dict,year::Integer,month::Integer)
 
     parID = epar["ID"];
 
     if modID == 1
         write(fID,"        \"year\": \"$(year)\",\n");
-        write(fID,"        \"month\":[\n");
-        write(fID,"            \"01\",\"02\",\"03\",\"04\",\"05\",\"06\",\n");
-        write(fID,"            \"07\",\"08\",\"09\",\"10\",\"11\",\"12\"\n");
-        write(fID,"        ],\n");
+        write(fID,"        \"month\": \"$(@sprintf("%02d",month))\",\n");
         write(fID,"        \"day\":[\n");
         write(fID,"            \"01\",\"02\",\"03\",\"04\",\"05\",\"06\",\n");
         write(fID,"            \"07\",\"08\",\"09\",\"10\",\"11\",\"12\",\n");
@@ -130,15 +127,18 @@ function eradscriptdprint(fID,modID::Integer,epar::Dict,year::Integer)
 
 end
 
-function eradscripttarget(fID,modID::Integer,fname::AbstractString,year::Integer)
+function eradscripttarget(
+    fID,modID::Integer,fname::AbstractString,
+    year::Integer,month::Integer
+)
 
     if modID == 1
         write(fID,"        \"format\": \"netcdf\"\n");
         write(fID,"    },\n");
-        write(fID,"    \"$(fname)-$(year).nc\")\n\n");
+        write(fID,"    \"$(fname)-$(year)$(@sprintf("%02d",month)).nc\")\n\n");
     else
         write(fID,"    \"format\": \"netcdf\",\n");
-        write(fID,"    \"target\": \"$(fname)-$(year).nc\",\n");
+        write(fID,"    \"target\": \"$(fname)-$(year)$(@sprintf("%02d",month)).nc\",\n");
         write(fID,"})\n\n");
     end
 
@@ -152,13 +152,15 @@ function eradscript(emod::Dict,epar::Dict,ereg::Dict,time::Dict)
     fname,fID = eradscriptcreate(modID,emod,epar,ereg);
 
     for year = time["Begin"] : time["End"]
+        for month = 1 : 12
 
-        eradscriptheader(fID,modID,emod,epar);
-        eradscriptpprint(fID,modID,emod,epar);
-        eradscriptregion(fID,modID,emod,ereg);
-        eradscriptdprint(fID,modID,epar,year);
-        eradscripttarget(fID,modID,fname,year);
+            eradscriptheader(fID,modID,emod,epar);
+            eradscriptpprint(fID,modID,emod,epar);
+            eradscriptregion(fID,modID,emod,ereg);
+            eradscriptdprint(fID,modID,epar,year,month);
+            eradscripttarget(fID,modID,fname,year,month);
 
+        end
     end
 
     close(fID); return "$(fname).py"

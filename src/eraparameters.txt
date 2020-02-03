@@ -17,12 +17,12 @@ dpre,div,d,divergence,155.128,Divergence,s^{-1}
 dpre,vort,pv,potential_vorticity,60.128,Potential Vorticity,K m^{-2} kg^{-1} s^{-1}
 
 # Moist Variables
-msfc,prcp_tot,tp,total_precipitation,228.128,Total Precipitation,m
-msfc,prcp_conv,cp,convective_precipitation,143.128,Convective Precipitation,m
-msfc,prcp_ls,lsp,large_scale_precipitation,142.128,Large-Scale Precipitation,m
+msfc,prcp_tot,tp,total_precipitation,228.128,Total Precipitation,kg m^{-2}
+msfc,prcp_conv,cp,convective_precipitation,143.128,Convective Precipitation,kg m^{-2}
+msfc,prcp_ls,lsp,large_scale_precipitation,142.128,Large-Scale Precipitation,kg m^{-2}
 msfc,cld_tot,cc,total_cloud_cover,164.128,Total Cloud Cover,%%
-msfc,tcw,tcw,total_column_water,136.128,Total Column Water,m
-msfc,tcwv,tcwv,total_column_water_vapour,137.128,Total Column Water Vapour,m
+msfc,tcw,tcw,total_column_water,136.128,Total Column Water,kg m^{-2}
+msfc,tcwv,tcwv,total_column_water_vapour,137.128,Total Column Water Vapour,kg m^{-2}
 msfc,t_dew,d2m,2m_dewpoint_temperature,168.128,Surface Dewpoint Temperature,K
 msfc,cape,cape,convective_available_potential_energy,59.128,CAPE,J kg^{-1}
 mpre,rhum,r,relative_humidity,157.128,Relative Humidity,%%
