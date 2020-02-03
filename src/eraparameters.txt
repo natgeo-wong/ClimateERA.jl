@@ -28,6 +28,8 @@ msfc,cape,cape,convective_available_potential_energy,59.128,CAPE,J kg^{-1}
 mpre,rhum,r,relative_humidity,157.128,Relative Humidity,%%
 mpre,shum,q,specific_humidity,133.128,Specific Humidity,kg kg^{-1}
 mpre,cld_air,cc,fraction_of_cloud_cover,248.128,Cloud Cover Fraction,%%
+
+# Calculated Variables
 csfc,troph,NA,NA,NA,Tropopause Height,m
 csfc,gtrop,NA,NA,NA,Tropopause Height Gradient,m d^{-1}
 csfc,t_mwv,NA,NA,NA,Water Vapour Weighted Column Temperature,K
