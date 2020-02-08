@@ -68,7 +68,7 @@ end
 function eraregionload(regionID::Integer,init::Dict)
 
     @info "$(Dates.now()) - Loading available regions from the ClimateEasy.jl module."
-    reginfo = regionload(); eraregiondisp(regionID,reginfo,init);
+    reginfo = regioninfoload(); eraregiondisp(regionID,reginfo,init);
     regname = regionshortname(regionID,reginfo);
     regfull = regionfullname(regionID,reginfo)
     reggrid = regionbounds(regionID,reginfo)
