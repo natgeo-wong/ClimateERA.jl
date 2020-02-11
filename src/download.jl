@@ -92,20 +92,20 @@ function eradscriptregion(fID,modID::Integer,emod::Dict,ereg::Dict)
 
 end
 
-function eradscriptdprint(fID,modID::Integer,epar::Dict,year::Integer,month::Integer)
+function eradscriptdprint(fID,modID::Integer,epar::Dict,yr::Integer,mo::Integer)
 
-    parID = epar["ID"];
+    parID = epar["ID"]; ndy = daysinmonth(yr,mo); mo = mo2str(mo);
+    dystr = "\"25\""; for dy = 26 : ndy; dystr = string(dystr,",\"$(dy2str(dy))\""); end
 
     if modID == 1
-        write(fID,"        \"year\": \"$(year)\",\n");
-        write(fID,"        \"month\": \"$(@sprintf("%02d",month))\",\n");
+        write(fID,"        \"year\": \"$(yr)\",\n");
+        write(fID,"        \"month\": \"$(mo)\",\n");
         write(fID,"        \"day\":[\n");
         write(fID,"            \"01\",\"02\",\"03\",\"04\",\"05\",\"06\",\n");
         write(fID,"            \"07\",\"08\",\"09\",\"10\",\"11\",\"12\",\n");
         write(fID,"            \"13\",\"14\",\"15\",\"16\",\"17\",\"18\",\n");
         write(fID,"            \"19\",\"20\",\"21\",\"22\",\"23\",\"24\",\n");
-        write(fID,"            \"25\",\"26\",\"27\",\"28\",\"29\",\"30\",\n");
-        write(fID,"            \"31\"\n");
+        write(fID,"            $(dystr)\n");
         write(fID,"        ],\n");
         write(fID,"        \"time\":[\n");
         write(fID,"            \"00:00\",\"01:00\",\"02:00\",\"03:00\",\"04:00\",\n");
@@ -115,7 +115,7 @@ function eradscriptdprint(fID,modID::Integer,epar::Dict,year::Integer,month::Int
         write(fID,"            \"20:00\",\"21:00\",\"22:00\",\"23:00\"\n");
         write(fID,"        ],\n");
     else
-        write(fID,"    \"date\": \"$(year)-01-01/to/$(year)-12-31\",\n");
+        write(fID,"    \"date\": \"$(yr)-$(mo)-01/to/$(yr)-$(mo)-$(ndy)\",\n");
         if !(parID == "cape") && !(parID[1:4] == "prcp")
             write(fID,"    \"time\": \"00:00:00/06:00:00/12:00:00/18:00:00\",\n");
             write(fID,"    \"step\": \"0\",\n");
@@ -129,16 +129,17 @@ end
 
 function eradscripttarget(
     fID,modID::Integer,fname::AbstractString,
-    year::Integer,month::Integer
+    yr::Integer,mo::Integer
 )
 
+    fnc = joinpath("$(yr)","$(fname)-$(yr)$(@sprintf("%02d",mo)).nc")
     if modID == 1
         write(fID,"        \"format\": \"netcdf\"\n");
         write(fID,"    },\n");
-        write(fID,"    \"$(fname)-$(year)$(@sprintf("%02d",month)).nc\")\n\n");
+        write(fID,"    \"$(fnc)\")\n\n");
     else
         write(fID,"    \"format\": \"netcdf\",\n");
-        write(fID,"    \"target\": \"$(fname)-$(year)$(@sprintf("%02d",month)).nc\",\n");
+        write(fID,"    \"target\": \"$(fnc)\",\n");
         write(fID,"})\n\n");
     end
 
@@ -146,19 +147,19 @@ end
 
 # Master ClimateERA Download Scripts.end
 
-function eradscript(emod::Dict,epar::Dict,ereg::Dict,time::Dict)
+function eradscript(emod::Dict,epar::Dict,ereg::Dict,etime::Dict)
 
     modID = emod["moduleID"];
     fname,fID = eradscriptcreate(modID,emod,epar,ereg);
 
-    for year = time["Begin"] : time["End"]
-        for month = 1 : 12
+    for yr = etime["Begin"] : etime["End"]
+        for mo = 1 : 12
 
             eradscriptheader(fID,modID,emod,epar);
             eradscriptpprint(fID,modID,emod,epar);
             eradscriptregion(fID,modID,emod,ereg);
-            eradscriptdprint(fID,modID,epar,year,month);
-            eradscripttarget(fID,modID,fname,year,month);
+            eradscriptdprint(fID,modID,epar,yr,mo);
+            eradscripttarget(fID,modID,fname,yr,mo);
 
         end
     end
@@ -167,7 +168,7 @@ function eradscript(emod::Dict,epar::Dict,ereg::Dict,time::Dict)
 
 end
 
-function eradownload(emod::Dict,epar::Dict,ereg::Dict,time::Dict,eroot::Dict)
+function eradownload(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
     prelist = emod["levels"]; modID = emod["moduleID"];
 
@@ -175,37 +176,48 @@ function eradownload(emod::Dict,epar::Dict,ereg::Dict,time::Dict,eroot::Dict)
     else;          dwnsh = joinpath(@__DIR__,"./extra/eradi.sh");
     end
 
+    @info "$(Dates.now()) - Creating download scripts, directories and subdirectories for data downloading, temporary storage, analysis and image creation..."
+
     for preii in prelist; epar["level"] = preii;
 
-        @info "$(Dates.now()) - Creating download scripts and directories ..."
-        fname = eradscript(emod,epar,ereg,time);
-        fol = erafolder(emod,epar,ereg,eroot);
+        @debug "$(Dates.now()) - Creating download scripts and directories at pressure level preii ..."
+        fname = eradscript(emod,epar,ereg,etime);
+        efol  = erafolder(emod,epar,ereg,etime,eroot);
 
-        @info "$(Dates.now()) - Moving download scripts to tmp directory $(fol["tmp"]) ..."
-        mv(fname,joinpath(fol["tmp"],fname),force=true);
-        if isfile(dwnsh); cp(dwnsh,joinpath(fol["tmp"],"erad.sh"),force=true); end
+        @debug "$(Dates.now()) - Moving download scripts to tmp folder $(efol["tmp"]) ..."
+        mv(fname,joinpath(efol["tmp"],fname),force=true);
+        if isfile(dwnsh); cp(dwnsh,joinpath(efol["tmp"],"erad.sh"),force=true); end
 
     end
 
-    fol = erafolder(emod,epar,ereg,eroot);
+    efol = erafolder(emod,epar,ereg,etime,eroot);
     @info "$(Dates.now()) - Saving information and moving info files to directories ..."
     @save "info_par.jld2" emod epar; @save "info_reg.jld2" ereg;
-    mv("info_par.jld2",joinpath(fol["var"],"info_par.jld2"),force=true)
-    mv("info_reg.jld2",joinpath(fol["reg"],"info_reg.jld2"),force=true)
+    mv("info_par.jld2",joinpath(efol["var"],"info_par.jld2"),force=true)
+    mv("info_reg.jld2",joinpath(efol["reg"],"info_reg.jld2"),force=true)
 
 end
 
-function eratmp2raw(efol::Dict)
+function eratmp2raw(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
-    @info "$(Dates.now()) - Retrieving list of downloaded data files in ERA reanalysis tmp folder."
-    tfnc = glob("*.nc",efol["tmp"]); lf = size(tfnc,1); rfnc = replace.(tfnc,"tmp".=>"raw");
+    prelist = emod["levels"]; modID = emod["moduleID"];
 
-    if lf > 0
-        @info "$(Dates.now()) - Moving ERA reanalysis data from tmp to raw folder."
-        for ii = 1 : lf; mv(tfnc[ii],rfnc[ii],force=true); end
-        @info "$(Dates.now()) - Downloaded ERA reanalysis data has been moved raw folder."
-    else
-        @info "$(Dates.now()) - ERA reanalysis tmp folder is empty.  Nothing to shift."
+    for preii in prelist
+
+        efol = erafolder(emod,epar,ereg,etime,eroot,preii);
+
+        @info "$(Dates.now()) - Retrieving list of downloaded data files in ERA reanalysis tmp folder."
+        tfnc = glob("*.nc",efol["tmp"]); lf = size(tfnc,1);
+        rfnc = replace.(tfnc,"tmp".=>joinpath("raw","$(yr)"));
+
+        if lf > 0
+            @info "$(Dates.now()) - Moving ERA reanalysis data from tmp to raw folder."
+            for ii = 1 : lf; mv(tfnc[ii],rfnc[ii],force=true); end
+            @info "$(Dates.now()) - Downloaded ERA reanalysis data has been moved raw folder."
+        else
+            @info "$(Dates.now()) - ERA reanalysis tmp folder is empty.  Nothing to shift."
+        end
+
     end
 
 end

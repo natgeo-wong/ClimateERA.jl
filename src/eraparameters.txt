@@ -1,4 +1,4 @@
-##(1)Mode (2)ID (3)IDnc (4)era5 (5)erai (6)Full (7)Units
+#(1)Mode,(2)ID,(3)IDnc,(4)era5,(5)erai,(6)Full,(7)Units
 
 # Dry Variables
 dsfc,u_sfc,u10,10m_u_component_of_wind,165.128,Surface u-Wind,m s^{-1}
@@ -42,6 +42,7 @@ cpre,flux_uT,NA,NA,NA,Zonal Heat Flux,K m s^{-1}
 cpre,flux_vT,NA,NA,NA,Poleward Heat Flux,K m s^{-1}
 cpre,flux_uq,NA,NA,NA,Zonal Moisture Flux,K m s^{-1}
 cpre,flux_vq,NA,NA,NA,Poleward Moisture Flux,K m s^{-1}
+cpre,chi,NA,NA,NA,Velocity Potential,s^{-1}
 
 #For GNSS Analysis
 gnss,t_mwv_DPA,NA,NA,NA,Water Vapour Weighted Column Temperature,K

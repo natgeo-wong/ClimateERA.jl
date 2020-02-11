@@ -123,124 +123,222 @@ function erastartup(actionID::Integer,datasetID::Integer,path::AbstractString)
 
 end
 
-function erafolder(emod::Dict,epar::Dict,ereg::Dict,eroot::Dict)
+# ClimateERA Folders
 
-    pre = epar["level"];
+function eraregfolder(ereg::Dict,eroot::Dict)
 
-    folreg = joinpath(eroot["era"],ereg["region"]);
-    if !isdir(folreg)
-        @info "$(Dates.now()) - Creating folder for the $(ereg["name"]) region at $(folreg) ..."
-        mkpath(folreg);
-    else; @info "$(Dates.now()) - The folder for the $(ereg["name"]) region $(folreg) exists."
-    end
+    fol = joinpath(eroot["era"],ereg["region"]);
 
-    folvar = joinpath(eroot["era"],ereg["region"],epar["ID"]);
-    if !isdir(folvar)
-        @info "$(Dates.now()) - Creating variable folder for the $(epar["name"]) parameter at $(folvar) ..."
-        mkpath(folvar);
-    else; @info "$(Dates.now()) - The folder for the $(epar["name"]) parameter $(folvar) exists."
+    if !isdir(fol)
+        @info "$(Dates.now()) - The folder for the $(ereg["name"]) region at does not exist.  Creating now ..."
+        mkpath(fol);
     end
 
-    folraw = joinpath(folvar,"raw"); foltmp = joinpath(folvar,"tmp");
-    folana = joinpath(folvar,"ana"); folimg = joinpath(folvar,"img");
-    if !(pre == "sfc"); phPa = "$(epar["ID"])-$(pre)hPa"
-        folraw = joinpath(folraw,phPa); foltmp = joinpath(foltmp,phPa);
-        folana = joinpath(folana,phPa); folimg = joinpath(folimg,phPa);
-    end
-
-    @info "$(Dates.now()) - Creating relevant subdirectories for data downloading, temporary storage, analysis and image creation."
-    if !isdir(folraw);
-        @info "$(Dates.now()) - Creating folder for raw data: $(folraw)"; mkpath(folraw)
-    end
-    if !isdir(folana);
-        @info "$(Dates.now()) - Creating folder for data analysis ouput: $(folana)"; mkpath(folana)
-    end
-    if !isdir(folimg);
-        @info "$(Dates.now()) - Creating folder for data images: $(folimg)"; mkpath(folimg)
-    end
-    if emod["actionID"] == 1
-        if !isdir(foltmp);
-            @info "$(Dates.now()) - Creating folder for temporary raw data storage: $(foltmp)";
-            mkpath(foltmp)
-        end
-    end
-
-    return Dict("reg"=>folreg,"var"=>folvar,"raw"=>folraw,
-                "tmp"=>foltmp,"ana"=>folana,"img"=>folimg);
+    return fol
 
 end
 
-function erafolder(emod::Dict,epar::Dict,ereg::Dict,eroot::Dict,pre)
+function eravarfolder(epar::Dict,ereg::Dict,eroot::Dict)
 
-    folreg = joinpath(eroot["era"],ereg["region"]);
-    if !isdir(folreg)
-        @info "$(Dates.now()) - Creating folder for the $(ereg["name"]) region at $(folreg) ..."
-        mkpath(folreg);
-    else; @info "$(Dates.now()) - The folder for the $(ereg["name"]) region $(folreg) exists."
-    end
+    fol = joinpath(eroot["era"],ereg["region"],epar["ID"]);
 
-    folvar = joinpath(eroot["era"],ereg["region"],epar["ID"]);
-    if !isdir(folvar)
-        @info "$(Dates.now()) - Creating variable folder for the $(epar["name"]) parameter at $(folvar) ..."
-        mkpath(folvar);
-    else; @info "$(Dates.now()) - The folder for the $(epar["name"]) parameter $(folvar) exists."
+    if !isdir(fol)
+        @info "$(Dates.now()) - The folder for the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
+        mkpath(fol);
     end
 
-    folraw = joinpath(folvar,"raw"); foltmp = joinpath(folvar,"tmp");
-    folana = joinpath(folvar,"ana"); folimg = joinpath(folvar,"img");
-    if !(pre == "sfc"); phPa = "$(epar["ID"])-$(pre)hPa"
-        folraw = joinpath(folraw,phPa); foltmp = joinpath(foltmp,phPa);
-        folana = joinpath(folana,phPa); folimg = joinpath(folimg,phPa);
-    end
-
-    @info "$(Dates.now()) - Creating relevant subdirectories for data downloading, temporary storage, analysis and image creation."
-    if !isdir(folraw);
-        @info "$(Dates.now()) - Creating folder for raw data: $(folraw)"; mkpath(folraw)
-    end
-    if !isdir(folana);
-        @info "$(Dates.now()) - Creating folder for data analysis ouput: $(folana)"; mkpath(folana)
-    end
-    if !isdir(folimg);
-        @info "$(Dates.now()) - Creating folder for data images: $(folimg)"; mkpath(folimg)
-    end
-    if emod["actionID"] == 1
-        if !isdir(foltmp);
-            @info "$(Dates.now()) - Creating folder for temporary raw data storage: $(foltmp)";
-            mkpath(foltmp)
-        end
-    end
-
-    return Dict("reg"=>folreg,"var"=>folvar,"raw"=>folraw,
-                "tmp"=>foltmp,"ana"=>folana,"img"=>folimg);
+    return fol
 
 end
 
-function erancread(ncname::AbstractString,epar::Dict;erastart::Array=[],eracount::Array=[])
+function erarawfolder(epar::Dict,ereg::Dict,eroot::Dict)
 
-    if isempty(erastart) & isempty(eracount)
+    if epar["level"] != "sfc"; phPa = "$(epar["ID"])-$(epar["level"])hPa"
 
-        try;   data = ncread(ncname,epar["IC"]);
-        catch; data = ncread(ncname,epar["ICnc"]);
-        end
-
-    elseif !isempty(erastart) & isempty(eracount)
-
-        try;   data = ncread(ncname,epar["IC"],start=erastart);
-        catch; data = ncread(ncname,epar["ICnc"],start=erastart);
-        end
-
-    elseif isempty(erastart) & !isempty(eracount)
-
-        try;   data = ncread(ncname,epar["IC"],count=eracount);
-        catch; data = ncread(ncname,epar["ICnc"],count=eracount);
+        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],phPa,"raw");
+        if !isdir(fol)
+            @info "$(Dates.now()) - The folder for raw data of the $(epar["name"]) parameter at pressure level $(epar["level"])hPa in the $(ereg["name"]) region does not exist.  Creating now ..."
+            mkpath(fol);
         end
 
     else
 
-        try;   data = ncread(ncname,epar["IC"],start=erastart,count=eracount);
-        catch; data = ncread(ncname,epar["ICnc"],start=erastart,count=eracount);
+        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"raw");
+        if !isdir(fol)
+            @info "$(Dates.now()) - The folder for raw data of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
+            mkpath(fol);
         end
 
     end
+
+    return fol
+
+end
+
+function eraanafolder(epar::Dict,ereg::Dict,eroot::Dict)
+
+    if epar["level"] != "sfc"; phPa = "$(epar["ID"])-$(epar["level"])hPa"
+
+        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],phPa,"ana");
+        if !isdir(fol)
+            @info "$(Dates.now()) - The folder for analyzed data of the $(epar["name"]) parameter at pressure level $(epar["level"])hPa in the $(ereg["name"]) region does not exist.  Creating now ..."
+            mkpath(fol);
+        end
+
+    else
+
+        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"ana");
+        if !isdir(fol)
+            @info "$(Dates.now()) - The folder for analyzed data of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
+            mkpath(fol);
+        end
+
+    end
+
+    return fol
+
+end
+
+function eraimgfolder(epar::Dict,ereg::Dict,eroot::Dict)
+
+    if epar["level"] != "sfc"; phPa = "$(epar["ID"])-$(epar["level"])hPa"
+
+        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],phPa,"img");
+        if !isdir(fol)
+            @info "$(Dates.now()) - The folder for images of the $(epar["name"]) parameter at pressure level $(epar["level"])hPa in the $(ereg["name"]) region does not exist.  Creating now ..."
+            mkpath(fol);
+        end
+
+    else
+
+        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"img");
+        if !isdir(fol)
+            @info "$(Dates.now()) - The folder for images of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
+            mkpath(fol);
+        end
+
+    end
+
+    return fol
+
+end
+
+function erafolder(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
+
+    yrbeg = etime["Begin"]; yrend = etime["End"];
+
+    folreg = joinpath(eroot["era"],ereg["region"]);
+    if !isdir(folreg)
+        @debug "$(Dates.now()) - Creating folder for the $(ereg["name"]) region at $(folreg) ..."
+        mkpath(folreg);
+    else; @debug "$(Dates.now()) - The folder for the $(ereg["name"]) region $(folreg) exists."
+    end
+
+    folvar = joinpath(eroot["era"],ereg["region"],epar["ID"]);
+    if !isdir(folvar)
+        @debug "$(Dates.now()) - Creating variable folder for the $(epar["name"]) parameter at $(folvar) ..."
+        mkpath(folvar);
+    else; @debug "$(Dates.now()) - The folder for the $(epar["name"]) parameter $(folvar) exists."
+    end
+
+    if epar["level"] != "sfc"
+        folvar = joinpath(folvar,"$(epar["ID"])-$(epar["level"])hPa")
+    end
+    folraw = joinpath(folvar,"raw"); foltmp = joinpath(folvar,"tmp");
+    folana = joinpath(folvar,"ana"); folimg = joinpath(folvar,"img");
+
+    @debug "$(Dates.now()) - Creating relevant subdirectories for data downloading, temporary storage, analysis and image creation."
+    if !isdir(folraw);
+        @debug "$(Dates.now()) - Creating folder for downloaded raw data: $(folraw)";
+        for yr = yrbeg : yrend; mkpath(joinpath(folraw,"$(yr)")); end
+    end
+    if !isdir(folana);
+        @debug "$(Dates.now()) - Creating folder for data analysis ouput: $(folana)"; mkpath(folana)
+    end
+    if !isdir(folimg);
+        @debug "$(Dates.now()) - Creating folder for data images: $(folimg)"; mkpath(folimg)
+    end
+    if emod["actionID"] == 1 && !isdir(foltmp);
+        @debug "$(Dates.now()) - Creating folder for temporary data storage: $(foltmp)";
+        mkpath(foltmp)
+    end
+
+    return Dict("reg"=>folreg,"var"=>folvar,"raw"=>folraw,
+                "tmp"=>foltmp,"ana"=>folana,"img"=>folimg);
+
+end
+
+function erafolder(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict,pre::Integer)
+
+    yrbeg = etime["Begin"]; yrend = etime["End"];
+
+    folreg = joinpath(eroot["era"],ereg["region"]);
+    if !isdir(folreg)
+        @debug "$(Dates.now()) - Creating folder for the $(ereg["name"]) region at $(folreg) ..."
+        mkpath(folreg);
+    else; @debug "$(Dates.now()) - The folder for the $(ereg["name"]) region $(folreg) exists."
+    end
+
+    folvar = joinpath(eroot["era"],ereg["region"],epar["ID"]);
+    if !isdir(folvar)
+        @debug "$(Dates.now()) - Creating variable folder for the $(epar["name"]) parameter at $(folvar) ..."
+        mkpath(folvar);
+    else; @debug "$(Dates.now()) - The folder for the $(epar["name"]) parameter $(folvar) exists."
+    end
+
+    if pre != "sfc"; folvar = joinpath(folvar,"$(epar["ID"])-$(pre)hPa"); end
+    folraw = joinpath(folvar,"raw"); foltmp = joinpath(folvar,"tmp");
+    folana = joinpath(folvar,"ana"); folimg = joinpath(folvar,"img");
+
+    @info "$(Dates.now()) - Creating relevant subdirectories for data downloading, temporary storage, analysis and image creation."
+    if !isdir(folraw);
+        @debug "$(Dates.now()) - Creating folder for downloaded raw data: $(folraw)";
+        for yr = yrbeg : yrend; mkpath(joinpath(folraw,"$(yr)")); end
+    end
+    if !isdir(folana);
+        @debug "$(Dates.now()) - Creating folder for data analysis ouput: $(folana)"; mkpath(folana)
+    end
+    if !isdir(folimg);
+        @debug "$(Dates.now()) - Creating folder for data images: $(folimg)"; mkpath(folimg)
+    end
+    if emod["actionID"] == 1 && !isdir(foltmp);
+        @debug "$(Dates.now()) - Creating folder for temporary data storage: $(foltmp)";
+        mkpath(foltmp)
+    end
+
+    return Dict("reg"=>folreg,"var"=>folvar,"raw"=>folraw,
+                "tmp"=>foltmp,"ana"=>folana,"img"=>folimg);
+
+end
+
+# ClimateERA NetCDF Names
+
+function erarawname(emod::Dict,epar::Dict,ereg::Dict,date::TimeType)
+
+    if !(epar["level"] == "sfc")
+          fname = "$(emod["prefix"])-$(ereg["region"])-$(epar["ID"])-$(epar["level"])hPa";
+    else; fname = "$(emod["prefix"])-$(ereg["region"])-$(epar["ID"])-$(epar["level"])";
+    end
+
+    return "$(fname)-$(yrmo2str(date)).nc"
+
+end
+
+function eraananame(emod::Dict,epar::Dict,ereg::Dict,date::TimeType)
+
+    prefix = replace(emod["prefix"],"era"=>"eraa")
+
+    if !(epar["level"] == "sfc")
+          fname = "$(prefix)-$(ereg["region"])-$(epar["ID"])-$(epar["level"])hPa";
+    else; fname = "$(prefix)-$(ereg["region"])-$(epar["ID"])-$(epar["level"])";
+    end
+
+    return "$(fname)-$(yr2str(date)).nc"
+
+end
+
+function erancread(ncname::AbstractString,epar::Dict)
+
+    ds = Dataset(ncname); try; return ds[epar["ID"]]; catch; return ds[epar["IDnc"]]; end
 
 end

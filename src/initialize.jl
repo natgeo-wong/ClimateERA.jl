@@ -77,7 +77,7 @@ function eraregionload(regionID::Integer,init::Dict)
     else;             regglbe = false;
     end
 
-    @info "$(Dates.now()) - Storing region properties and information for $(regfull) ..."
+    @info "$(Dates.now()) - Storing region properties and information for the $(regfull) region ..."
     return Dict("region"=>regname,"grid"=>reggrid,"name"=>regfull,"isglobe"=>regglbe)
 
 end
@@ -103,22 +103,22 @@ function eraregiondisp(regionID::Integer,reginfo::AbstractArray,init::Dict)
 
 end
 
-function eraregionvec(reg::Dict,init::Dict)
+function eraregionvec(ereg::Dict,init::Dict)
 
     @info "$(Dates.now()) - Determining spacing between grid points in the region ..."
-    if     reg["isglobe"] == true && init["datasetID"] == 1; step = 1.0;
-    elseif reg["isglobe"] == true && init["datasetID"] == 2; step = 0.75;
+    if     ereg["isglobe"] == true && init["datasetID"] == 1; step = 1.0;
+    elseif ereg["isglobe"] == true && init["datasetID"] == 2; step = 0.75;
     else;  step = 0.25;
     end
-    reg["step"] = step
+    ereg["step"] = step
 
-    N,S,E,W = reg["grid"];
+    N,S,E,W = ereg["grid"];
     @info "$(Dates.now()) - Creating longitude and latitude vectors for the region ..."
     lon = convert(Array,W:step:E);  nlon = size(lon,1);
     lat = convert(Array,N:-step:S); nlat = size(lat,1);
-    reg["lon"] = lon; reg["lat"] = lat; reg["size"] = [nlon,nlat];
+    ereg["lon"] = lon; ereg["lat"] = lat; ereg["size"] = [nlon,nlat];
 
-    return reg
+    return ereg
 
 end
 
@@ -214,16 +214,18 @@ function eratime(timeID::Array,init::Dict)
 end
 
 function eraregion(regionID::Integer,init::Dict)
-    reg = eraregionload(regionID,init); reg = eraregionvec(reg,init); return reg;
+    return eraregionvec(eraregionload(regionID,init),init)
 end
 
-function erainitialize(moduleID::Integer,parameterID::Integer,regionID::Integer,timeID::Integer,
-                       init::Dict)
+function erainitialize(
+    moduleID::Integer, parameterID::Integer,
+    regionID::Integer, timeID::Integer,
+    init::Dict
+)
 
-    emod = eramodule(moduleID,init);
-    epar = eraparameters(parameterID,emod);
-    ereg = eraregion(regionID,emod);
-    time = eratime(timeID,init);
-    return emod,epar,ereg,time
+    emod = eramodule(moduleID,init); epar  = eraparameters(parameterID,emod);
+    ereg = eraregion(regionID,emod); etime = eratime(timeID,init);
+
+    return emod,epar,ereg,etime
 
 end

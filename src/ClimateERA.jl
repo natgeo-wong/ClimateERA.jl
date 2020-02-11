@@ -12,14 +12,14 @@ using ClimateEasy
 export
         eramodule, eraparameters, erapressure, eratime, eraregion,
         erastartup, erainitialize, eroot, erancread,
-        erafolder, eratmp2raw, eradownload
+        erafolder, eratmp2raw, eradownload, eraanalysis
 
 ## Including other files in the module
 
-include("startup.jl")
+include("frontend.jl")
 include("initialize.jl")
 include("download.jl")
+include("analysis.jl")
 #include("calculate.jl")
-#include("analysis.jl")
 
 end # module
