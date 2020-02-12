@@ -132,7 +132,7 @@ function eradscripttarget(
     yr::Integer,mo::Integer
 )
 
-    fnc = joinpath("..","raw","$(yr)","$(fname)-$(yr)$(mo2str(mo)).nc")
+    fnc = joinpath("..","raw","$(yr)","$(fname)-$(yrmo2str(yr,mo)).nc")
     if modID == 1
         write(fID,"        \"format\": \"netcdf\"\n");
         write(fID,"    },\n");

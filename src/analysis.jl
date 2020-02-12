@@ -101,9 +101,7 @@ function eraanasave(
     data::Array{Array{Float32,4},1},
     zdata::Array{Array{Float32,3},1},
     mdata::Array{Array{Float32,3},1},
-    grid::Vector{<:Any},
-    productID::AbstractString, varname::AbstractString, yr::Integer,
-    path::AbstractString, region::AbstractString, info::Dict
+    attr::Dict, emod::Dict, epar::Dict, ereg::Dict, eroot::Dict
 )
 
     @info "$(Dates.now()) - Saving analysed $(emod["dataset"]) $(epar["name"]) data in $(regionfullname(region)) for the year $yr ..."
