@@ -132,7 +132,7 @@ function eradscripttarget(
     yr::Integer,mo::Integer
 )
 
-    fnc = joinpath("$(yr)","$(fname)-$(yr)$(@sprintf("%02d",mo)).nc")
+    fnc = joinpath("..","raw","$(yr)","$(fname)-$(yr)$(mo2str(mo)).nc")
     if modID == 1
         write(fID,"        \"format\": \"netcdf\"\n");
         write(fID,"    },\n");
@@ -207,7 +207,7 @@ function eratmp2raw(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
         efol = erafolder(emod,epar,ereg,etime,eroot,preii);
 
         @info "$(Dates.now()) - Retrieving list of downloaded data files in ERA reanalysis tmp folder."
-        tfnc = glob("*.nc",efol["tmp"]); lf = size(tfnc,1);
+        tfnc = glob("-$(yr)*.nc",efol["tmp"]); lf = size(tfnc,1);
         rfnc = replace.(tfnc,"tmp".=>joinpath("raw","$(yr)"));
 
         if lf > 0
