@@ -45,7 +45,7 @@ function eradscriptheader(fID,modID::Integer,emod::Dict,epar::Dict)
         write(fID,"    \"dataset\": \"interim\",\n");
         write(fID,"    \"stream\": \"oper\",\n");
 
-        if !(parID == "cape") && !(parID[1:4] == "prcp")
+        if !occursin(["cape","prcp"],parID)
               write(fID,"    \"type\": \"an\",\n");
         else; write(fID,"    \"type\": \"fc\",\n");
         end
