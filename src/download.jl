@@ -172,8 +172,15 @@ function eradownload(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
     prelist = emod["levels"]; dataID = emod["moduleID"];
 
-    if dataID == 1; dwnsh = joinpath(@__DIR__,"./extra/era5_eg.sh");
-    else;          dwnsh = joinpath(@__DIR__,"./extra/erai_eg.sh");
+    if dataID == 1; dwnsh = joinpath(@__DIR__,"./extra/erad5.sh");
+    else;           dwnsh = joinpath(@__DIR__,"./extra/eradi.sh");
+    end
+
+    if !isfile(dwnsh);
+        if dataID == 1; template = joinpath(@__DIR__,"./extra/erad5_eg.sh");
+        else;           template = joinpath(@__DIR__,"./extra/eradi_eg.sh");
+        end
+        cp(template,dwnsh,force=true);
     end
 
     @info "$(Dates.now()) - Creating download scripts, directories and subdirectories for data downloading, temporary storage, analysis and image creation..."
@@ -186,7 +193,7 @@ function eradownload(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
         @debug "$(Dates.now()) - Moving download scripts to tmp folder $(efol["tmp"]) ..."
         mv(fname,joinpath(efol["tmp"],fname),force=true);
-        if isfile(dwnsh); cp(dwnsh,joinpath(efol["tmp"],"erad.sh"),force=true); end
+        cp(dwnsh,joinpath(efol["tmp"],"erad.sh"),force=true);
 
     end
 

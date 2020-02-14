@@ -1,4 +1,5 @@
 .DS_Store
 /Manifest.toml
 /dev/
-/src/extra/erad.sh
+/src/extra/erad5.sh
+/src/extra/eradi.sh
