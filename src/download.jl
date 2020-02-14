@@ -36,7 +36,7 @@ function eradscriptheader(fID,dataID::Integer,emod::Dict,epar::Dict)
     parID = epar["ID"];
 
     if dataID == 1
-        write(fID,"c.retrieve($(emod["moduleprint"]),\n");
+        write(fID,"c.retrieve(\"$(emod["moduleprint"])\",\n");
         write(fID,"    {\n");
         write(fID,"        \"product_type\": \"reanalysis\",\n");
     else
