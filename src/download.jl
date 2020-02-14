@@ -172,8 +172,8 @@ function eradownload(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
     prelist = emod["levels"]; dataID = emod["moduleID"];
 
-    if dataID == 1; dwnsh = joinpath(@__DIR__,"./extra/erad5.sh");
-    else;          dwnsh = joinpath(@__DIR__,"./extra/eradi.sh");
+    if dataID == 1; dwnsh = joinpath(@__DIR__,"./extra/era5_eg.sh");
+    else;          dwnsh = joinpath(@__DIR__,"./extra/erai_eg.sh");
     end
 
     @info "$(Dates.now()) - Creating download scripts, directories and subdirectories for data downloading, temporary storage, analysis and image creation..."

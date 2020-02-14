@@ -4,8 +4,8 @@
 #SBATCH -N 1 # number of nodes
 #SBATCH -n 1 # number of cores
 #SBATCH --mem-per-cpu=500 # memory pool for all cores
-#SBATCH -t 0-5:00 # time (D-HH:MM)
-#SBATCH -J "CliERA_dwn"
+#SBATCH -t 1-00:00 # time (D-HH:MM)
+#SBATCH -J "CliERA5_dwn"
 #SBATCH --mail-user=nathanaelwong@fas.harvard.edu
 #SBATCH --mail-type=ALL
 #SBATCH -o cliERA_dwn.%j.out # STDOUT
