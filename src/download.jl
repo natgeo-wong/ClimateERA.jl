@@ -8,7 +8,7 @@ data, which includes the following functionalities:
 
 # Creation of ClimateERA Download Scripts
 
-function eradscriptcreate(modID::Integer,emod::Dict,epar::Dict,ereg::Dict)
+function eradscriptcreate(dataID::Integer,emod::Dict,epar::Dict,ereg::Dict)
 
     if !(epar["level"] == "sfc")
           fname = "$(emod["prefix"])-$(ereg["region"])-$(epar["ID"])-$(epar["level"])hPa";
@@ -19,7 +19,7 @@ function eradscriptcreate(modID::Integer,emod::Dict,epar::Dict,ereg::Dict)
 
     write(fID,"#!/usr/bin/env python\n");
 
-    if modID == 1
+    if dataID == 1
         write(fID,"import cdsapi\n");
         write(fID,"c = cdsapi.Client()\n\n");
     else
@@ -31,11 +31,11 @@ function eradscriptcreate(modID::Integer,emod::Dict,epar::Dict,ereg::Dict)
 
 end
 
-function eradscriptheader(fID,modID::Integer,emod::Dict,epar::Dict)
+function eradscriptheader(fID,dataID::Integer,emod::Dict,epar::Dict)
 
     parID = epar["ID"];
 
-    if modID == 1
+    if dataID == 1
         write(fID,"c.retrieve($(emod["moduleprint"]),\n");
         write(fID,"    {\n");
         write(fID,"        \"product_type\": \"reanalysis\",\n");
@@ -56,11 +56,11 @@ function eradscriptheader(fID,modID::Integer,emod::Dict,epar::Dict)
 
 end
 
-function eradscriptpprint(fID,modID::Integer,emod::Dict,epar::Dict)
+function eradscriptpprint(fID,dataID::Integer,emod::Dict,epar::Dict)
 
     pre = epar["level"];
 
-    if modID == 1; var = epar["era5"];
+    if dataID == 1; var = epar["era5"];
         write(fID,"        \"variable\": \"$(var)\",\n");
         if !(pre == "sfc"); write(fID,"        \"pressure_level\": $(pre),\n"); end
     else; var = epar["erai"];
@@ -75,10 +75,10 @@ function eradscriptpprint(fID,modID::Integer,emod::Dict,epar::Dict)
 
 end
 
-function eradscriptregion(fID,modID::Integer,emod::Dict,ereg::Dict)
+function eradscriptregion(fID,dataID::Integer,emod::Dict,ereg::Dict)
 
     estep = ereg["step"];
-    if modID == 1
+    if dataID == 1
         if !ereg["isglobe"]; N,S,E,W = ereg["grid"];
               write(fID,"        \"area\": [$(N),$(W),$(S),$(E)],\n");
         end
@@ -92,12 +92,12 @@ function eradscriptregion(fID,modID::Integer,emod::Dict,ereg::Dict)
 
 end
 
-function eradscriptdprint(fID,modID::Integer,epar::Dict,yr::Integer,mo::Integer)
+function eradscriptdprint(fID,dataID::Integer,epar::Dict,yr::Integer,mo::Integer)
 
     parID = epar["ID"]; ndy = daysinmonth(yr,mo); mo = mo2str(mo);
     dystr = "\"25\""; for dy = 26 : ndy; dystr = string(dystr,",\"$(dy2str(dy))\""); end
 
-    if modID == 1
+    if dataID == 1
         write(fID,"        \"year\": \"$(yr)\",\n");
         write(fID,"        \"month\": \"$(mo)\",\n");
         write(fID,"        \"day\":[\n");
@@ -128,12 +128,12 @@ function eradscriptdprint(fID,modID::Integer,epar::Dict,yr::Integer,mo::Integer)
 end
 
 function eradscripttarget(
-    fID,modID::Integer,fname::AbstractString,
+    fID,dataID::Integer,fname::AbstractString,
     yr::Integer,mo::Integer
 )
 
     fnc = joinpath("..","raw","$(yr)","$(fname)-$(yrmo2str(yr,mo)).nc")
-    if modID == 1
+    if dataID == 1
         write(fID,"        \"format\": \"netcdf\"\n");
         write(fID,"    },\n");
         write(fID,"    \"$(fnc)\")\n\n");
@@ -149,17 +149,17 @@ end
 
 function eradscript(emod::Dict,epar::Dict,ereg::Dict,etime::Dict)
 
-    modID = emod["moduleID"];
-    fname,fID = eradscriptcreate(modID,emod,epar,ereg);
+    dataID = emod["datasetID"];
+    fname,fID = eradscriptcreate(dataID,emod,epar,ereg);
 
     for yr = etime["Begin"] : etime["End"]
         for mo = 1 : 12
 
-            eradscriptheader(fID,modID,emod,epar);
-            eradscriptpprint(fID,modID,emod,epar);
-            eradscriptregion(fID,modID,emod,ereg);
-            eradscriptdprint(fID,modID,epar,yr,mo);
-            eradscripttarget(fID,modID,fname,yr,mo);
+            eradscriptheader(fID,dataID,emod,epar);
+            eradscriptpprint(fID,dataID,emod,epar);
+            eradscriptregion(fID,dataID,emod,ereg);
+            eradscriptdprint(fID,dataID,epar,yr,mo);
+            eradscripttarget(fID,dataID,fname,yr,mo);
 
         end
     end
@@ -170,9 +170,9 @@ end
 
 function eradownload(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
-    prelist = emod["levels"]; modID = emod["moduleID"];
+    prelist = emod["levels"]; dataID = emod["moduleID"];
 
-    if modID == 1; dwnsh = joinpath(@__DIR__,"./extra/erad5.sh");
+    if dataID == 1; dwnsh = joinpath(@__DIR__,"./extra/erad5.sh");
     else;          dwnsh = joinpath(@__DIR__,"./extra/eradi.sh");
     end
 
@@ -200,7 +200,7 @@ end
 
 function eratmp2raw(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
-    prelist = emod["levels"]; modID = emod["moduleID"];
+    prelist = emod["levels"]; dataID = emod["datasetID"];
 
     for preii in prelist
 
