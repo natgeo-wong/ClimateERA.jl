@@ -6,7 +6,7 @@
 #SBATCH --mem-per-cpu=500 # memory pool for all cores
 #SBATCH -t 1-00:00 # time (D-HH:MM)
 #SBATCH -J "CliERA5_dwn"
-#SBATCH --mail-user=nathanaelwong@fas.harvard.edu
+#SBATCH --mail-user=useremail@serverhost.com
 #SBATCH --mail-type=ALL
 #SBATCH -o cliERA_dwn.%j.out # STDOUT
 #SBATCH -e cliERA_dwn.%j.err # STDERR
