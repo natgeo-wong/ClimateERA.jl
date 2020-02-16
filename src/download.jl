@@ -203,7 +203,7 @@ function eradownload(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
     efol = erafolder(emod,epar,ereg,etime,eroot);
     @info "$(Dates.now()) - Saving region information into efol[\"reg\"] directory ..."
-    @save "info_par.jld2" emod epar; @save "info_reg.jld2" ereg;
+    @save "info_reg.jld2" ereg;
     mv("info_reg.jld2",joinpath(efol["reg"],"info_reg.jld2"),force=true)
 
 end
