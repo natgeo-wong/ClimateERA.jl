@@ -48,27 +48,27 @@ function eraanalysis(
         raw  = vds[:].*1.0; raw[ismissing.(raw)] .= NaN;
         raw  = reshape(Float32.(raw),nlon,nlat,(nt-1),ndy);
 
-        @debug "$(Dates.now()) - Extracting monthly diurnal climatological information ..."
+        @debug "$(Dates.now()) - Extracting hourly information for each month ..."
         davg[:,:,1:nt-1,mo] = mean(raw,dims=4);
         dstd[:,:,1:nt-1,mo] = std(raw,dims=4);
         dmax[:,:,1:nt-1,mo] = maximum(raw,dims=4);
         dmin[:,:,1:nt-1,mo] = minimum(raw,dims=4);
 
-        @debug "$(Dates.now()) - Extracting monthly averaged climatological information ..."
-        davg[:,:,nt,mo] = mean(davg[:,:,1:nt-1,mo],dims=3);
-        dstd[:,:,nt,mo] = mean(dstd[:,:,1:nt-1,mo],dims=3);
-        dmax[:,:,nt,mo] = maximum(dmax[:,:,1:nt-1,mo],dims=3);
-        dmin[:,:,nt,mo] = minimum(dmin[:,:,1:nt-1,mo],dims=3);
-
         @debug "$(Dates.now()) - Permuting days and hours dimensions ..."
-        raw = permutedims(raw,(1,2,4,3));
-        tmp = maximum(raw,dims=4)/2 - minimum(raw,dims=4)/2;
+        raw = permutedims(raw,(1,2,4,3)); dmn = mean(raw,dims=4);
+        drg = maximum(raw,dims=4)/2 - minimum(raw,dims=4)/2;
 
-        @debug "$(Dates.now()) - Extracting monthly diurnal variability information ..."
-        davg[:,:,nt+1,mo] = mean(tmp,dims=3);
-        dstd[:,:,nt+1,mo] = std(tmp,dims=3);
-        dmax[:,:,nt+1,mo] = maximum(tmp,dims=3);
-        dmin[:,:,nt+1,mo] = minimum(tmp,dims=3);
+        @debug "$(Dates.now()) - Extracting information on monthly climatology ..."
+        davg[:,:,nt,mo] = mean(dmn,dims=3);
+        dstd[:,:,nt,mo] = std(dmn,dims=3);
+        dmax[:,:,nt,mo] = maximum(dmn,dims=3);
+        dmin[:,:,nt,mo] = minimum(dmn,dims=3);
+
+        @debug "$(Dates.now()) - Extractinginformation on monthly diurnal variability ..."
+        davg[:,:,nt+1,mo] = mean(drg,dims=3);
+        dstd[:,:,nt+1,mo] = std(drg,dims=3);
+        dmax[:,:,nt+1,mo] = maximum(drg,dims=3);
+        dmin[:,:,nt+1,mo] = minimum(drg,dims=3);
 
     end
 
@@ -78,6 +78,7 @@ function eraanalysis(
     dmax[:,:,:,end] = maximum(dmax[:,:,:,1:12],dims=4);
     dmin[:,:,:,end] = minimum(dmin[:,:,:,1:12],dims=4);
 
+    @info "$(Dates.now()) - Calculating zonal-averaged climatology for $(emod["dataset"]) $(epar["name"]) data in $(regionfullname(region)) during $yr ..."
     for ilat = 1 : nlat, it = 1 : nt+1, imo = 1 : 13
         zavg[ilat,it,imo] = erananmean(davg[:,ilat,it,imo]);
         zstd[ilat,it,imo] = erananmean(dstd[:,ilat,it,imo]);
@@ -85,6 +86,7 @@ function eraanalysis(
         zmin[ilat,it,imo] = erananmean(dmin[:,ilat,it,imo]);
     end
 
+    @info "$(Dates.now()) - Calculating meridional-averaged climatology for $(emod["dataset"]) $(epar["name"]) data in $(regionfullname(region)) during $yr ..."
     for imo = 1 : 13, it = 1 : nt+1, ilon = 1 : nlon;
         mavg[ilon,it,imo] = erananmean(davg[ilon,:,it,imo]);
         mstd[ilon,it,imo] = erananmean(dstd[ilon,:,it,imo]);
