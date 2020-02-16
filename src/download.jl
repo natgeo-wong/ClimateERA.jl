@@ -195,10 +195,14 @@ function eradownload(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
         mv(fname,joinpath(efol["tmp"],fname),force=true);
         cp(dwnsh,joinpath(efol["tmp"],"erad.sh"),force=true);
 
+        @debug "$(Dates.now()) - Saving module and variable information into efol[\"var\"] directory ..."
+        @save "info_par.jld2" emod epar; @save "info_reg.jld2" ereg;
+        mv("info_par.jld2",joinpath(efol["var"],"info_par.jld2"),force=true)
+
     end
 
     efol = erafolder(emod,epar,ereg,etime,eroot);
-    @info "$(Dates.now()) - Saving information and moving info files to directories ..."
+    @info "$(Dates.now()) - Saving region information into efol[\"reg\"] directory ..."
     @save "info_par.jld2" emod epar; @save "info_reg.jld2" ereg;
     mv("info_par.jld2",joinpath(efol["var"],"info_par.jld2"),force=true)
     mv("info_reg.jld2",joinpath(efol["reg"],"info_reg.jld2"),force=true)
