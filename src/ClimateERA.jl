@@ -6,7 +6,7 @@ module ClimateERA
 ## Modules Used
 using Dates, DelimitedFiles, Printf, Statistics
 using NCDatasets, Glob, JLD2, FileIO
-using ClimateEasy
+using GeoRegions
 
 ## Exporting the following functions:
 export
@@ -17,6 +17,7 @@ export
 ## Including other files in the module
 
 include("frontend.jl")
+include("backend.jl")
 include("initialize.jl")
 include("download.jl")
 include("analysis.jl")
