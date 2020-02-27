@@ -67,12 +67,11 @@ end
 
 function eraregionload(regionID::Integer,init::Dict)
 
-    @info "$(Dates.now()) - Loading available regions from the ClimateEasy.jl module."
-    reginfo = regioninfoload(); eraregiondisp(regionID,reginfo,init);
-    regname = regionshortname(regionID,reginfo);
-    regfull = regionfullname(regionID,reginfo)
-    reggrid = regionbounds(regionID,reginfo)
-    regglbe = regionisglobe(regionID)
+    @info "$(Dates.now()) - Loading available GeoRegions from the GeoRegions.jl module."
+    reginfo = gregioninfoload(); eraregiondisp(regionID,reginfo,init);
+    regname = gregionshortname(regionID,reginfo);
+    regfull = gregionfullname(regionID,reginfo)
+    reggrid = gregionbounds(regionID,reginfo)
     if regionID == 1; regglbe = true;
     else;             regglbe = false;
     end
@@ -85,14 +84,14 @@ end
 function eraregiondisp(regionID::Integer,reginfo::AbstractArray,init::Dict)
 
     if regionID > size(reginfo,1);
-        @error "$(Dates.now()) - $(regionID) is not a valid Region ID in ClimateEasy.jl."
+        @error "$(Dates.now()) - $(regionID) is not a valid Region ID in GeoRegions.jl."
     end
 
     if init["actionID"] == 1
         @info "$(Dates.now()) - Only certain regions are available for $(init["action"]) in ClimateERA.jl.  All other regions must be extracted as a subset of these regions."
         regdwn = reginfo[:,2]; isglobe = (regdwn .== "GLB"); reginfo = reginfo[isglobe,:];
-          regioninfodisplay(reginfo);
-    else; regioninfodisplay(reginfo);
+          gregioninfodisplay(reginfo);
+    else; gregioninfodisplay(reginfo);
     end
 
     if regionID < size(reginfo,1)
@@ -124,12 +123,12 @@ end
 
 function eraregionparent(regionID::Integer,init::Dict)
     @info "$(Dates.now()) - Extracting parent region properties/information ..."
-    parentID = regionparent(regionID); return eraregion(parentID,init);
+    parentID = gregionparent(regionID); return eraregion(parentID,init);
 end
 
 function eraregionparent(regionID::Integer,reginfo::AbstractArray,init::Dict)
     @info "$(Dates.now()) - Extracting parent region properties/information ..."
-    parentID = regionparent(regionID,reginfo); return eraregion(parentID,init);
+    parentID = gregionparent(regionID,reginfo); return eraregion(parentID,init);
 end
 
 function eraregionextract(data::AbstractArray,regionID::Integer,init::Dict)
@@ -218,13 +217,13 @@ function eraregion(regionID::Integer,init::Dict)
 end
 
 function erainitialize(
-    moduleID::Integer, parameterID::Integer,
-    regionID::Integer, timeID::Integer,
-    init::Dict
+    init::Dict;
+    modID::Integer, parID::Integer,
+    regID::Integer, timeID::Integer
 )
 
-    emod = eramodule(moduleID,init); epar  = eraparameters(parameterID,emod);
-    ereg = eraregion(regionID,emod); etime = eratime(timeID,init);
+    emod = eramodule(modID,init); epar  = eraparameters(parID,emod);
+    ereg = eraregion(regID,emod); etime = eratime(timeID,init);
 
     return emod,epar,ereg,etime
 
