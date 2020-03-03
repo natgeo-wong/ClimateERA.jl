@@ -4,7 +4,8 @@ module ClimateERA
 # reanalysis data.
 
 ## Modules Used
-using Dates, DelimitedFiles, Printf, Statistics
+using Logging, Dates
+using DelimitedFiles, Printf, Statistics
 using NCDatasets, Glob, JLD2, FileIO
 using GeoRegions
 
