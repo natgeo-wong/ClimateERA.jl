@@ -10,8 +10,8 @@ are to be extracted from.  Functionalities include:
 """
 
 function erananmean(data::Vector{Float32})
-    iNaN = data .!= NaN32
-    if sum(iNaN) != 0; return mean(data[iNaN]); else; return NaN32; end
+    dataii = @view data[data .!= NaN32]
+    if dataii != []; return mean(dataii); else; return NaN32; end
 end
 
 function eraanalysis(
@@ -80,18 +80,18 @@ function eraanalysis(
 
     @info "$(Dates.now()) - Calculating zonal-averaged climatology for $(emod["dataset"]) $(epar["name"]) data in $(gregionfullname(region)) during $yr ..."
     for ilat = 1 : nlat, it = 1 : nt+1, imo = 1 : 13
-        zavg[ilat,it,imo] = erananmean(davg[:,ilat,it,imo]);
-        zstd[ilat,it,imo] = erananmean(dstd[:,ilat,it,imo]);
-        zmax[ilat,it,imo] = erananmean(dmax[:,ilat,it,imo]);
-        zmin[ilat,it,imo] = erananmean(dmin[:,ilat,it,imo]);
+        zavg[ilat,it,imo] = erananmean(@view davg[:,ilat,it,imo]);
+        zstd[ilat,it,imo] = erananmean(@view dstd[:,ilat,it,imo]);
+        zmax[ilat,it,imo] = erananmean(@view dmax[:,ilat,it,imo]);
+        zmin[ilat,it,imo] = erananmean(@view dmin[:,ilat,it,imo]);
     end
 
     @info "$(Dates.now()) - Calculating meridional-averaged climatology for $(emod["dataset"]) $(epar["name"]) data in $(gregionfullname(region)) during $yr ..."
     for imo = 1 : 13, it = 1 : nt+1, ilon = 1 : nlon;
-        mavg[ilon,it,imo] = erananmean(davg[ilon,:,it,imo]);
-        mstd[ilon,it,imo] = erananmean(dstd[ilon,:,it,imo]);
-        mmax[ilon,it,imo] = erananmean(dmax[ilon,:,it,imo]);
-        mmin[ilon,it,imo] = erananmean(dmin[ilon,:,it,imo]);
+        mavg[ilon,it,imo] = erananmean(@view davg[ilon,:,it,imo]);
+        mstd[ilon,it,imo] = erananmean(@view dstd[ilon,:,it,imo]);
+        mmax[ilon,it,imo] = erananmean(@view dmax[ilon,:,it,imo]);
+        mmin[ilon,it,imo] = erananmean(@view dmin[ilon,:,it,imo]);
     end
 
     eraanasave([davg,dstd,dmax,dmin],[zavg,zstd,zmax,zmin],[mavg,mstd,mmax,mmin],attr,
