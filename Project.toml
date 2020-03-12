@@ -1,7 +1,7 @@
 name = "ClimateERA"
 uuid = "96028d6e-f290-464b-8a03-1e746e0363c3"
 authors = ["Nathanael Wong <natgeo.wong@outlook.com>"]
-version = "0.3.7"
+version = "0.4.0"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"

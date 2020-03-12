@@ -17,6 +17,7 @@ export
 
 ## Including other files in the module
 
+include("startup.jl")
 include("frontend.jl")
 include("backend.jl")
 include("initialize.jl")
