@@ -48,7 +48,7 @@ function eraparametersdisp(parlist::AbstractArray,init::Dict)
 end
 
 function erapressure(emod::Dict)
-    if (emod["moduleID"] in [2,4,6]);
+    if occursin("pre",emod["moduleID"])
         @info "$(Dates.now()) - A pressure module was selected, and therefore all available pressure levels will be saved into the parameter Dictionary."
         emod["levels"] = erapressureload();
     else
@@ -65,39 +65,37 @@ end
 
 # ClimateERA Region Setup
 
-function eraregionload(regionID::Integer,init::Dict)
+function eraregionload(gregID::AbstractString,init::Dict)
 
     @info "$(Dates.now()) - Loading available GeoRegions from the GeoRegions.jl module."
-    reginfo = gregioninfoload(); eraregiondisp(regionID,reginfo,init);
-    regname = gregionshortname(regionID,reginfo);
-    regfull = gregionfullname(regionID,reginfo)
-    reggrid = gregionbounds(regionID,reginfo)
-    if regionID == 1; regglbe = true;
-    else;             regglbe = false;
-    end
+    greginfo = gregioninfoload(); eraregiondisp(gregID,greginfo,init);
+    gregfull = gregionfullname(gregID,greginfo)
+    greggrid = gregionbounds(gregID,greginfo)
+    if gregID == "GLB"; regglbe = true; else; regglbe = false; end
 
-    @info "$(Dates.now()) - Storing region properties and information for the $(regfull) region ..."
-    return Dict("region"=>regname,"grid"=>reggrid,"name"=>regfull,"isglobe"=>regglbe)
+    @info "$(Dates.now()) - Storing region properties and information for the $(gregfull) region ..."
+    return Dict("region"=>gregID,"grid"=>greggrid,"name"=>gregfull,"isglobe"=>regglbe)
 
 end
 
-function eraregiondisp(regionID::Integer,reginfo::AbstractArray,init::Dict)
+function eraregiondisp(gregID::AbstractString,greginfo::AbstractArray,init::Dict)
 
-    if regionID > size(reginfo,1);
+    if sum(greginfo[:,2] .== gregID) == 0
         @error "$(Dates.now()) - $(regionID) is not a valid Region ID in GeoRegions.jl."
     end
 
     if init["actionID"] == 1
         @info "$(Dates.now()) - Only certain regions are available for $(init["action"]) in ClimateERA.jl.  All other regions must be extracted as a subset of these regions."
-        regdwn = reginfo[:,2]; isglobe = (regdwn .== "GLB"); reginfo = reginfo[isglobe,:];
-          gregioninfodisplay(reginfo);
-    else; gregioninfodisplay(reginfo);
+        gregdwn = greginfo[:,2]; isglobe = (gregdwn .== "GLB");
+        greginfo = greginfo[isglobe,:];
+          gregioninfodisplay(greginfo);
+    else; gregioninfodisplay(greginfo);
     end
 
-    if regionID < size(reginfo,1)
-        @info "$(Dates.now()) - ClimateERA.jl will $(init["action"]) data from the $(reginfo[regionID,7]) region."
+    if sum(greginfo[:,2] .== gregID) > 0
+        @info "$(Dates.now()) - ClimateERA.jl will $(init["action"]) data from the $(gregionfullname(gregID,greginfo)) region."
     else
-        @error "$(Dates.now()) - ClimateERA.jl only has the option to analyse data from the $(reginfo[regionID,7]) and not download it."
+        @error "$(Dates.now()) - ClimateERA.jl only has the option to analyse data from the $(gregionfullname(gregID,greginfo)) and not download it."
     end
 
 end
@@ -121,19 +119,19 @@ function eraregionvec(ereg::Dict,init::Dict)
 
 end
 
-function eraregionparent(regionID::Integer,init::Dict)
+function eraregionparent(gregID::AbstractString,init::Dict)
     @info "$(Dates.now()) - Extracting parent region properties/information ..."
-    parentID = gregionparent(regionID); return eraregion(parentID,init);
+    parentID = gregionparent(gregID); return eraregion(gregID,init);
 end
 
-function eraregionparent(regionID::Integer,reginfo::AbstractArray,init::Dict)
+function eraregionparent(gregID::AbstractString,reginfo::AbstractArray,init::Dict)
     @info "$(Dates.now()) - Extracting parent region properties/information ..."
-    parentID = gregionparent(regionID,reginfo); return eraregion(parentID,init);
+    parentID = gregionparent(gregID,reginfo); return eraregion(parentID,init);
 end
 
-function eraregionextract(data::AbstractArray,regionID::Integer,init::Dict)
+function eraregionextract(data::AbstractArray,gregID::AbstractString,init::Dict)
     @info "$(Dates.now()) - Extracting regional data from parent region ..."
-    preg = eraregionparent(regionID,init); return regionextractgrid(data,reg,plon,plat)
+    preg = eraregionparent(gregID,init); return regionextractgrid(data,reg,plon,plat)
 end
 
 function eraregionextract(data::AbstractArray,preg::Dict,init::Dict)
@@ -143,26 +141,30 @@ end
 
 # Initialization
 
-function eramodule(moduleID::Integer,init::Dict)
+function eramodule(moduleID::AbstractString,init::Dict)
 
-    init["moduleID"] = moduleID; len = eramoduledisp(init);
-    if !(moduleID in 1:len); @error "$(Dates.now()) - Module ID $(moduleID) not defined for action '$(init["action"])'."  end;
+    init["moduletype"] = moduleID; len = eramoduledisp(init);
+    if init["action"] == 1 && sum(["csfc","cpre"] .== moduleID) != 0
+        error("$(Dates.now()) - Module ID \"$(moduleID)\" not defined for action \"$(init["action"])\".")
+    end
 
-    if     moduleID == 1; init["moduletype"] = "dsfc"; init["modulename"] = "dry surface";
-    elseif moduleID == 2; init["moduletype"] = "dpre"; init["modulename"] = "dry pressure";
-    elseif moduleID == 3; init["moduletype"] = "msfc"; init["modulename"] = "moist surface";
-    elseif moduleID == 4; init["moduletype"] = "mpre"; init["modulename"] = "moist pressure";
-    elseif moduleID == 5; init["moduletype"] = "csfc"; init["modulename"] = "calc surface";
-    elseif moduleID == 6; init["moduletype"] = "cpre"; init["modulename"] = "calc pressure";
+    if     moduleID == "dsfc"; init["modulename"] = "dry surface";
+    elseif moduleID == "dpre"; init["modulename"] = "dry pressure";
+    elseif moduleID == "msfc"; init["modulename"] = "moist surface";
+    elseif moduleID == "mpre"; init["modulename"] = "moist pressure";
+    elseif moduleID == "csfc"; init["modulename"] = "calc surface";
+    elseif moduleID == "cpre"; init["modulename"] = "calc pressure";
     end
 
     if init["actionID"] == 1 && init["datasetID"] == 1
-        if     moduleID in [1,3]; init["moduleprint"] = "reanalysis-era5-single-levels";
-        elseif moduleID in [2,4]; init["moduleprint"] = "reanalysis-era5-pressure-levels";
+        if occursin("sfc",moduleID)
+            init["moduleprint"] = "reanalysis-era5-single-levels";
+        elseif occursin("pre",moduleID)
+            init["moduleprint"] = "reanalysis-era5-pressure-levels";
         end
     end
 
-    if moduleID in [2,4,6];
+    if occursin("pre",moduleID)
         @info "$(Dates.now()) - A pressure module was selected, and therefore all available pressure levels will be saved into the parameter Dictionary."
         init["levels"] = erapressureload();
     else
@@ -174,14 +176,17 @@ function eramodule(moduleID::Integer,init::Dict)
 
 end
 
-function eraparameters(parameterID::Integer,init::Dict)
+function eraparameters(parameterID::AbstractString,init::Dict)
 
     parlist = eraparametersload(init); eraparametersdisp(parlist,init)
-    npar = size(parlist,1);
 
-    if !(parameterID in 1:npar); @error "$(Dates.now()) - Invalid parameter choice for $(eramod["name"])."  end;
+    if sum(parlist[:,2] .== parameterID) == 0
+        error("$(Dates.now()) - Invalid parameter choice for $(eramod["name"]).")
+    else
+        ID = (parlist[:,2] .== parameterID);
+    end
 
-    parinfo = parlist[parameterID,:];
+    parinfo = parlist[ID,:];
     @info "$(Dates.now()) - ClimateERA will $(init["action"]) $(parinfo[6]) data."
     return Dict("ID"  =>parinfo[2],"IDnc"=>parinfo[3],
                 "era5"=>parinfo[4],"erai"=>parinfo[5],
@@ -206,20 +211,20 @@ function eratime(timeID::Integer,init::Dict)
     end
 end
 
-function eratime(timeID::Array,init::Dict)
+function eratime(timeID::Vector,init::Dict)
     beg = minimum(timeID); fin = maximum(timeID)
     return Dict("Begin"=>beg,"End"=>fin)
     @info "$(Dates.now()) - User has chosen to $(init["action"]) $(init["dataset"]) datasets from $(beg) to $(fin)."
 end
 
-function eraregion(regionID::Integer,init::Dict)
-    return eraregionvec(eraregionload(regionID,init),init)
+function eraregion(gregID::AbstractString,init::Dict)
+    return eraregionvec(eraregionload(gregID,init),init)
 end
 
 function erainitialize(
     init::Dict;
-    modID::Integer, parID::Integer,
-    regID::Integer, timeID::Integer
+    modID::AbstractString, parID::AbstractString,
+    regID::AbstractString="GLB", timeID::Union{Integer,Vector}
 )
 
     emod = eramodule(modID,init); epar  = eraparameters(parID,emod);
