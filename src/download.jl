@@ -170,7 +170,7 @@ end
 
 function eradownload(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
-    prelist = emod["levels"]; dataID = emod["moduleID"];
+    prelist = emod["levels"]; dataID = emod["datasetID"];
 
     if dataID == 1; dwnsh = joinpath(@__DIR__,"./extra/erad5.sh");
     else;           dwnsh = joinpath(@__DIR__,"./extra/eradi.sh");
