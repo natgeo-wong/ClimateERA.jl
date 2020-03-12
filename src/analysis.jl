@@ -294,6 +294,6 @@ function eraanasave(
 
     close(ds);
 
-    @info "$(Dates.now()) - Analysed $(emod["dataset"]) $(epar["name"]) for the year $yr in $(gregionfullname(region)) has been saved into file $(afnc) and moved to the data directory $(afol)."
+    @info "$(Dates.now()) - Analysed $(uppercase(emod["dataset"])) $(epar["name"]) for the year $yr in $(gregionfullname(region)) has been saved into file $(afnc) and moved to the data directory $(afol)."
 
 end
