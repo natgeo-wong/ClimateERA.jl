@@ -32,6 +32,15 @@ end
 
 # ClimateERA Parameter Setup
 
+function eraparameterscopy()
+    ftem = joinpath(@__DIR__,"epartemplate.txt")
+    freg = joinpath(@__DIR__,"eraparameters.txt")
+    if !isfile(freg)
+        @debug "$(Dates.now()) - Unable to find eraparameters.txt, copying data from epartemplate.txt ..."
+        cp(ftem,freg,force=true);
+    end
+end
+
 function eraparametersload(init::Dict)
 
     @debug "$(Dates.now()) - Loading information on parameters used in ERA reanalysis."
