@@ -9,3 +9,16 @@ mo2str(date::TimeType)   = Dates.format(date,dateformat"mm")
 yrmo2str(yr::Integer,mo::Integer) = @sprintf("%04d%02d",yr,mo)
 mo2str(mo::Integer) = @sprintf("%02d",mo)
 dy2str(dy::Integer) = @sprintf("%02d",dy)
+
+function extractdate(startdate::TimeType,finish::TimeType);
+
+    yrs = Dates.year(start);  mos = Dates.month(start);  dys = Dates.day(start);
+    yrf = Dates.year(finish); mof = Dates.month(finish); dyf = Dates.day(finish);
+    ndy = Dates.value((finish-start)/Dates.day(1));
+    dvecs = Date(yrs,mos); dvecf = Date(yrf,mof);
+
+    dvec = convert(Array,dvecs:Month(1):dvecf);
+
+    return dvec,dys,dyf,ndy
+
+end
