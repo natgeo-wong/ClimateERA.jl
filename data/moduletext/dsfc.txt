@@ -1,0 +1,23 @@
+DSFC: Dry Surface-Level Modules
+
+    All variables found within the DSFC module are "dry" variables (i.e. not explicitly
+    affected by water and/or convection), and are considered to be "surface-level"
+    variables by ECMWF reanalysis. This means that they are variables defined only over the
+    "surface", which could be either at sea-level-pressure or along the surface orography.
+
+    To select this module in erainitialize, use:
+        - erainitialize(modID="dsfc")
+
+    Examples of DSFC variables are:
+        - Surface wind (all three directions)
+        - Surface pressure (along orography)
+        - Sea-level pressure (at sea-level height)
+
+    In ERA5, DSFC variables are identified as:
+        - reanalysis-era5-single-levels
+
+    In ERA-Interim, DSFC variables are identified as:
+        - levtype: sfc
+
+    Note: If you are interested in collaborating to add other variables this feature,
+    please contact me (Nathanael), and/or create a pull request.

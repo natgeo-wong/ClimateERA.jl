@@ -1,0 +1,17 @@
+CPRE: Calculated / Custom Surface-Level Modules
+
+    All variables found within the CPRE module are "custom" or "calculated" variables (i.e.
+    these variables are not found/selectable from ECMWF reanalysis and must be calculated
+    from other variables).  These variables are saved at a predefined list of 37 pressure
+    levels from 1000hPa to 1hPa.
+
+    To select this module in erainitialize, use:
+        - erainitialize(modID="cpre")
+
+    Examples of CPRE variables are:
+        - Meridional Streamfunction
+        - Eddy Heat Fluxes
+        - Moisture Fluxes
+
+    Note: If you are interested in collaborating to add other variables this feature,
+    please contact me (Nathanael), and/or create a pull request.

@@ -1,0 +1,27 @@
+MSFC: Moist Surface-Level Modules
+
+    All variables found within the MSFC module are "moist" variables (i.e. explicitly
+    affected by water and/or convection), and are considered to be "surface-level"
+    variables by ECMWF reanalysis. This means that they are variables defined only over the
+    "surface", which is along the surface orography.
+
+    To select this module in erainitialize, use:
+        - erainitialize(modID="msfc")
+
+    Examples of MSFC variables are:
+        - Precipitation (Total, Convective and Large-Scale Components)
+        - Total Column Water (Total, and Vapour Components)
+        - Convective Available Potential Energy (CAPE)
+        - Surface (2m) Dewpoint Temperature
+
+    In ERA5, MSFC variables are identified as:
+        - reanalysis-era5-single-levels
+
+    In ERA-Interim, MSFC variables are identified as:
+        - levtype: sfc
+        - It is worth noting that in ERA-Interim, precipitation and CAPE are considered to
+          be *forecast* components and are thus treated slightly differently compared to
+          other variables.  This is transparent to the user in ClimateERA.jl
+
+    Note: If you are interested in collaborating to add other variables this feature,
+    please contact me (Nathanael), and/or create a pull request.

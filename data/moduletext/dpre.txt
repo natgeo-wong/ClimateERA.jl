@@ -1,0 +1,29 @@
+DPRE: Dry Pressure-Level Modules
+
+    All variables found within the DPRE module are "dry" variables (i.e. not explicitly
+    affected by water and/or convection), and are considered to be "pressure-level"
+    variables by ECMWF reanalysis. This means that they are variables where information is
+    saved at a predefined list of 37 pressure levels from 1000hPa to 1hPa.
+
+    Note: ECMWF reanalysis data is also stored in model levels (67 for ERA-Interim and 137
+    for ERA5) but ClimateERA.jl does not currently support this feature.  If you are
+    interested in collaborating to add this feature, please contact me (Nathanael).
+
+    To select this module in erainitialize, use:
+        - erainitialize(modID="dpre")
+
+    Examples of DPRE variables are:
+        - Wind (all three directions)
+        - Temperature
+        - Divergence and Vorticity
+
+    In ERA5, DPRE variables are identified as:
+        - reanalysis-era5-pressure-levels
+        - pressure_level: xxx (hPa)
+
+    In ERA-Interim, DPRE variables are identified as:
+        - levtype: pl
+        - levelist: xxx (hPa)
+
+    Note: If you are interested in collaborating to add other variables this feature,
+    please contact me (Nathanael), and/or create a pull request.

@@ -1,0 +1,16 @@
+CSFC: Calculated / Custom Surface-Level Modules
+
+    All variables found within the CSFC module are "custom" or "calculated" variables (i.e.
+    these variables are not found/selectable from ECMWF reanalysis and must be calculated
+    from other variables).  These variables defined only over the "surface", which is along
+    the surface orography.
+
+    To select this module in erainitialize, use:
+        - erainitialize(modID="csfc")
+
+    Examples of CSFC variables are:
+        - Tropopause Height
+        - Eddy Kinetic Energy
+
+    Note: If you are interested in collaborating to add other variables this feature,
+    please contact me (Nathanael), and/or create a pull request.
