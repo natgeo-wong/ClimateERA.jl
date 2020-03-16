@@ -1,0 +1,13 @@
+ClimateERA.jl supports both data downloads and analysis.  However, some parameters (such as
+meridional streamfunction) are not provided and must be calculated.
+
+To download ECMWF reanalysis data, please specify the actionID (aID) in erastartup using:
+    - erastartup(aID=1)
+
+To analyse ECMWF reanalysis data, please specify the actionID (aID) in erastartup using:
+    - erastartup(aID=2)
+
+To query if a variable (defined by a parID - see epartemplate.txt for examples) is
+available for download, or if it must be calculated instead, please use:
+    - queryeaction(parID="parameterID string here")
+    - e.g. queryeaction(parID="t_sfc")

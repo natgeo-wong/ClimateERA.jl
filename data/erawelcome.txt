@@ -1,7 +1,9 @@
-                                        ClimateERA.jl
-                              Created by: Nathanael Zhixin Wong
+                                      ClimateERA.jl
+                            Created by: Nathanael Zhixin Wong
 
-ClimateERA is a Julia package specifically designed to download and analyse ECMWF reanalysis data. This package is meant to automate the process of downloading, resort and display specific ERA5 and ERA-Interim datasets.
+ClimateERA is a Julia package specifically designed to download and analyse ECMWF
+reanalysis data. This package is meant to automate the process of downloading, resort and
+display specific ERA5 and ERA-Interim datasets.
 
 ClimateERA.jl relies heavily on the following Julia dependencies:
     - GeoRegions.jl

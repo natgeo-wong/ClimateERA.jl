@@ -1,0 +1,25 @@
+ERA5:
+
+    ECMWF's latest reanalysis dataset, ERA5 currently spans from 1979 to present day, with
+    plans to extend back to 1950.  However, it must be noted that due to the lack of
+    satellite data before 1979 that the reliability of ERA5 reanalysis data drastically
+    decreases before 1979.  Therefore, unless otherwise specified, ClimateERA.jl will by
+    default download data only from 1979 onwards.
+
+    To select this module in erastartup, use:
+        - erastartup(dID=1)
+
+
+ERA-Interim:
+
+    As the name suggests, ERA-Interim was designed to be an interim reanalysis dataset that
+    bridges ERA40 and ERA5, from 1979 to 2019.  However, due to the fact that ECMWF did not
+    produce a full-year dataset for 2019, ClimateERA.jl will not download 2019 data.
+
+    To select this module in erastartup, use:
+        - erastartup(dID=2)
+
+
+Note: If you are interested in collaborating to add other ECMWF datasets (or even other
+reanalysis datasets) to this feature, please contact me (Nathanael), and/or create a pull
+request / issue.
