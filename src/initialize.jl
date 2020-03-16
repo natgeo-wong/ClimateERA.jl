@@ -233,7 +233,7 @@ end
 function erainitialize(
     init::Dict;
     modID::AbstractString, parID::AbstractString,
-    regID::AbstractString="GLB", timeID::Union{Integer,Vector}
+    regID::AbstractString="GLB", timeID::Union{Integer,Vector}=0
 )
 
     emod = eramodule(modID,init); epar  = eraparameters(parID,emod);
