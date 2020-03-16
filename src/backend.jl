@@ -22,3 +22,6 @@ function extractdate(startdate::TimeType,finish::TimeType);
     return dvec,dys,dyf,ndy
 
 end
+
+bold() = Crayon(bold=true)
+reset() = Crayon(reset=true)
