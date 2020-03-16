@@ -33,8 +33,8 @@ end
 # ClimateERA Parameter Setup
 
 function eraparameterscopy()
-    ftem = joinpath(@__DIR__,"epartemplate.txt")
-    freg = joinpath(@__DIR__,"eraparameters.txt")
+    ftem = joinpath(@__DIR__,"../data/epartemplate.txt")
+    freg = joinpath(@__DIR__,"../data/eraparameters.txt")
     if !isfile(freg)
         @debug "$(Dates.now()) - Unable to find eraparameters.txt, copying data from epartemplate.txt ..."
         cp(ftem,freg,force=true);
@@ -44,7 +44,7 @@ end
 function eraparametersload(init::Dict)
 
     @debug "$(Dates.now()) - Loading information on parameters used in ERA reanalysis."
-    allparams = readdlm(joinpath(@__DIR__,"eraparameters.txt"),',',comments=true);
+    allparams = readdlm(joinpath(@__DIR__,"../data/eraparameters.txt"),',',comments=true);
 
     @debug "$(Dates.now()) - Filtering out for parameters in the $(init["modulename"]) module."
     parmods = allparams[:,1]; return allparams[(parmods.==init["moduletype"]),:];
