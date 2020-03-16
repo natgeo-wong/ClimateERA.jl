@@ -154,7 +154,7 @@ function eramodule(moduleID::AbstractString,init::Dict)
 
     init["moduletype"] = moduleID; len = eramoduledisp(init);
     if init["action"] == 1 && sum(["csfc","cpre"] .== moduleID) != 0
-        error("$(Dates.now()) - Module ID \"$(moduleID)\" not defined for action \"$(init["action"])\".")
+        error("$(Dates.now()) - Module ID \"$(moduleID)\" not defined for action \"$(init["action"])\".  Call queryemod(modID=$(moduleID)) for more details.")
     end
 
     if     moduleID == "dsfc"; init["modulename"] = "dry surface";
@@ -190,7 +190,7 @@ function eraparameters(parameterID::AbstractString,init::Dict)
     parlist = eraparametersload(init); eraparametersdisp(parlist,init)
 
     if sum(parlist[:,2] .== parameterID) == 0
-        error("$(Dates.now()) - Invalid parameter choice for $(eramod["name"]).")
+        error("$(Dates.now()) - Invalid parameter choice for $(eramod["name"]).  Call queryepar(modID=$(eramod["name"]),parID=$(parameterID)) for more information.")
     else
         ID = (parlist[:,2] .== parameterID);
     end

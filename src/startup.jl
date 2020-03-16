@@ -43,10 +43,10 @@ function erastartup(;aID::Integer,dID::Integer,path::AbstractString="")
     erawelcome();
 
     if !(aID in [1,2])
-        error("$(Dates.now()) - Please input a valid action-type.")
+        error("$(Dates.now()) - Please input a valid action-type.  Call queryeaction() for more details.")
     end
     if !(dID in [1,2])
-        error("$(Dates.now()) - Please input a valid action-type.")
+        error("$(Dates.now()) - Please input a valid dataset-type.  Call queryedataset() for more details.")
     end
 
     if path == ""; eroot = eraroot(aID); else; eroot = eraroot(path,aID); end
