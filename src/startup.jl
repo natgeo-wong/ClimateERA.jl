@@ -1,3 +1,5 @@
+
+
 function eramkroot(eroot::AbstractString)
 
     eiroot = joinpath(eroot,"erai");
@@ -36,26 +38,41 @@ end
 
 # Startup ClimateERA
 
-function erastartup(actionID::Integer,datasetID::Integer;path::AbstractString="")
+function erastartup(;aID::Integer,dID::Integer,path::AbstractString="")
 
-    if !(actionID in [1,2])
+    erawelcome();
+
+    if !(aID in [1,2])
         error("$(Dates.now()) - Please input a valid action-type.")
     end
-    if !(datasetID in [1,2])
+    if !(dID in [1,2])
         error("$(Dates.now()) - Please input a valid action-type.")
     end
 
-    if path == ""; eroot = eraroot(actionID); else; eroot = eraroot(path,actionID); end
+    if path == ""; eroot = eraroot(aID); else; eroot = eraroot(path,aID); end
 
-    if     datasetID == 1; eroot["era"]=eroot["era5"]; delete!(eroot,["era5","erai"]);
-    elseif datasetID == 2; eroot["era"]=eroot["erai"]; delete!(eroot,["era5","erai"]);
+    if     dID == 1; eroot["era"]=eroot["era5"]; delete!(eroot,["era5","erai"]);
+    elseif dID == 2; eroot["era"]=eroot["erai"]; delete!(eroot,["era5","erai"]);
     end
 
-    action = eraaction(actionID); dataset = eradataset(datasetID);
+    action = eraaction(aID); dataset = eradataset(dID);
     @info "$(Dates.now()) - This script will $(action["name"]) $(dataset["name"]) data."
-    init = Dict("actionID"=>actionID,"action"=>action["name"],
-                "datasetID"=>datasetID,"dataset"=>dataset["name"],
+    init = Dict("actionID"=>aID,"action"=>action["name"],
+                "datasetID"=>dID,"dataset"=>dataset["name"],
                 "prefix"=>dataset["short"])
     cd(eroot["era"]); return init,eroot
+
+end
+
+function erawelcome()
+
+    ftext = joinpath(@__DIR__,"../data/erawelcome.txt");
+    lines = readlines(ftext); count = 0; nl = length(lines);
+    for l in lines; count += 1;
+       if any(count .== [1,2]); print(Crayon(bold=true),"$l\n");
+       elseif count == nl;      print(Crayon(bold=false),"$l\n\n");
+       else;                    print(Crayon(bold=false),"$l\n");
+       end
+    end
 
 end
