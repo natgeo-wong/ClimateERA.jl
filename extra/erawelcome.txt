@@ -5,7 +5,8 @@ ClimateERA is a Julia package specifically designed to download and analyse ECMW
 reanalysis data. This package is meant to automate the process of downloading, resort and
 display specific ERA5 and ERA-Interim datasets.
 
-ClimateERA.jl relies heavily on the following Julia dependencies:
+ClimateERA.jl relies heavily on the following Julia dependencies.  Please check out their
+individual repositories / documentation for more information:
     - GeoRegions.jl
 
 If you wish to contribute to ClimateERA.jl, please contact me at:
