@@ -32,19 +32,37 @@ end
 
 # ClimateERA Parameter Setup
 
-function eraparameterscopy()
-    ftem = joinpath(@__DIR__,"../data/epartemplate.txt")
-    freg = joinpath(@__DIR__,"../data/eraparameters.txt")
-    if !isfile(freg)
-        @debug "$(Dates.now()) - Unable to find eraparameters.txt, copying data from epartemplate.txt ..."
-        cp(ftem,freg,force=true);
+function eraparameterscopy(;overwrite::Bool=false)
+
+    jfol = joinpath(DEPOT_PATH[1],"files/ClimateERA/"); mkpath(jfol);
+    ftem = joinpath(@__DIR__,"../extra/epartemplate.txt")
+    fpar = joinpath(jfol,"eraparameters.txt")
+
+    if !overwrite
+        if !isfile(fpar)
+            @debug "$(Dates.now()) - Unable to find eraparameters.txt, copying data from epartemplate.txt ..."
+            cp(ftem,fpar,force=true);
+        end
+    else
+        @warn "$(Dates.now()) - Overwriting eraparameters.txt in $jfol ..."
+        cp(ftem,fpar,force=true);
     end
+
+    return fpar
+
+end
+
+function eraparametersload()
+
+    @debug "$(Dates.now()) - Loading information on parameters used in ERA reanalysis."
+    return readdlm(eraparameterscopy(),',',comments=true);
+
 end
 
 function eraparametersload(init::Dict)
 
     @debug "$(Dates.now()) - Loading information on parameters used in ERA reanalysis."
-    allparams = readdlm(joinpath(@__DIR__,"../data/eraparameters.txt"),',',comments=true);
+    allparams = readdlm(eraparameterscopy(),',',comments=true);
 
     @debug "$(Dates.now()) - Filtering out for parameters in the $(init["modulename"]) module."
     parmods = allparams[:,1]; return allparams[(parmods.==init["moduletype"]),:];
