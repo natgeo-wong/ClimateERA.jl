@@ -197,7 +197,7 @@ function eradownload(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
         cp(dwnsh,joinpath(efol["tmp"],"erad.sh"),force=true);
 
         @debug "$(Dates.now()) - Saving module and variable information into efol[\"var\"] directory ..."
-        @save "info_par.jld2" emod epar; @save "info_reg.jld2" ereg;
+        @save "info_par.jld2" emod epar;
         mv("info_par.jld2",joinpath(efol["var"],"info_par.jld2"),force=true)
 
     end
