@@ -261,6 +261,30 @@ end
 
 function erancread(ncname::AbstractString,epar::Dict)
 
-    ds = Dataset(ncname); try; return ds[epar["ID"]]; catch; return ds[epar["IDnc"]]; end
+    ds = Dataset(ncname);
+    try; return ds[epar["ID"]]; catch; return ds[epar["IDnc"]]; end
+    close(ds);
+
+end
+
+function erancread(ncname::AbstractString,ID::AbstractString)
+
+    ds = Dataset(ncname); return ds[ID];
+    close(ds);
+
+end
+
+function erancread(fol::AbstractString,ncname::AbstractString,epar::Dict)
+
+    ds = Dataset(joinpath(fol,ncname));
+    try; return ds[epar["ID"]]; catch; return ds[epar["IDnc"]]; end
+    close(ds);
+
+end
+
+function erancread(fol::AbstractString,ncname::AbstractString,ID::AbstractString)
+
+    ds = Dataset(joinpath(fol,ncname)); return ds[ID];
+    close(ds);
 
 end
