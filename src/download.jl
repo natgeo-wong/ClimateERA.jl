@@ -172,13 +172,14 @@ function eradownload(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
     prelist = emod["levels"]; dataID = emod["datasetID"];
 
-    if dataID == 1; dwnsh = joinpath(@__DIR__,"./extra/erad5.sh");
-    else;           dwnsh = joinpath(@__DIR__,"./extra/eradi.sh");
+    jfol = joinpath(DEPOT_PATH[1],"files/ClimateERA/"); mkpath(jfol);
+    if dataID == 1; dwnsh = joinpath(jfol,"erad5.sh");
+    else;           dwnsh = joinpath(jfol,"eradi.sh");
     end
 
     if !isfile(dwnsh);
-        if dataID == 1; template = joinpath(@__DIR__,"./extra/erad5_eg.sh");
-        else;           template = joinpath(@__DIR__,"./extra/eradi_eg.sh");
+        if dataID == 1; template = joinpath(@__DIR__,"../extra/erad5_eg.sh");
+        else;           template = joinpath(@__DIR__,"../extra/eradi_eg.sh");
         end
         cp(template,dwnsh,force=true);
     end
