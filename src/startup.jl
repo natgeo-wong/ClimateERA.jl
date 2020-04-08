@@ -38,9 +38,13 @@ end
 
 # Startup ClimateERA
 
-function erastartup(;aID::Integer,dID::Integer,path::AbstractString="")
+function erastartup(;
+    aID::Integer,dID::Integer,
+    path::AbstractString="",
+    welcome::Bool=true
+)
 
-    erawelcome();
+    if welcome; erawelcome(); end
 
     if !(aID in [1,2])
         error("$(Dates.now()) - Please input a valid action-type.  Call queryeaction() for more details.")
@@ -60,13 +64,14 @@ function erastartup(;aID::Integer,dID::Integer,path::AbstractString="")
     init = Dict("actionID"=>aID,"action"=>action["name"],
                 "datasetID"=>dID,"dataset"=>dataset["name"],
                 "prefix"=>dataset["short"])
-    cd(eroot["era"]); return init,eroot
+    
+    return init,eroot
 
 end
 
 function erawelcome()
 
-    ftext = joinpath(@__DIR__,"../data/erawelcome.txt");
+    ftext = joinpath(@__DIR__,"../extra/erawelcome.txt");
     lines = readlines(ftext); count = 0; nl = length(lines);
     for l in lines; count += 1;
        if any(count .== [1,2]); print(Crayon(bold=true),"$l\n");
