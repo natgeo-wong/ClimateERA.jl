@@ -1,53 +1,164 @@
-function queryeaction()
 
-    @info "$(Dates.now()) - The following actions are possible in ClimateERA.jl ..."
-    act = [1 "Download" ; 2 "Analysis"]; head = ["aID","Action"];
-    pretty_table(act,head;alignment=:c)
+
+function queryeaction(;parID::AbstractString="")
+
+    if parID != ""
+
+        allepar = readdlm(eraparameterscopy(),',',comments=true);
+        @info "$(Dates.now()) - Printing available actions for the given parID $(parID) ..."
+
+        parIDs = allepar[:,2]; modIDs = allepar[:,1];
+        if any(parIDs .== parID); modID = modIDs[parIDs .== parID]
+            print(reset(),"$(parID) is a valid parID.  You can")
+            if any(["csfc","cpre"] .== modID);
+                  print(bold()," only analyse ")
+            else; print(bold()," either download or analyse ")
+            end
+            print(reset(),"data for this variable.  If you are unsure as to how to proceed, please call the function",bold()," queryaction() ",reset(),"for more information.")
+        end
+
+    else
+
+        @info "$(Dates.now()) - Printing basic help information for ClimateERA.jl ..."
+
+        ftext = joinpath(@__DIR__,"../extra/actiontext.txt");
+        lines = readlines(ftext); count = 0; nl = length(lines);
+        for l in lines; count += 1;
+           if count == nl; print(reset(),"$l\n\n");
+           else;           print(reset(),"$l\n");
+           end
+        end
+
+    end
 
 end
 
 function queryedataset()
 
-    @info "$(Dates.now()) - The following ECMWF datasets can be manipulated with ClimateERA.jl ..."
-    dset = [1 "ERA5" ; 2 "ERA-Interim"]; head = ["dID","Dataset"];
-    pretty_table(dset,head;alignment=:c)
+    @info "$(Dates.now()) - The following datasets can be downloaded / manipulated with ClimateERA.jl ..."
+
+    ftext = joinpath(@__DIR__,"../extra/datasettext.txt");
+    lines = readlines(ftext); count = 0; nl = length(lines);
+    for l in lines; count += 1;
+       if any(count .== [1,13]); print(bold(),"$l\n");
+       elseif count == nl;       print(reset(),"$l\n\n");
+       else;                     print(reset(),"$l\n");
+       end
+    end
 
 end
 
-function queryemodule()
+function queryemod(;modID::AbstractString="")
 
-    @info "$(Dates.now()) - The following modules are available in ClimateERA.jl ..."
-    mset = [ "dsfc" "."^10 "dry" "surface";
-             "dpre" "."^10 "dry" "pressure";
-             "msfc" "."^10 "moist / water" "surface" ;
-             "mpre" "."^10 "moist / water" "pressure" ;
-             "csfc" "."^10 "calculated" "surface" ;
-             "cpre" "."^10 "calculated" "pressure" ];
-    head = ["modID","","variable type","level(s)"];
-    pretty_table(mset,head;tf=borderless,alignment=:c)
+    mset = ["dsfc","dpre","msfc","mpre","csfc","cpre"]
+
+    if modID != ""
+
+        if any(mset .== modID)
+
+            @info "$(Dates.now()) - $(uppercase(modID)) is a valid module in ClimateERA.jl.  Printing module information ...\n"
+
+            ftext = joinpath(@__DIR__,"../extra/moduletext/$(modID).txt");
+            lines = readlines(ftext); count = 0; nl = length(lines);
+            for l in lines; count += 1;
+               if count == 1;      print(bold(),"$l\n");
+               elseif count == nl; print(reset(),"$l\n\n");
+               else;               print(reset(),"$l\n");
+               end
+            end
+
+        else
+            @warn "$(Dates.now()) - $(uppercase(modID)) is not a valid module in ClimateERA.jl.  Please query a valid module."
+        end
+
+    else
+
+        @info "$(Dates.now()) - The following are the modules available in ClimateERA.jl ...\n"
+
+        for modID in mset
+            ftext = joinpath(@__DIR__,"../extra/moduletext/$(modID).txt");
+            lines = readlines(ftext); count = 0; nl = length(lines);
+            for l in lines; count += 1;
+               if count == 1;      print(bold(),"$l\n");
+               elseif count == nl; print(reset(),"$l\n\n");
+               else;               print(reset(),"$l\n");
+               end
+            end
+        end
+
+    end
 
 end
 
-function queryemodule(moduleID::AbstractString)
+function queryepar(;parID::AbstractString="",modID::AbstractString="")
 
-    @info "$(Dates.now()) - The following modules are available in ClimateERA.jl ..."
-    mset = [ "dsfc" "dry" "surface";
-             "dpre" "dry" "pressure";
-             "msfc" "moist / water" "surface" ;
-             "mpre" "moist / water" "pressure" ;
-             "csfc" "calculated" "surface" ;
-             "cpre" "calculated" "pressure" ];
-    head = ["modID","variable type","level(s)"];
-    pretty_table(mset,head;alignment=:c)
+    if parID=="" & modID==""; queryeparlist()
+    elseif parID=="";         queryeparlist(modID);
+    elseif modID=="";         queryeparinfo(parID);
+    else;                     queryeparmod(parID,modID);
+    end
+end
+
+function queryeparinfo(parID::AbstractString)
+
+    allepar = readdlm(eraparameterscopy(),',',comments=true);
+
+    parIDs = allepar[:,2]
+    if any(parIDs .== parID); parinfo = allepar[parIDs .== parID,:];
+
+        @info "$(Dates.now()) - $(parID) is defined.  Printing variable information ...\n"
+
+        print("    - ",bold(),"Full Name: ",reset(),"$(parinfo[:,6][1])\n");
+        print("    - ",bold(),"Units: ",reset(),"$(parinfo[:,7][1])\n");
+        print("    - ",bold(),"Module ID: ",reset(),"$(parinfo[:,1][1])\n");
+        print("    - ",bold(),"ERA5 ID: ",reset(),"$(parinfo[:,4][1])\n");
+        print("    - ",bold(),"ERA-Interim ID: ",reset(),"$(parinfo[:,5][1])\n\n");
+
+    else
+
+        @warn "$(Dates.now()) - $(parID) is not currently defined.  You may add it using the function addepar()."
+
+    end
 
 end
 
-function queryeparameter(parameterID::AbstractString)
+function queryeparmod(parID::AbstractString, modID::AbstractString)
 
-    allparams = readdlm(joinpath(@__DIR__,"eraparameters.txt"),',',comments=true);
+    allepar = readdlm(eraparameterscopy(),',',comments=true);
+
+    parIDs = allepar[:,2]
+    if any(parIDs .== parID); pmodID = allepar[parIDs .== parID,1][1];
+
+        if pmodID == modID
+              @info "$(Dates.now()) - $(parID) is a variable found in $(uppercase(modID))."
+        else; @warn "$(Dates.now()) - $(uppercase(modID)) does not contain $(parID)."
+        end
+
+    else
+
+        @warn "$(Dates.now()) - $(parID) is not currently defined.  You may add it using the function addepar()."
+
+    end
 
 end
 
-function queryeparameter(parameterID::AbstractString, moduleID::AbstractString)
+function queryeparlist(modID::AbstractString)
+
+    allepar = readdlm(eraparameterscopy(),',',comments=true);
+    mset = ["dsfc","dpre","msfc","mpre","csfc","cpre"]
+    if any(mset .== modID)
+
+        @info "$(Dates.now()) - $(uppercase(modID)) is a valid module in ClimateERA.jl.  Retrieving parameter information table ...\n"
+
+
+
+    else
+        @warn "$(Dates.now()) - $(uppercase(modID)) is not a valid module in ClimateERA.jl.  Please query a valid module."
+    end
 
 end
+
+## Query ERA Dataset Timestep
+
+hrstep(emod::Dict) = if emod["datasetID"] == 1; return 1; else; return 6 end
+hrindy(emod::Dict) = if emod["datasetID"] == 1; return 24; else; return 4 end
