@@ -137,13 +137,13 @@ end
 
 function eraregionload(gregID::AbstractString,init::Dict)
 
-    @info "$(Dates.now()) - Loading available GeoRegions from the GeoRegions.jl module."
+    @info "$(Dates.now()) - Loading available GeoRegions ..."
     greginfo = gregioninfoload(); eraregiondisp(gregID,greginfo,init);
     gregfull = gregionfullname(gregID,greginfo)
     greggrid = gregionbounds(gregID,greginfo)
     if gregID == "GLB"; regglbe = true; else; regglbe = false; end
 
-    @info "$(Dates.now()) - Storing region properties and information for the $(gregfull) region ..."
+    @info "$(Dates.now()) - Storing GeoRegion properties and information for the $(gregfull) region ..."
     return Dict("region"=>gregID,"grid"=>greggrid,"name"=>gregfull,"isglobe"=>regglbe)
 
 end
@@ -151,11 +151,11 @@ end
 function eraregiondisp(gregID::AbstractString,greginfo::AbstractArray,init::Dict)
 
     if sum(greginfo[:,2] .== gregID) == 0
-        @error "$(Dates.now()) - $(regionID) is not a valid Region ID in GeoRegions.jl."
+        @error "$(Dates.now()) - $(regionID) is not a valid GeoRegion ID."
     end
 
     if init["actionID"] == 1
-        @info "$(Dates.now()) - Only certain regions are available for $(init["action"]) in ClimateERA.jl.  All other regions must be extracted as a subset of these regions."
+        @info "$(Dates.now()) - Only certain GeoRegion are available for $(init["action"]) in ClimateERA.jl.  All other regions must be extracted as a subset of these regions."
         gregdwn = greginfo[:,2]; isglobe = (gregdwn .== "GLB");
         greginfo = greginfo[isglobe,:];
           gregioninfodisplay(greginfo);
@@ -170,17 +170,23 @@ function eraregiondisp(gregID::AbstractString,greginfo::AbstractArray,init::Dict
 
 end
 
-function eraregionvec(ereg::Dict,init::Dict)
+function eraregionvec(ereg::Dict,emod::Dict,step::Real)
 
-    @info "$(Dates.now()) - Determining spacing between grid points in the region ..."
-    if     ereg["isglobe"] == true && init["datasetID"] == 1; step = 1.0;
-    elseif ereg["isglobe"] == true && init["datasetID"] == 2; step = 0.75;
-    else;  step = 0.25;
+    @debug "$(Dates.now()) - Determining spacing between grid points in the GeoRegion ..."
+    if step == 0
+        if ereg["isglobe"] == true;
+              step = 1.0;
+        else; step = 0.25;
+        end
+    else
+        if !checkegrid(step)
+            error("$(Dates.now()) - The grid resolution specified is not valid.")
+        end
     end
     ereg["step"] = step
 
     N,S,E,W = ereg["grid"];
-    @info "$(Dates.now()) - Creating longitude and latitude vectors for the region ..."
+    @info "$(Dates.now()) - Creating longitude and latitude vectors for the GeoRegion ..."
     lon = convert(Array,W:step:E);  nlon = size(lon,1);
     lat = convert(Array,N:-step:S); nlat = size(lat,1);
     ereg["lon"] = lon; ereg["lat"] = lat; ereg["size"] = [nlon,nlat];
@@ -189,23 +195,23 @@ function eraregionvec(ereg::Dict,init::Dict)
 
 end
 
-function eraregionparent(gregID::AbstractString,init::Dict)
-    @info "$(Dates.now()) - Extracting parent region properties/information ..."
-    parentID = gregionparent(gregID); return eraregion(gregID,init);
+function eraregionparent(gregID::AbstractString,emod::Dict)
+    @info "$(Dates.now()) - Extracting parent GeoRegion properties/information ..."
+    parentID = gregionparent(gregID); return eraregion(gregID,emod);
 end
 
-function eraregionparent(gregID::AbstractString,reginfo::AbstractArray,init::Dict)
-    @info "$(Dates.now()) - Extracting parent region properties/information ..."
-    parentID = gregionparent(gregID,reginfo); return eraregion(parentID,init);
+function eraregionparent(gregID::AbstractString,reginfo::AbstractArray,emod::Dict)
+    @info "$(Dates.now()) - Extracting parent GeoRegion properties/information ..."
+    parentID = gregionparent(gregID,reginfo); return eraregion(parentID,emod);
 end
 
-function eraregionextract(data::AbstractArray,gregID::AbstractString,init::Dict)
-    @info "$(Dates.now()) - Extracting regional data from parent region ..."
-    preg = eraregionparent(gregID,init); return regionextractgrid(data,reg,plon,plat)
+function eraregionextract(data::AbstractArray,gregID::AbstractString,emod::Dict)
+    @info "$(Dates.now()) - Extracting data for GeoRegion from parent GeoRegion ..."
+    preg = eraregionparent(gregID,emod); return regionextractgrid(data,reg,plon,plat)
 end
 
-function eraregionextract(data::AbstractArray,preg::Dict,init::Dict)
-    @info "$(Dates.now()) - Extracting regional data from parent region ..."
+function eraregionextract(data::AbstractArray,preg::Dict,reg::AbstractString)
+    @info "$(Dates.now()) - Extracting data for GeoRegion from parent GeoRegion ..."
     return regionextractgrid(data,reg,preg["lon"],preg["lat"])
 end
 
@@ -214,7 +220,7 @@ end
 function eramodule(moduleID::AbstractString,init::Dict)
 
     init["moduletype"] = moduleID; len = eramoduledisp(init);
-    if init["action"] == 1 && sum(["csfc","cpre"] .== moduleID) != 0
+    if init["actionID"] == 1 && (sum(["csfc","cpre"] .== moduleID) != 0)
         error("$(Dates.now()) - Module ID \"$(moduleID)\" not defined for action \"$(init["action"])\".  Call queryemod(modID=$(moduleID)) for more details.")
     end
 
@@ -246,59 +252,60 @@ function eramodule(moduleID::AbstractString,init::Dict)
 
 end
 
-function eraparameters(parameterID::AbstractString,init::Dict)
+function eraparameters(parameterID::AbstractString,emod::Dict)
 
-    parlist = eraparametersload(init); eraparametersdisp(parlist,init)
+    parlist = eraparametersload(emod); eraparametersdisp(parlist,emod)
 
     if sum(parlist[:,2] .== parameterID) == 0
-        error("$(Dates.now()) - Invalid parameter choice for $(eramod["name"]).  Call queryepar(modID=$(eramod["name"]),parID=$(parameterID)) for more information.")
+        error("$(Dates.now()) - Invalid parameter choice for $(emod["name"]).  Call queryepar(modID=$(emod["name"]),parID=$(parameterID)) for more information.")
     else
         ID = (parlist[:,2] .== parameterID);
     end
 
     parinfo = parlist[ID,:];
-    @info "$(Dates.now()) - ClimateERA will $(init["action"]) $(parinfo[6]) data."
+    @info "$(Dates.now()) - ClimateERA will $(emod["action"]) $(parinfo[6]) data."
     return Dict("ID"  =>parinfo[2],"IDnc"=>parinfo[3],
                 "era5"=>parinfo[4],"erai"=>parinfo[5],
                 "name"=>parinfo[6],"unit"=>parinfo[7]);
 
 end
 
-function eratime(timeID::Integer,init::Dict)
+function eratime(timeID::Integer,emod::Dict)
     if timeID == 0;
 
-        if init["datasetID"] == 1
+        if emod["datasetID"] == 1
               fin = Dates.year(Dates.now())-1;
         else; fin = 2018
         end
 
         return Dict("Begin"=>1979,"End"=>fin);
-        @info "$(Dates.now()) - User has chosen to $(init["action"]) $(init["dataset"]) datasets from 1979 to $(fin)."
+        @info "$(Dates.now()) - User has chosen to $(emod["action"]) $(emod["dataset"]) datasets from 1979 to $(fin)."
 
     else
         return Dict("Begin"=>timeID,"End"=>timeID)
-        @info "$(Dates.now()) - User has chosen to $(init["action"]) $(init["dataset"]) datasets in $(timeID)."
+        @info "$(Dates.now()) - User has chosen to $(emod["action"]) $(emod["dataset"]) datasets in $(timeID)."
     end
 end
 
-function eratime(timeID::Vector,init::Dict)
+function eratime(timeID::Vector,emod::Dict)
     beg = minimum(timeID); fin = maximum(timeID)
     return Dict("Begin"=>beg,"End"=>fin)
-    @info "$(Dates.now()) - User has chosen to $(init["action"]) $(init["dataset"]) datasets from $(beg) to $(fin)."
+    @info "$(Dates.now()) - User has chosen to $(emod["action"]) $(emod["dataset"]) datasets from $(beg) to $(fin)."
 end
 
-function eraregion(gregID::AbstractString,init::Dict)
-    return eraregionvec(eraregionload(gregID,init),init)
+function eraregion(gregID::AbstractString,emod::Dict,gres::Real)
+    return eraregionvec(eraregionload(gregID,emod),emod,gres)
 end
 
 function erainitialize(
     init::Dict;
     modID::AbstractString, parID::AbstractString,
-    regID::AbstractString="GLB", timeID::Union{Integer,Vector}=0
+    regID::AbstractString="GLB", timeID::Union{Integer,Vector}=0,
+    gres::Real=0
 )
 
-    emod = eramodule(modID,init); epar  = eraparameters(parID,emod);
-    ereg = eraregion(regID,emod); etime = eratime(timeID,init);
+    emod = eramodule(modID,init); epar = eraparameters(parID,emod);
+    ereg = eraregion(regID,emod,gres); etime = eratime(timeID,emod);
 
     return emod,epar,ereg,etime
 
