@@ -13,10 +13,13 @@ using GeoRegions
 ## Exporting the following functions:
 export
         eramodule, eraparameters, erapressure, eratime, eraregion,
-        erastartup, erainitialize, eraroot, erancread, erawelcome,
+        erastartup, erainitialize, eraroot, erawelcome,
         erafolder, eratmp2raw, eradownload, eraanalysis,
         erarawregion, erarawpoint, erarawgrid,
-        queryeaction, queryedataset, queryemod, queryepar
+        eraparameterscopy, eraparametersload, eraparametersadd,
+        erarawname, eraananame, erancread,
+        queryeaction, queryedataset, queryemod, queryepar,
+        hrstep, hrindy
 
 ## Including other files in the module
 
