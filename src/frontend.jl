@@ -7,6 +7,8 @@ include:
 
 """
 
+## ClimateERA Root Directory Setup
+
 function eraroot(actionID)
 
     path = joinpath("$(homedir())","research","ecmwf");
@@ -45,7 +47,7 @@ function eraroot(path::AbstractString,actionID::Integer)
 
 end
 
-# ClimateERA Folders
+## ClimateERA Folders
 
 function eraregfolder(ereg::Dict,eroot::Dict)
 
@@ -145,6 +147,8 @@ function eraimgfolder(epar::Dict,ereg::Dict,eroot::Dict)
 
 end
 
+## ClimateERA Folder Setup
+
 function erafolder(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
     yrbeg = etime["Begin"]; yrend = etime["End"];
@@ -233,13 +237,13 @@ function erafolder(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict,pre:
 
 end
 
-# ClimateERA NetCDF Names
+## ClimateERA NetCDF Names
 
 function erarawname(emod::Dict,epar::Dict,ereg::Dict,date::TimeType)
 
-    if !(epar["level"] == "sfc")
+    if !(emod["levels"][1] == "sfc")
           fname = "$(emod["prefix"])-$(ereg["region"])-$(epar["ID"])-$(epar["level"])hPa";
-    else; fname = "$(emod["prefix"])-$(ereg["region"])-$(epar["ID"])-$(epar["level"])";
+    else; fname = "$(emod["prefix"])-$(ereg["region"])-$(epar["ID"])-sfc";
     end
 
     return "$(fname)-$(yrmo2str(date)).nc"
@@ -250,9 +254,9 @@ function eraananame(emod::Dict,epar::Dict,ereg::Dict,date::TimeType)
 
     prefix = replace(emod["prefix"],"era"=>"eraa")
 
-    if !(epar["level"] == "sfc")
+    if !(emod["levels"][1] == "sfc")
           fname = "$(prefix)-$(ereg["region"])-$(epar["ID"])-$(epar["level"])hPa";
-    else; fname = "$(prefix)-$(ereg["region"])-$(epar["ID"])-$(epar["level"])";
+    else; fname = "$(prefix)-$(ereg["region"])-$(epar["ID"])-sfc";
     end
 
     return "$(fname)-$(yr2str(date)).nc"
