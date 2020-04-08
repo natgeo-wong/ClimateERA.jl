@@ -20,7 +20,7 @@ function eraanalysis(
     eroot::Dict
 )
 
-    modID = emod["moduleID"]; if emod["datasetID"] == 1; nhr = 24; else; nhr = 4; end
+    modID = emod["moduleID"]; nhr = hrindy(emod);
     epar["level"] = pre; nlon = ereg["size"][1]; nlat = ereg["size"][2]; nt = nhr+1;
 
     rfol = erarawfol(epar,ereg,eroot); fraw = erarawname(emod,epar,ereg,Date(yr,1));
@@ -120,8 +120,7 @@ function eraanasave(
 
     ds = Dataset(afnc,"c");
     ds.dim["longitude"] = ereg["size"][1]; ds.dim["latitude"] = ereg["size"][2];
-    if emod["datasetID"] == 1; nhr = 24; else; nhr = 4; end; ds.dim["hour"] = nhr;
-    ds.dim["month"] = 12;
+    nhr = hrindy(emod); ds.dim["hour"] = nhr; ds.dim["month"] = 12;
 
     defVar(ds,"longitude",rlon,("longitude",),attrib=attr["lon"])
     defVar(ds,"latitude",rlat,("latitude",),attrib=attr["lat"])

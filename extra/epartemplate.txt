@@ -1,10 +1,12 @@
-#(1)Mode,(2)ID,(3)IDnc,(4)era5,(5)erai,(6)Full,(7)Units
+# (1)Mode,(2)ID,(3)IDnc,(4)era5,(5)erai,(6)Full,(7)Units
+
+# PREDEFINED EPARAMETERS
 dsfc,u_sfc,u10,10m_u_component_of_wind,165.128,Surface u-Wind,m s^{-1}
 dsfc,v_sfc,v10,10m_v_component_of_wind,166.128,Surface v-Wind,m s^{-1}
 dsfc,t_sfc,t2m,2m_temperature,167.128,Surface Temperature,K
 dsfc,t_sst,sst,sea_surface_temperature,34.128,Sea Surface Temperature,K
-dsfc,pre_sfc,sp,surface_pressure,134.128,Surface Pressure,hPa
-dsfc,pre_msl,msl,mean_sea_level_pressure,151.128,Sea Level Pressure,hPa
+dsfc,p_sfc,sp,surface_pressure,134.128,Surface Pressure,hPa
+dsfc,p_msl,msl,mean_sea_level_pressure,151.128,Sea Level Pressure,hPa
 dsfc,z_sfc,z,orography,129.128,Orography Geopotential,m^2 s^{-2}
 dpre,u_air,u,u_component_of_wind,131.128,u-Wind,m s^{-1}
 dpre,v_air,v,v_component_of_wind,132.128,v-Wind,m s^{-1}
@@ -37,3 +39,5 @@ cpre,flux_vT,NA,NA,NA,Poleward Heat Flux,K m s^{-1}
 cpre,flux_uq,NA,NA,NA,Zonal Moisture Flux,K m s^{-1}
 cpre,flux_vq,NA,NA,NA,Poleward Moisture Flux,K m s^{-1}
 cpre,chi,NA,NA,NA,Velocity Potential,s^{-1}
+
+# CUSTOM USER EPARAMETERS
