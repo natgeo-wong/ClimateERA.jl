@@ -17,7 +17,7 @@ function extractdate(startdate::TimeType,finish::TimeType);
     ndy = Dates.value((finish-start)/Dates.day(1));
     dvecs = Date(yrs,mos); dvecf = Date(yrf,mof);
 
-    dvec = convert(Array,dvecs:Month(1):dvecf);
+    dvec = collect(dvecs:Month(1):dvecf);
 
     return dvec,dys,dyf,ndy
 
@@ -25,3 +25,12 @@ end
 
 bold() = Crayon(bold=true)
 reset() = Crayon(reset=true)
+
+function checkegrid(step::Rational)
+
+    if rem(360,step) == 0
+          return true
+    else; return false
+    end
+
+end
