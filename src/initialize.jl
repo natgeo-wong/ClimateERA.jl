@@ -122,6 +122,9 @@ function erapressure(emod::Dict)
         @info "$(Dates.now()) - A surface module was selected, and therefore we will save 'sfc' into the parameter level Dictionary."
         emod["levels"] = ["sfc"];
     end
+
+    return
+
 end
 
 function erapressureload()
