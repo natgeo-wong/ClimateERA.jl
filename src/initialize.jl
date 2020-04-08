@@ -74,7 +74,47 @@ function eraparametersdisp(parlist::AbstractArray,init::Dict)
     for ii = 1 : size(parlist,1); @info "$(Dates.now()) - $(ii)) $(parlist[ii,6])" end
 end
 
+function eraparametersadd(fadd::AbstractString)
+
+    if !isfile(fadd); error("$(Dates.now()) - The file $(fadd) does not exist."); end
+    ainfo = readdlm(fadd,',',comments=true); aparID = ainfo[:,2]; nadd = length(aparID);
+
+    for iadd = 1 : nadd
+        eraparameteradd(modID=ainfo[iadd,1],parID=ainfo[iadd,2],ncID=ainfo[iadd,3],
+                        era5=ainfo[iadd,4],erai=ainfo[iadd,5],
+                        full=ainfo[iadd,6],unit=ainfo[iadd,7],throw=false);
+    end
+
+end
+
+function eraparameteradd(;
+    modID::AbstractString, parID::AbstractString, ncID::AbstractString,
+    era5::AbstractString, erai::AbstractString,
+    full::AbstractString, unit::AbstractString,
+    throw::Bool=true
+)
+    fpar = eraparameterscopy(); pinfo = eraparametersload(); eparID = pinfo[:,2];
+
+    if sum(eparID.==parID) > 0
+
+        if throw
+            error("$(Dates.now()) - Parameter ID already exists.  Please choose a new parID.")
+        else
+            @info "$(Dates.now()) - $(parID) has already been added to eraparameters.txt"
+        end
+
+    else
+
+        open(fpar,"a") do io
+            writedlm(io,[modID parID ncID era5 erai full unit],',')
+        end
+
+    end
+
+end
+
 function erapressure(emod::Dict)
+
     if occursin("pre",emod["moduleID"])
         @info "$(Dates.now()) - A pressure module was selected, and therefore all available pressure levels will be saved into the parameter Dictionary."
         emod["levels"] = erapressureload();
