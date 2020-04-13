@@ -14,16 +14,16 @@ are to be extracted from.  Functionalities include:
 function eramoduledisp(init::Dict)
 
     if init["actionID"] == 1; len = 4; elseif init["actionID"] == 2; len = 6; end
-    @info "$(Dates.now()) - There are $(len) types of modules that ClimateERA can $(init["action"])."
+    @debug "$(Dates.now()) - There are $(len) types of modules that ClimateERA can $(init["action"])."
 
-    @info "$(Dates.now()) - 1) Dry Surface Modules    (e.g. Surface Winds)"
-    @info "$(Dates.now()) - 2) Dry Pressure Modules   (e.g. Winds at Pressure Height)"
-    @info "$(Dates.now()) - 3) Moist Surface Modules  (e.g. Rainfall, Total Column Water)"
-    @info "$(Dates.now()) - 4) Moist Pressure Modules (e.g. Humidity at Pressure Height)"
+    @debug "$(Dates.now()) - 1) Dry Surface Modules    (e.g. Surface Winds)"
+    @debug "$(Dates.now()) - 2) Dry Pressure Modules   (e.g. Winds at Pressure Height)"
+    @debug "$(Dates.now()) - 3) Moist Surface Modules  (e.g. Rainfall, Total Column Water)"
+    @debug "$(Dates.now()) - 4) Moist Pressure Modules (e.g. Humidity at Pressure Height)"
 
     if init["actionID"] == 2
-        @info "$(Dates.now()) - 5) Calc Surface Modules   (e.g. PI)"
-        @info "$(Dates.now()) - 6) Calc Pressure Modules  (e.g. Eddy Kinetic Energy, Psi)"
+        @debug "$(Dates.now()) - 5) Calc Surface Modules   (e.g. PI)"
+        @debug "$(Dates.now()) - 6) Calc Pressure Modules  (e.g. Eddy Kinetic Energy, Psi)"
     end
 
     return len
@@ -116,10 +116,10 @@ end
 function erapressure(emod::Dict)
 
     if occursin("pre",emod["moduleID"])
-        @info "$(Dates.now()) - A pressure module was selected, and therefore all available pressure levels will be saved into the parameter Dictionary."
+        @debug "$(Dates.now()) - A pressure module was selected, and therefore all available pressure levels will be saved into the parameter Dictionary."
         emod["levels"] = erapressureload();
     else
-        @info "$(Dates.now()) - A surface module was selected, and therefore we will save 'sfc' into the parameter level Dictionary."
+        @debug "$(Dates.now()) - A surface module was selected, and therefore we will save 'sfc' into the parameter level Dictionary."
         emod["levels"] = ["sfc"];
     end
 
@@ -241,10 +241,10 @@ function eramodule(moduleID::AbstractString,init::Dict)
     end
 
     if occursin("pre",moduleID)
-        @info "$(Dates.now()) - A pressure module was selected, and therefore all available pressure levels will be saved into the parameter Dictionary."
+        @debug "$(Dates.now()) - A pressure module was selected, and therefore all available pressure levels will be saved into the parameter Dictionary."
         init["levels"] = erapressureload();
     else
-        @info "$(Dates.now()) - A surface module was selected, and therefore we will save 'sfc' into the parameter level Dictionary."
+        @debug "$(Dates.now()) - A surface module was selected, and therefore we will save 'sfc' into the parameter level Dictionary."
         init["levels"] = ["sfc"];
     end
 
@@ -254,7 +254,7 @@ end
 
 function eraparameters(parameterID::AbstractString,emod::Dict)
 
-    parlist = eraparametersload(emod); eraparametersdisp(parlist,emod)
+    parlist = eraparametersload(emod);
 
     if sum(parlist[:,2] .== parameterID) == 0
         error("$(Dates.now()) - Invalid parameter choice for $(emod["name"]).  Call queryepar(modID=$(emod["name"]),parID=$(parameterID)) for more information.")
