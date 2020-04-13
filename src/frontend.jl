@@ -412,7 +412,7 @@ function erarawsave(
     ehr = hrindy(emod); nhr = ehr * daysinmonth(date);
     scale,offset = erancoffsetscale(data);
 
-    ds.dim["longitude"] = ereg["size"][1]-1;
+    ds.dim["longitude"] = ereg["size"][1];
     ds.dim["latitude"] = ereg["size"][2];
     ds.dim["time"] = nhr
 
