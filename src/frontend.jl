@@ -441,7 +441,7 @@ function erarawsave(
         "long_name"                 => epar["name"],
     ))
 
-    nclongitude[:] = pop!(ereg["lon"]); nclatitude[:] = ereg["lat"]
+    nclongitude[:] = ereg["lon"][1:end-1]; nclatitude[:] = ereg["lat"]
     nctime[:] = collect(1:nhr); ncvar[:] = data;
 
     close(ds)
