@@ -175,8 +175,8 @@ function eraregionvec(ereg::Dict,emod::Dict,step::Real)
 
     N,S,E,W = ereg["grid"];
     @info "$(Dates.now()) - Creating longitude and latitude vectors for the GeoRegion ..."
-    lon = convert(Array,W:step:E);  nlon = size(lon,1);
-    lat = convert(Array,N:-step:S); nlat = size(lat,1);
+    lon = convert(Array,W:step:E); if mod(E,360) == mod(W,360); pop!(lon); end
+    lat = convert(Array,N:-step:S); nlon = size(lon,1); nlat = size(lat,1);
     ereg["lon"] = lon; ereg["lat"] = lat; ereg["size"] = [nlon,nlat];
 
     return ereg
