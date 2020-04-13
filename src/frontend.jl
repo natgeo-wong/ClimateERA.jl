@@ -367,11 +367,31 @@ function erancread(fol::AbstractString,ncname::AbstractString,ID::AbstractString
 
 end
 
+function erarawread(emod::Dict,epar::Dict,ereg::Dict,eroot::Dict,dateii::TimeType)
+
+    ebase = erarawfolder(epar,ereg,eroot,dateii);
+    enc = erarawname(emod,epar,ereg,dateii);
+    return erancread(ebase,enc,epar)
+
+end
+
+function eraanaread(
+    ID::AbstractString
+    emod::Dict, epar::Dict, ereg::Dict, eroot::Dict,
+    dateii::TimeType
+)
+
+    ebase = eraanafolder(epar,ereg,eroot);
+    enc = eraananame(emod,epar,ereg,dateii);
+    return erancread(ebase,enc,ID)
+
+end
+
 function erancoffsetscale(data::Array{<:Real})
 
     dmax = maximum(data); dmin = minimum(data);
     scale = (dmax-dmin) / 65533;
-    offset = (dmas+dmax-scale) / 2;
+    offset = (dmax+dmin-scale) / 2;
 
     return scale,offset
 
@@ -390,8 +410,8 @@ function erarawsave(
     end
     ds = NCDataset(fnc,"c",attrib = Dict("Conventions"=>"CF-1.6"));
 
-    ehr = hrindy(emod); nhr = ehr * daysinmonth(dateii);
-    scale,offset = erancoffsetscale(Pi);
+    ehr = hrindy(emod); nhr = ehr * daysinmonth(date);
+    scale,offset = erancoffsetscale(data);
 
     ds.dim["longitude"] = ereg["size"][1];
     ds.dim["latitude"] = ereg["size"][2];
