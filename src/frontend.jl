@@ -113,7 +113,7 @@ end
 
 function erarawfolder(epar::Dict,ereg::Dict,eroot::Dict,date::TimeType)
 
-    yr = "$(yr2str(date))");
+    yr = "$(yr2str(date))";
 
     if !haskey(epar,"level")
 
@@ -376,7 +376,7 @@ function erarawread(emod::Dict,epar::Dict,ereg::Dict,eroot::Dict,date::TimeType)
 end
 
 function eraanaread(
-    ID::AbstractString
+    ID::AbstractString,
     emod::Dict, epar::Dict, ereg::Dict, eroot::Dict,
     date::TimeType
 )
@@ -402,8 +402,7 @@ function erarawsave(
     emod::Dict, epar::Dict, ereg::Dict, date::TimeType, eroot::Dict
 )
 
-    ebase = erarawfolder(epar,ereg,eroot,date);
-    fnc = joinpath(ebase,erarawname(emod,epar,ereg,date));
+    fnc = joinpath(erarawfolder(epar,ereg,eroot,date),erarawname(emod,epar,ereg,date));
     if isfile(fnc)
         @info "$(Dates.now()) - Stale NetCDF file $(fnc) detected.  Overwriting ..."
         rm(fnc);
@@ -413,7 +412,7 @@ function erarawsave(
     ehr = hrindy(emod); nhr = ehr * daysinmonth(date);
     scale,offset = erancoffsetscale(data);
 
-    ds.dim["longitude"] = ereg["size"][1];
+    ds.dim["longitude"] = ereg["size"][1]-1;
     ds.dim["latitude"] = ereg["size"][2];
     ds.dim["time"] = nhr
 
@@ -442,7 +441,7 @@ function erarawsave(
         "long_name"                 => epar["name"],
     ))
 
-    nclongitude[:] = ereg["lon"]; nclatitude[:] = ereg["lat"]
+    nclongitude[:] = pop!(ereg["lon"]); nclatitude[:] = ereg["lat"]
     nctime[:] = collect(1:nhr); ncvar[:] = data;
 
     close(ds)

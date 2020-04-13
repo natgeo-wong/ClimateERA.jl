@@ -17,7 +17,7 @@ export
         eratmp2raw,
         erarawregion, erarawpoint, erarawgrid,
         eraparameterscopy, eraparametersload, eraparametersadd,
-        erarawname, eraananame, erancread, erarawsave,
+        erarawname, eraananame, erancread, erarawread, eraanaread, erarawsave,
         eraregfolder, eravarfolder, erarawfolder, eraanafolder, eraimgfolder, erafolder,
         queryeaction, queryedataset, queryemod, queryepar,
         hrstep, hrindy
