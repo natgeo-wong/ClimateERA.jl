@@ -138,7 +138,7 @@ end
 function eraregionload(gregID::AbstractString,init::Dict)
 
     @info "$(Dates.now()) - Loading available GeoRegions ..."
-    greginfo = gregioninfoload(); eraregiondisp(gregID,greginfo,init);
+    greginfo = gregioninfoload(); eraregionfilter(gregID,greginfo,init);
     gregfull = gregionfullname(gregID,greginfo)
     greggrid = gregionbounds(gregID,greginfo)
     if gregID == "GLB"; regglbe = true; else; regglbe = false; end
@@ -148,24 +148,12 @@ function eraregionload(gregID::AbstractString,init::Dict)
 
 end
 
-function eraregiondisp(gregID::AbstractString,greginfo::AbstractArray,init::Dict)
+function eraregionfilter(gregID::AbstractString,greginfo::AbstractArray,init::Dict)
 
-    if sum(greginfo[:,2] .== gregID) == 0
-        @error "$(Dates.now()) - $(regionID) is not a valid GeoRegion ID."
-    end
+    isgeoregion(gregID,greginfo);
 
-    if init["actionID"] == 1
-        @info "$(Dates.now()) - Only certain GeoRegion are available for $(init["action"]) in ClimateERA.jl.  All other regions must be extracted as a subset of these regions."
-        gregdwn = greginfo[:,2]; isglobe = (gregdwn .== "GLB");
-        greginfo = greginfo[isglobe,:];
-          gregioninfodisplay(greginfo);
-    else; gregioninfodisplay(greginfo);
-    end
-
-    if sum(greginfo[:,2] .== gregID) > 0
-        @info "$(Dates.now()) - ClimateERA.jl will $(init["action"]) data from the $(gregionfullname(gregID,greginfo)) region."
-    else
-        @error "$(Dates.now()) - ClimateERA.jl only has the option to analyse data from the $(gregionfullname(gregID,greginfo)) and not download it."
+    if (init["actionID"] == 2) && (gregionparent(gregID;levels=2) != "GLB")
+        error("$(Dates.now()) - ClimateERA.jl only has the option to analyse data from the $(gregionfullname(gregID,greginfo)) and not download it.")
     end
 
 end
