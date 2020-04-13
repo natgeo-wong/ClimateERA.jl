@@ -77,20 +77,32 @@ end
 
 function erarawfolder(epar::Dict,ereg::Dict,eroot::Dict)
 
-    if epar["level"] != "sfc"; phPa = "$(epar["ID"])-$(epar["level"])hPa"
-
-        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],phPa,"raw");
-        if !isdir(fol)
-            @info "$(Dates.now()) - The folder for raw data of the $(epar["name"]) parameter at pressure level $(epar["level"])hPa in the $(ereg["name"]) region does not exist.  Creating now ..."
-            mkpath(fol);
-        end
-
-    else
+    if !haskey(epar,"level")
 
         fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"raw");
         if !isdir(fol)
             @info "$(Dates.now()) - The folder for raw data of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
             mkpath(fol);
+        end
+
+    else
+
+        if epar["level"] == "sfc";
+
+            fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"raw");
+            if !isdir(fol)
+                @info "$(Dates.now()) - The folder for raw data of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
+                mkpath(fol);
+            end
+
+        else
+
+            phPa = "$(epar["ID"])-$(epar["level"])hPa"
+            fol = joinpath(eroot["era"],ereg["region"],epar["ID"],phPa,"raw");
+            if !isdir(fol)
+                @info "$(Dates.now()) - The folder for raw data of the $(epar["name"]) parameter at pressure level $(epar["level"])hPa in the $(ereg["name"]) region does not exist.  Creating now ..."
+                mkpath(fol);
+            end
         end
 
     end
@@ -101,20 +113,32 @@ end
 
 function eraanafolder(epar::Dict,ereg::Dict,eroot::Dict)
 
-    if epar["level"] != "sfc"; phPa = "$(epar["ID"])-$(epar["level"])hPa"
-
-        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],phPa,"ana");
-        if !isdir(fol)
-            @info "$(Dates.now()) - The folder for analyzed data of the $(epar["name"]) parameter at pressure level $(epar["level"])hPa in the $(ereg["name"]) region does not exist.  Creating now ..."
-            mkpath(fol);
-        end
-
-    else
+    if !haskey(epar,"level")
 
         fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"ana");
         if !isdir(fol)
             @info "$(Dates.now()) - The folder for analyzed data of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
             mkpath(fol);
+        end
+
+    else
+
+        if epar["level"] == "sfc";
+
+            fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"ana");
+            if !isdir(fol)
+                @info "$(Dates.now()) - The folder for analyzed data of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
+                mkpath(fol);
+            end
+
+        else
+
+            phPa = "$(epar["ID"])-$(epar["level"])hPa"
+            fol = joinpath(eroot["era"],ereg["region"],epar["ID"],phPa,"ana");
+            if !isdir(fol)
+                @info "$(Dates.now()) - The folder for analyzed data of the $(epar["name"]) parameter at pressure level $(epar["level"])hPa in the $(ereg["name"]) region does not exist.  Creating now ..."
+                mkpath(fol);
+            end
         end
 
     end
@@ -125,20 +149,32 @@ end
 
 function eraimgfolder(epar::Dict,ereg::Dict,eroot::Dict)
 
-    if epar["level"] != "sfc"; phPa = "$(epar["ID"])-$(epar["level"])hPa"
+    if !haskey(epar,"level")
 
-        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],phPa,"img");
+        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"img");
         if !isdir(fol)
-            @info "$(Dates.now()) - The folder for images of the $(epar["name"]) parameter at pressure level $(epar["level"])hPa in the $(ereg["name"]) region does not exist.  Creating now ..."
+            @info "$(Dates.now()) - The folder for images/maps of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
             mkpath(fol);
         end
 
     else
 
-        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"img");
-        if !isdir(fol)
-            @info "$(Dates.now()) - The folder for images of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
-            mkpath(fol);
+        if epar["level"] == "sfc";
+
+            fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"img");
+            if !isdir(fol)
+                @info "$(Dates.now()) - The folder for images/maps of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
+                mkpath(fol);
+            end
+
+        else
+
+            phPa = "$(epar["ID"])-$(epar["level"])hPa"
+            fol = joinpath(eroot["era"],ereg["region"],epar["ID"],phPa,"img");
+            if !isdir(fol)
+                @info "$(Dates.now()) - The folder for images/maps of the $(epar["name"]) parameter at pressure level $(epar["level"])hPa in the $(ereg["name"]) region does not exist.  Creating now ..."
+                mkpath(fol);
+            end
         end
 
     end
