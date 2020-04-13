@@ -252,9 +252,16 @@ function eraparameters(parameterID::AbstractString,emod::Dict)
 
     parinfo = parlist[ID,:];
     @info "$(Dates.now()) - ClimateERA will $(emod["action"]) $(parinfo[6]) data."
-    return Dict("ID"  =>parinfo[2],"IDnc"=>parinfo[3],
-                "era5"=>parinfo[4],"erai"=>parinfo[5],
-                "name"=>parinfo[6],"unit"=>parinfo[7]);
+
+    if occursin("sfc",emod["moduletype"])
+        return Dict("ID"  =>parinfo[2],"IDnc"=>parinfo[3],
+                    "era5"=>parinfo[4],"erai"=>parinfo[5],
+                    "name"=>parinfo[6],"unit"=>parinfo[7],"level"=>"sfc");
+    else
+        return Dict("ID"  =>parinfo[2],"IDnc"=>parinfo[3],
+                    "era5"=>parinfo[4],"erai"=>parinfo[5],
+                    "name"=>parinfo[6],"unit"=>parinfo[7],"level"=>undef);
+    end
 
 end
 
