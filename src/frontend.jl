@@ -230,7 +230,7 @@ function erafolder(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
 end
 
-function erafolder(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict,pre::Integer)
+function erafolder(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict,pre)
 
     yrbeg = etime["Begin"]; yrend = etime["End"];
 
