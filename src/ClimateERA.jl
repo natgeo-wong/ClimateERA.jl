@@ -7,7 +7,7 @@ module ClimateERA
 using Logging, Dates
 using DelimitedFiles, Printf, Statistics
 using NCDatasets, Glob, JLD2, FileIO
-using Crayons, PrettyTables
+using Crayons
 using GeoRegions
 
 ## Exporting the following functions:
@@ -17,7 +17,7 @@ export
         eratmp2raw,
         erarawregion, erarawpoint, erarawgrid,
         eraparameterscopy, eraparametersload, eraparametersadd,
-        erarawname, eraananame, erancread,
+        erarawname, eraananame, erancread, erarawsave,
         eraregfolder, eravarfolder, erarawfolder, eraanafolder, eraimgfolder, erafolder,
         queryeaction, queryedataset, queryemod, queryepar,
         hrstep, hrindy

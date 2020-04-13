@@ -1,7 +1,7 @@
 name = "ClimateERA"
 uuid = "96028d6e-f290-464b-8a03-1e746e0363c3"
 authors = ["Nathanael Wong <natgeo.wong@outlook.com>"]
-version = "0.5.1"
+version = "0.5.2"
 
 [deps]
 Crayons = "a8cc5b0e-0ffa-5ad4-8c14-923d3ee1735f"
@@ -13,7 +13,6 @@ Glob = "c27321d9-0574-5035-807b-f59d2c89b15c"
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
 NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
-PrettyTables = "08abe8d2-0d0c-5749-adfa-8a2ac140af0d"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
@@ -24,7 +23,6 @@ GeoRegions = "1.1"
 Glob = "1"
 JLD2 = "0.1"
 NCDatasets = "0.9, 0.10"
-PrettyTables = "0.8"
 julia = "1"
 
 [extras]
