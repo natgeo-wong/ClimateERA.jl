@@ -111,6 +111,44 @@ function erarawfolder(epar::Dict,ereg::Dict,eroot::Dict)
 
 end
 
+function erarawfolder(epar::Dict,ereg::Dict,eroot::Dict,date::TimeType)
+
+    yr = "$(yr2str(date))");
+
+    if !haskey(epar,"level")
+
+        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"raw",yr);
+        if !isdir(fol)
+            @info "$(Dates.now()) - The folder for raw data of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
+            mkpath(fol);
+        end
+
+    else
+
+        if epar["level"] == "sfc";
+
+            fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"raw",yr);
+            if !isdir(fol)
+                @info "$(Dates.now()) - The folder for raw data of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
+                mkpath(fol);
+            end
+
+        else
+
+            phPa = "$(epar["ID"])-$(epar["level"])hPa"
+            fol = joinpath(eroot["era"],ereg["region"],epar["ID"],phPa,"raw",yr);
+            if !isdir(fol)
+                @info "$(Dates.now()) - The folder for raw data of the $(epar["name"]) parameter at pressure level $(epar["level"])hPa in the $(ereg["name"]) region does not exist.  Creating now ..."
+                mkpath(fol);
+            end
+        end
+
+    end
+
+    return fol
+
+end
+
 function eraanafolder(epar::Dict,ereg::Dict,eroot::Dict)
 
     if !haskey(epar,"level")
@@ -344,7 +382,7 @@ function erarawsave(
     emod::Dict, epar::Dict, ereg::Dict, date::TimeType, eroot::Dict
 )
 
-    ebase = erarawfolder(epar,ereg,eroot);
+    ebase = erarawfolder(epar,ereg,eroot,date);
     fnc = joinpath(ebase,erarawname(emod,epar,ereg,date));
     if isfile(fnc)
         @info "$(Dates.now()) - Stale NetCDF file $(fnc) detected.  Overwriting ..."
