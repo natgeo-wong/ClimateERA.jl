@@ -367,10 +367,10 @@ function erancread(fol::AbstractString,ncname::AbstractString,ID::AbstractString
 
 end
 
-function erarawread(emod::Dict,epar::Dict,ereg::Dict,eroot::Dict,dateii::TimeType)
+function erarawread(emod::Dict,epar::Dict,ereg::Dict,eroot::Dict,date::TimeType)
 
-    ebase = erarawfolder(epar,ereg,eroot,dateii);
-    enc = erarawname(emod,epar,ereg,dateii);
+    ebase = erarawfolder(epar,ereg,eroot,date);
+    enc = erarawname(emod,epar,ereg,date);
     return erancread(ebase,enc,epar)
 
 end
@@ -378,11 +378,11 @@ end
 function eraanaread(
     ID::AbstractString
     emod::Dict, epar::Dict, ereg::Dict, eroot::Dict,
-    dateii::TimeType
+    date::TimeType
 )
 
     ebase = eraanafolder(epar,ereg,eroot);
-    enc = eraananame(emod,epar,ereg,dateii);
+    enc = eraananame(emod,epar,ereg,date);
     return erancread(ebase,enc,ID)
 
 end
