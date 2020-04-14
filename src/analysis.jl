@@ -23,12 +23,16 @@ function eraanalysis(
     modID = emod["moduleID"]; nhr = hrindy(emod);
     epar["level"] = pre; nlon = ereg["size"][1]; nlat = ereg["size"][2]; nt = nhr+1;
 
-    rfol = erarawfol(epar,ereg,eroot); fraw = erarawname(emod,epar,ereg,Date(yr,1));
-    rfnc = joinpath(rfol,"$(yr)",fraw); ds = Dataset(rfnc,"r"); attr = Dict();
-    attr["lon"] = ds["longitude"].attrib; attr["lat"] = ds["latitude"].attrib;
-    try; attr["var"] = erancread(fncr,epar).attrib; catch; attr["var"] = Dict(); end
+    rfol = erarawfol(epar,ereg,eroot,Date(yr));
+    fraw = erarawname(emod,epar,ereg,Date(yr,1));
+    rds  = erancread(fraw,rfol); attr = Dict();
+
+    attr["lon"] = rds["longitude"].attrib; attr["lat"] = rds["latitude"].attrib;
+    try; attr["var"] = rds.attrib; catch; attr["var"] = Dict() end
     if haskey(attr["var"],"scale_factor"); delete!(attr["var"],"scale_factor"); end
     if haskey(attr["var"],"add_offset"); delete!(attr["var"],"add_offset"); end
+
+    close(rds);
 
     davg = zeros(Float32,nlon,nlat,nt+1,13); dstd = zeros(Float32,nlon,nlat,nt+1,13);
     dmax = zeros(Float32,nlon,nlat,nt+1,13); dmin = zeros(Float32,nlon,nlat,nt+1,13);
@@ -43,10 +47,8 @@ function eraanalysis(
 
         @info "$(Dates.now()) - Analyzing $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(region)) during $(Dates.monthname(mo)) $yr ..."
 
-        fraw = erarawname(emod,epar,ereg,Date(yr,mo));
-        fncr = joinpath(rawfol,"$(yr)",fraw); ds = Dataset(fncr,"r"); vds = ds[varname];
-        raw  = vds[:].*1.0; raw[ismissing.(raw)] .= NaN;
-        raw  = reshape(Float32.(raw),nlon,nlat,(nt-1),ndy);
+        raw = erarawread(emod,epar,ereg,eroot,Date(yr,mo)); raw[ismissing.(raw)] .= NaN;
+        raw = reshape(Float32.(raw),nlon,nlat,(nt-1),ndy);
 
         @debug "$(Dates.now()) - Extracting hourly information for each month ..."
         davg[:,:,1:nt-1,mo] = mean(raw,dims=4);

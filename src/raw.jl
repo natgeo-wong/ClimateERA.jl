@@ -47,6 +47,8 @@ function erarawregion(
             data[:,:,ibeg:iend] = vds[:];
         end
 
+        close(ds);
+
     end
 
     @info "$(Dates.now()) - $(uppercase(emod["dataset"])) $(epar["name"]) data for the entire $(gregionfullname(region)) region has been extracted."
@@ -106,6 +108,8 @@ function erarawpoint(
             ibeg = iend+1; iend = ibeg-1 + moday*nt;
             data[ibeg:iend] = vds[ilon,ilat,:];
         end
+
+        close(ds);
 
     end
 
@@ -169,10 +173,12 @@ function erarawgrid(
             data[:,:,ibeg:iend] = vds[iWE,iNS,:];
         end
 
+        close(ds);
+
     end
 
     @info "$(Dates.now()) - $(uppercase(emod["dataset"])) $(epar["name"]) data within the [N,S,E,W] bounds $(grid) has been extracted."
 
     return datavec,info,[glon,glat]
-    
+
 end

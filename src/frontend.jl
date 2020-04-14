@@ -304,53 +304,35 @@ function eraananame(emod::Dict,epar::Dict,ereg::Dict,date::TimeType)
 
 end
 
-function erancread(ncname::AbstractString,epar::Dict)
+erancread(ncname::AbstractString,fol::AbstractString="") = Dataset(joinpath(fol,ncname))
 
-    ds = Dataset(ncname);
-    try; return ds[epar["ID"]]; catch; return ds[epar["IDnc"]]; end
-    close(ds);
-
-end
-
-function erancread(ncname::AbstractString,ID::AbstractString)
-
-    ds = Dataset(ncname); return ds[ID];
-    close(ds);
-
-end
-
-function erancread(fol::AbstractString,ncname::AbstractString,epar::Dict)
-
-    ds = Dataset(joinpath(fol,ncname));
-    try; return ds[epar["ID"]]; catch; return ds[epar["IDnc"]]; end
-    close(ds);
-
-end
-
-function erancread(fol::AbstractString,ncname::AbstractString,ID::AbstractString)
-
-    ds = Dataset(joinpath(fol,ncname)); return ds[ID];
-    close(ds);
-
-end
-
-function erarawread(emod::Dict,epar::Dict,ereg::Dict,eroot::Dict,date::TimeType)
+function erarawread(
+    emod::Dict,epar::Dict,ereg::Dict,eroot::Dict,
+    date::TimeType;
+    raw::Bool=false
+)
 
     ebase = erarawfolder(epar,ereg,eroot,date);
     enc = erarawname(emod,epar,ereg,date);
-    return erancread(ebase,enc,epar)
+    eds = erancread(enc,ebase);
+    if haskey(eds,epar["ID"]); ID = epar["ID"]; else; ID = epar["IDnc"]; end
+    if raw; evar = eds[ID].var[:]; else; evar = eds[ID][:]*1; end
+    close(eds); return evar;
 
 end
 
 function eraanaread(
     ID::AbstractString,
     emod::Dict, epar::Dict, ereg::Dict, eroot::Dict,
-    date::TimeType
+    date::TimeType;
+    raw::Bool=false
 )
 
-    ebase = eraanafolder(epar,ereg,eroot);
+    ebase = eraanafolder(epar,ereg,eroot,date);
     enc = eraananame(emod,epar,ereg,date);
-    return erancread(ebase,enc,ID)
+    eds = erancread(enc,ebase);
+    if raw; evar = eds[ID].var[:]; else; evar = eds[ID][:]*1; end
+    close(eds); return evar;
 
 end
 
