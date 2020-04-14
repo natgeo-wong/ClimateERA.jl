@@ -236,7 +236,7 @@ function eramodule(moduleID::AbstractString,init::Dict)
         init["levels"] = ["sfc"];
     end
 
-    return init
+    return deepcopy(init)
 
 end
 
