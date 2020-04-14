@@ -245,7 +245,7 @@ function eraparameters(parameterID::AbstractString,emod::Dict)
     parlist = eraparametersload(emod);
 
     if sum(parlist[:,2] .== parameterID) == 0
-        error("$(Dates.now()) - Invalid parameter choice for $(emod["name"]).  Call queryepar(modID=$(emod["name"]),parID=$(parameterID)) for more information.")
+        error("$(Dates.now()) - Invalid parameter choice for $(emod["moduletype"]).  Call queryepar(modID=$(emod["moduletype"]),parID=$(parameterID)) for more information.")
     else
         ID = (parlist[:,2] .== parameterID);
     end
