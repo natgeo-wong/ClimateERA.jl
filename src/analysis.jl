@@ -47,7 +47,8 @@ function eraanalysis(
 
         @info "$(Dates.now()) - Analyzing $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(region)) during $(Dates.monthname(mo)) $yr ..."
 
-        raw = erarawread(emod,epar,ereg,eroot,Date(yr,mo)); raw[ismissing.(raw)] .= NaN;
+        rds,rvar = erarawread(emod,epar,ereg,eroot,Date(yr,mo));
+        raw = rvar[:]*1; close(rds); raw[ismissing.(raw)] .= NaN;
         raw = reshape(Float32.(raw),nlon,nlat,(nt-1),ndy);
 
         @debug "$(Dates.now()) - Extracting hourly information for each month ..."

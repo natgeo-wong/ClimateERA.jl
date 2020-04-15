@@ -308,31 +308,27 @@ erancread(ncname::AbstractString,fol::AbstractString="") = Dataset(joinpath(fol,
 
 function erarawread(
     emod::Dict,epar::Dict,ereg::Dict,eroot::Dict,
-    date::TimeType;
-    raw::Bool=false
+    date::TimeType
 )
 
     ebase = erarawfolder(epar,ereg,eroot,date);
     enc = erarawname(emod,epar,ereg,date);
     eds = erancread(enc,ebase);
     if haskey(eds,epar["ID"]); ID = epar["ID"]; else; ID = epar["IDnc"]; end
-    if raw; evar = eds[ID].var[:]; else; evar = eds[ID][:]*1; end
-    close(eds); return evar;
+    return eds,eds[ID]
 
 end
 
 function eraanaread(
     ID::AbstractString,
     emod::Dict, epar::Dict, ereg::Dict, eroot::Dict,
-    date::TimeType;
-    raw::Bool=false
+    date::TimeType
 )
 
     ebase = eraanafolder(epar,ereg,eroot,date);
     enc = eraananame(emod,epar,ereg,date);
     eds = erancread(enc,ebase);
-    if raw; evar = eds[ID].var[:]; else; evar = eds[ID][:]*1; end
-    close(eds); return evar;
+    return eds,eds[ID]
 
 end
 
