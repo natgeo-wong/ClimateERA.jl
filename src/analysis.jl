@@ -15,6 +15,14 @@ function erananmean(data)
 end
 
 function eraanalysis(
+    emod::Dict, epar::Dict, ereg::Dict, etime::Dict, eroot::Dict
+)
+
+    for yr = etime["Begin"] : etime["End"]; eraanalysis(emod,epar,ereg,yr,eroot); end
+
+end
+
+function eraanalysis(
     emod::Dict, epar::Dict, ereg::Dict,
     yr::Integer, eroot::Dict
 )
