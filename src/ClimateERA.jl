@@ -14,7 +14,7 @@ using GeoRegions
 export
         eramodule, eraparameters, erapressure, eratime, eraregion,
         erastartup, erainitialize, eraroot, erawelcome, eradownload, eraanalysis,
-        eratmp2raw,
+        eratmp2raw, erasubregion,
         erarawregion, erarawpoint, erarawgrid,
         eraparameterscopy, eraparametersload, eraparametersadd,
         erarawname, eraananame, erancread, erarawread, eraanaread, erarawsave,

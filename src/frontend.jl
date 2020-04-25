@@ -392,3 +392,19 @@ function erarawsave(
     close(ds)
 
 end
+
+function erasubregion(
+    emod::Dict, epar::Dict, ereg::Dict, etime::Dict, eroot::Dict,
+    preg::Dict
+)
+
+    for yr = etime["Begin"] : etime["End"]
+
+        pds,pvar = erarawread(emod,epar,preg,eroot,date);
+        pdata = pvar[:]*1; close(pds);
+        edata = regionextractgrid(pdata,ereg["grid"],preg["lon"],preg["lat"]);
+        erarawsave(edata,emod,epar,ereg,date,eroot)
+        putinfo(emod,epar,ereg,etime,eroot)
+
+    end
+end

@@ -15,6 +15,25 @@ function erananmean(data)
 end
 
 function eraanalysis(
+    init::Dict, eroot::Dict;
+    modID::AbstractString, parID::AbstractString,
+    regID::AbstractString="GLB",
+    plvls::Union{AbstractString,Vector{<:Real}}
+)
+
+    emod,epar,ereg,etime = erainitialize(init,modID=modID,parID=parID,regID=regID);
+
+    if plvls == "sfc"
+        epar["level"] = plvls; eraanalysis(emod,epar,ereg,etime,eroot);
+    else
+        for pii in plvls;
+            epar["level"] = pii; eraanalysis(emod,epar,ereg,etime,eroot);
+        end
+    end
+
+end
+
+function eraanalysis(
     emod::Dict, epar::Dict, ereg::Dict, etime::Dict, eroot::Dict
 )
 

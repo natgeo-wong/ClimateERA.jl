@@ -168,6 +168,22 @@ function eradscript(emod::Dict,epar::Dict,ereg::Dict,etime::Dict)
 
 end
 
+function eradownload(
+    init::Dict, eroot::Dict;
+    modID::AbstractString, parID::AbstractString,
+    regID::AbstractString="GLB", timeID::Union{Integer,Vector}=0,
+    gres::Real=0
+)
+
+    emod,epar,ereg,etime = erainitialize(
+        init;
+        modID=modID,parID=parID,regID=regID,timeID=timeID,
+        gres=gres
+    );
+    eradownload(emod,epar,ereg,etime,eroot)
+
+end
+
 function eradownload(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
     prelist = emod["levels"]; dataID = emod["datasetID"];

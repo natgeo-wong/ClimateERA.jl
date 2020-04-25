@@ -1,29 +1,50 @@
-# ClimateERA
-ClimateERA is a package specifically designed to download and analyse ERA reanalysis data.  This
-package is meant to automate the process of downloading, resort and display specific ERA5 and
-ERA-Interim datasets, and can be customized to include other reanalysis datasets that were not
-utilized by the creator.
+# **<div align="center">ClimateERA.jl</div>**
 
-ClimateERA supports the following ECMWF reanalysis datasets:
-* ERA5 (1979 - present)
-* ERA-Interim (1979 - 2018) (NB: 2019 is not supported because the full year data is not available.)
+**Created By:** Nathanael Wong (nathanaelwong@fas.harvard.edu)
 
-The following functionalities are currently available in ClimateERA:
-* Creation of python download scripts for ERA5 and ERA-Interim
+**Developer To-Do for v1.0:**
+* [x] Testing of `analysis` functions
+* [ ] Comprehensive documentation and Jupyter notebook examples
+* [ ] `eraquery` function series development
 
-The following functionalities are in development in ClimateERA:
-* Analysis of downloaded data
-* Calculations of various climatological parameters:
-    - Water Vapour Weighted Column Temperature
-    - Eddy Intensity
-    - Streamfunction (Zonal/Meridional/Horizontal)
-    - Fluxes (Momentum/Heat/Moisture)
-    - Tropopause Height/Gradients
+## Introduction
 
-ClimateERA requires the following Julia dependencies:
-* Dates, DelimitedFiles, Printf
-* NetCDF, Glob, JLD2, FileIO
-* ClimateEasy
+`ClimateERA.jl` is a Julia package that aims to streamline the following processes:
+* downloading of ECMWF reanalysis data (ERA-Interim and ERA5)
+* basic analysis (mean, maximum, minimum, standard deviation, etc.) of downloaded data
+* extraction of data for a given **GeoRegion** (see `GeoRegions.jl` for more information)
 
-Author(s):
-* Nathanael Zhixin Wong: nathanaelwong@fas.harvard.edu
+`ClimateERA.jl` can be installed via
+```
+] add ClimateERA
+```
+
+## Requirements
+There are some non-Julia functionalities required in order to download reanalysis data using `ClimateERA.jl`:
+* A working Python installation
+* For ERA-Interim, please follow the instructions here to install the ECMWF API
+* For ERA5, please follow the instructions here to install the CDS API
+
+## ECMWF Reanalysis
+Both ERA-Interim and ERA5 are produced by the European Centre for Medium-Range Weather Forecasts.  For more information regarding the ERA-Interim and ERA5 reanalysis models, please refer to the following:
+* ERA-Interim [[Documentation](https://www.ecmwf.int/en/elibrary/8174-era-interim-archive-version-20)] [[Paper](https://rmets.onlinelibrary.wiley.com/doi/full/10.1002/qj.828)]
+* ERA5 [[Documentation](https://confluence.ecmwf.int/display/CKB/ERA5%3A+data+documentation)]
+
+## Workflow
+
+### Startup and Initialization
+
+## Setup
+### Directories
+By default, `ClimateERA.jl` saves all data into a `datadir` repository that is user-specified, or else it will otherwise default to
+```
+datadir="~/research/ecmwf/"
+```
+
+### Regions
+`ClimateERA.jl` utlizes `GeoRegions.jl` to specify domains from which data is to be extracted.  If the option is not specified, then `ClimateERA.jl` will assume that the user wishes to process **global** data (which may not be wise especially for GPM due to the large file sizes involved and memory required).
+
+For more information, please see the repository for `GeoRegions.jl` [here](https://github.com/natgeo-wong/GeoRegions.jl).
+
+### Downloads
+`ClimateERA.jl` does not directly download reanalysis data from ECMWF/CDS.  Instead, it generates a `Python` script according to the user's choice of parameters that the user will run with Python to download the data required.
