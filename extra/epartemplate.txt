@@ -1,6 +1,6 @@
 # (1)Mode,(2)ID,(3)IDnc,(4)era5,(5)erai,(6)Full,(7)Units
 
-# PREDEFINED EPARAMETERS
+# PREDEFINED EPARAMETERS (v1.0)
 dsfc,u_sfc,u10,10m_u_component_of_wind,165.128,Surface u-Wind,m s^{-1}
 dsfc,v_sfc,v10,10m_v_component_of_wind,166.128,Surface v-Wind,m s^{-1}
 dsfc,t_sfc,t2m,2m_temperature,167.128,Surface Temperature,K
@@ -14,10 +14,11 @@ dpre,w_air,w,vertical_velocity,135.128,w-Wind,m s^{-1}
 dpre,t_air,t,temperature,130.128,Temperature,K
 dpre,z_air,z,geopotential,129.128,Pressure Level Geopotential,m^2 s^{-2}
 dpre,div,d,divergence,155.128,Divergence,s^{-1}
-dpre,vort,pv,potential_vorticity,60.128,Potential Vorticity,K m^{-2} kg^{-1} s^{-1}
-msfc,prcp_tot,tp,total_precipitation,228.128,Total Precipitation,kg m^{-2}
-msfc,prcp_conv,cp,convective_precipitation,143.128,Convective Precipitation,kg m^{-2}
-msfc,prcp_ls,lsp,large_scale_precipitation,142.128,Large-Scale Precipitation,kg m^{-2}
+dpre,pvort,pv,potential_vorticity,60.128,Potential Vorticity,K m^{-2} kg^{-1} s^{-1}
+dpre,rvort,vo,vorticity,60.128,Vorticity (Relative),s^{-1}
+msfc,prcp_tot,tp,total_precipitation,228.128,Total Precipitation,m
+msfc,prcp_conv,cp,convective_precipitation,143.128,Convective Precipitation,m
+msfc,prcp_ls,lsp,large_scale_precipitation,142.128,Large-Scale Precipitation,m
 msfc,cld_tot,cc,total_cloud_cover,164.128,Total Cloud Cover,%%
 msfc,tcw,tcw,total_column_water,136.128,Total Column Water,kg m^{-2}
 msfc,tcwv,tcwv,total_column_water_vapour,137.128,Total Column Water Vapour,kg m^{-2}

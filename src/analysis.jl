@@ -57,9 +57,11 @@ function eraanalysis(
     rds  = erancread(fraw,rfol); attr = Dict();
 
     attr["lon"] = rds["longitude"].attrib; attr["lat"] = rds["latitude"].attrib;
-    try; attr["var"] = rds.attrib; catch; attr["var"] = Dict() end
+    try; attr["var"] = rds[ereg["IDnc"]].attrib; catch; attr["var"] = Dict() end
     if haskey(attr["var"],"scale_factor"); delete!(attr["var"],"scale_factor"); end
     if haskey(attr["var"],"add_offset"); delete!(attr["var"],"add_offset"); end
+    if haskey(attr["var"],"_FillValue"); delete!(attr["var"],"_FillValue"); end
+    if haskey(attr["var"],"missing_value"); delete!(attr["var"],"missing_value"); end
 
     close(rds);
 
