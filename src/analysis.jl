@@ -17,11 +17,15 @@ end
 function eraanalysis(
     init::Dict, eroot::Dict;
     modID::AbstractString, parID::AbstractString,
-    regID::AbstractString="GLB",
-    plvls::Union{AbstractString,Vector{<:Real}}
+    regID::AbstractString="GLB", timeID::Union{Integer,Vector}=0,
+    gres::Real=0, plvls::Union{AbstractString,Vector{<:Real}}
 )
 
-    emod,epar,ereg,etime = erainitialize(init,modID=modID,parID=parID,regID=regID);
+    emod,epar,ereg,etime = erainitialize(
+        init;
+        modID=modID,parID=parID,regID=regID,timeID=timeID,
+        gres=gres
+    );
 
     if plvls == "sfc"
         epar["level"] = plvls; eraanalysis(emod,epar,ereg,etime,eroot);
