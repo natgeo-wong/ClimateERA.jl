@@ -18,7 +18,7 @@ function eraanalysis(
     init::Dict, eroot::Dict;
     modID::AbstractString, parID::AbstractString,
     regID::AbstractString="GLB", timeID::Union{Integer,Vector}=0,
-    gres::Real=0, plvls::Union{AbstractString,Vector{<:Real}}
+    gres::Real=0, plvls::Union{AbstractString,Integer,Vector{<:Real}}
 )
 
     emod,epar,ereg,etime = erainitialize(
@@ -27,12 +27,9 @@ function eraanalysis(
         gres=gres
     );
 
-    if plvls == "sfc"
-        epar["level"] = plvls; eraanalysis(emod,epar,ereg,etime,eroot);
-    else
-        for pii in plvls;
-            epar["level"] = pii; eraanalysis(emod,epar,ereg,etime,eroot);
-        end
+    if typeof(plvls) <: Array
+          for p in plvls; epar["level"] = p; eraanalysis(emod,epar,ereg,etime,eroot); end
+    else; epar["level"] = plvls; eraanalysis(emod,epar,ereg,etime,eroot);
     end
 
 end

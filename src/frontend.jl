@@ -398,13 +398,12 @@ function erasubregion(
     preg::Dict
 )
 
-    for yr = etime["Begin"] : etime["End"]
+    for yr = etime["Begin"] : etime["End"], mo = 1:12; date = Date(yr,mo);
 
-        pds,pvar = erarawread(emod,epar,preg,eroot,date);
-        pdata = pvar[:]*1; close(pds);
+        pds,pvar = erarawread(emod,epar,preg,eroot,date); pdata = pvar[:]*1; close(pds);
         edata = regionextractgrid(pdata,ereg["grid"],preg["lon"],preg["lat"]);
-        erarawsave(edata,emod,epar,ereg,date,eroot)
-        putinfo(emod,epar,ereg,etime,eroot)
+        erarawsave(edata,emod,epar,ereg,date,eroot); putinfo(emod,epar,ereg,etime,eroot);
 
     end
+
 end
