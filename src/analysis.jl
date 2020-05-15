@@ -49,19 +49,6 @@ function eraanalysis(
 
     nhr = hrindy(emod); nlon = ereg["size"][1]; nlat = ereg["size"][2]; nt = nhr+1;
 
-    rfol = erarawfolder(epar,ereg,eroot,Date(yr));
-    fraw = erarawname(emod,epar,ereg,Date(yr,1));
-    rds  = erancread(fraw,rfol); attr = Dict();
-
-    attr["lon"] = rds["longitude"].attrib; attr["lat"] = rds["latitude"].attrib;
-    try; attr["var"] = rds[ereg["IDnc"]].attrib; catch; attr["var"] = Dict() end
-    if haskey(attr["var"],"scale_factor"); delete!(attr["var"],"scale_factor"); end
-    if haskey(attr["var"],"add_offset"); delete!(attr["var"],"add_offset"); end
-    if haskey(attr["var"],"_FillValue"); delete!(attr["var"],"_FillValue"); end
-    if haskey(attr["var"],"missing_value"); delete!(attr["var"],"missing_value"); end
-
-    close(rds);
-
     @info "$(Dates.now()) - Preallocating arrays ..."
 
     davg = zeros(Float32,nlon,nlat,nt+1,13); dstd = zeros(Float32,nlon,nlat,nt+1,13);
@@ -152,9 +139,30 @@ function eraanasave(
 
     @debug "$(Dates.now()) - Creating NetCDF file $(afnc) for analyzed $(emod["dataset"]) $(epar["name"]) data in $yr ..."
 
-    ds = Dataset(afnc,"c");
-    ds.dim["longitude"] = ereg["size"][1]; ds.dim["latitude"] = ereg["size"][2];
-    nt = hrindy(emod); ds.dim["hour"] = nt; ds.dim["month"] = 12;
+    ds = Dataset(afnc,"c"); nt = hrindy(emod);
+    ds.dim["longitude"] = ereg["size"][1];
+    ds.dim["latitude"] = ereg["size"][2];
+    ds.dim["hour"] = nt;
+    ds.dim["month"] = 12;
+
+    nclon = defVar(ds,"lon",Float64,("longitude",),attrib = Dict(
+        "units"     => "degrees_east",
+        "long_name" => "longitude",
+    ))
+
+    nclat = defVar(ds,"lat",Float64,("latitude",),attrib = Dict(
+        "units"     => "degrees_north",
+        "long_name" => "latitude",
+    ))
+
+    nclon[:] = ereg["lon"];
+    nclat[:] = ereg["lat"];
+
+    attr_var = Dict(
+        "long_name" => epar["era5"],
+        "units"     => epar["unit"],
+        "level"     => epar["level"],
+    );
 
     dlon = defVar(ds,"longitude",Float32,("longitude",),attrib=attr["lon"])
     dlon[:] = ereg["lon"];
