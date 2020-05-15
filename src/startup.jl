@@ -1,5 +1,45 @@
 
 
+## ClimateERA Root Directory Setup
+
+function eraroot(actionID)
+
+    path = joinpath("$(homedir())","research","ecmwf");
+    @warn "$(Dates.now()) - No directory path was given.  Setting to default path: $(path) for ClimateERA data downloads."
+
+    if isdir(path)
+        @info "$(Dates.now()) - The default path $(path) exists and therefore can be used as a directory for ClimateERA data downloads."
+    else
+        if actionID != 1
+            error("$(Dates.now()) - The path $(path) does not exist.  If you are doing analysis, please point towards the correct path before proceeding ...")
+        else
+            @warn "$(Dates.now()) - The path $(path) does not exist.  A new directory will be created here.  Therefore if you already have an existing repository for ClimateERA data, make sure that $(path) is the correct location."
+            @info "$(Dates.now()) - Creating path $(path) ..."
+            mkpath(path);
+        end
+    end
+
+    return eramkroot(path)
+
+end
+
+function eraroot(path::AbstractString,actionID::Integer)
+
+    if isdir(path)
+        @info "$(Dates.now()) - The default path $(path) exists and therefore can be used as a directory for ClimateERA data downloads."
+    else
+        if actionID != 1
+            error("$(Dates.now()) - The path $(path) does not exist.  If you are doing analysis, please point towards the correct path before proceeding ...")
+        else
+            @warn "$(Dates.now()) - The path $(path) does not exist.  A new directory will be created here.  Therefore if you already have an existing repository for ClimateERA data, make sure that $(path) is the correct location."
+            mkpath(path);
+        end
+    end
+
+    return eramkroot(path)
+
+end
+
 function eramkroot(eroot::AbstractString)
 
     eiroot = joinpath(eroot,"erai");
@@ -23,6 +63,8 @@ function eramkroot(eroot::AbstractString)
     return Dict("erai"=>eiroot,"era5"=>e5root,"plot"=>eproot);
 
 end
+
+## ERA Startup
 
 function eraaction(actionID::Integer)
     if     actionID == 1; return Dict("ID"=>1,"name"=>"download");
@@ -64,7 +106,7 @@ function erastartup(;
     init = Dict("actionID"=>aID,"action"=>action["name"],
                 "datasetID"=>dID,"dataset"=>dataset["name"],
                 "prefix"=>dataset["short"])
-    
+
     return init,eroot
 
 end

@@ -7,46 +7,6 @@ include:
 
 """
 
-## ClimateERA Root Directory Setup
-
-function eraroot(actionID)
-
-    path = joinpath("$(homedir())","research","ecmwf");
-    @warn "$(Dates.now()) - No directory path was given.  Setting to default path: $(path) for ClimateERA data downloads."
-
-    if isdir(path)
-        @info "$(Dates.now()) - The default path $(path) exists and therefore can be used as a directory for ClimateERA data downloads."
-    else
-        if actionID != 1
-            error("$(Dates.now()) - The path $(path) does not exist.  If you are doing analysis, please point towards the correct path before proceeding ...")
-        else
-            @warn "$(Dates.now()) - The path $(path) does not exist.  A new directory will be created here.  Therefore if you already have an existing repository for ClimateERA data, make sure that $(path) is the correct location."
-            @info "$(Dates.now()) - Creating path $(path) ..."
-            mkpath(path);
-        end
-    end
-
-    return eramkroot(path)
-
-end
-
-function eraroot(path::AbstractString,actionID::Integer)
-
-    if isdir(path)
-        @info "$(Dates.now()) - The default path $(path) exists and therefore can be used as a directory for ClimateERA data downloads."
-    else
-        if actionID != 1
-            error("$(Dates.now()) - The path $(path) does not exist.  If you are doing analysis, please point towards the correct path before proceeding ...")
-        else
-            @warn "$(Dates.now()) - The path $(path) does not exist.  A new directory will be created here.  Therefore if you already have an existing repository for ClimateERA data, make sure that $(path) is the correct location."
-            mkpath(path);
-        end
-    end
-
-    return eramkroot(path)
-
-end
-
 ## ClimateERA Folders
 
 function eraregfolder(ereg::Dict,eroot::Dict)
