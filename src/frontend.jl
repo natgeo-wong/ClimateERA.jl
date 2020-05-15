@@ -407,3 +407,12 @@ function erasubregion(
     end
 
 end
+
+function putinfo(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
+
+    rfol = pwd(); efol = erafolder(emod,epar,ereg,etime,eroot,"sfc");
+    cd(efol["var"]); @save "info_par.jld2" emod epar;
+    cd(efol["reg"]); @save "info_reg.jld2" ereg;
+    cd(rfol);
+
+end
