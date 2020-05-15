@@ -32,7 +32,7 @@ end
 
 # ClimateERA Parameter Setup
 
-function eraparameterscopy(;overwrite::Bool=false)
+function eraparametercopy(;overwrite::Bool=false)
 
     jfol = joinpath(DEPOT_PATH[1],"files/ClimateERA/"); mkpath(jfol);
     ftem = joinpath(@__DIR__,"../extra/epartemplate.txt")
@@ -52,29 +52,29 @@ function eraparameterscopy(;overwrite::Bool=false)
 
 end
 
-function eraparametersload()
+function eraparameterload()
 
     @debug "$(Dates.now()) - Loading information on parameters used in ERA reanalysis."
-    return readdlm(eraparameterscopy(),',',comments=true);
+    return readdlm(eraparametercopy(),',',comments=true);
 
 end
 
-function eraparametersload(init::Dict)
+function eraparameterload(init::Dict)
 
     @debug "$(Dates.now()) - Loading information on parameters used in ERA reanalysis."
-    allparams = readdlm(eraparameterscopy(),',',comments=true);
+    allparams = readdlm(eraparametercopy(),',',comments=true);
 
     @debug "$(Dates.now()) - Filtering out for parameters in the $(init["modulename"]) module."
     parmods = allparams[:,1]; return allparams[(parmods.==init["moduletype"]),:];
 
 end
 
-function eraparametersdisp(parlist::AbstractArray,init::Dict)
+function eraparameterdisp(parlist::AbstractArray,init::Dict)
     @info "$(Dates.now()) - The following variables are offered in the $(init["modulename"]) module:"
     for ii = 1 : size(parlist,1); @info "$(Dates.now()) - $(ii)) $(parlist[ii,6])" end
 end
 
-function eraparametersadd(fadd::AbstractString)
+function eraparameteradd(fadd::AbstractString)
 
     if !isfile(fadd); error("$(Dates.now()) - The file $(fadd) does not exist."); end
     ainfo = readdlm(fadd,',',comments=true); aparID = ainfo[:,2]; nadd = length(aparID);
@@ -93,7 +93,7 @@ function eraparameteradd(;
     full::AbstractString, unit::AbstractString,
     throw::Bool=true
 )
-    fpar = eraparameterscopy(); pinfo = eraparametersload(); eparID = pinfo[:,2];
+    fpar = eraparametercopy(); pinfo = eraparameterload(); eparID = pinfo[:,2];
 
     if sum(eparID.==parID) > 0
 
@@ -240,9 +240,9 @@ function eramodule(moduleID::AbstractString,init::Dict)
 
 end
 
-function eraparameters(parameterID::AbstractString,emod::Dict)
+function eraparameter(parameterID::AbstractString,emod::Dict)
 
-    parlist = eraparametersload(emod);
+    parlist = eraparameterload(emod);
 
     if sum(parlist[:,2] .== parameterID) == 0
         error("$(Dates.now()) - Invalid parameter choice for $(emod["moduletype"]).  Call queryepar(modID=$(emod["moduletype"]),parID=$(parameterID)) for more information.")
@@ -299,7 +299,7 @@ function erainitialize(
     gres::Real=0
 )
 
-    emod = eramodule(modID,init); epar = eraparameters(parID,emod);
+    emod = eramodule(modID,init); epar = eraparameter(parID,emod);
     ereg = eraregion(regID,emod,gres); etime = eratime(timeID,emod);
 
     return emod,epar,ereg,etime

@@ -4,34 +4,38 @@ module ClimateERA
 # reanalysis data.
 
 ## Modules Used
-using Logging, Dates
-using DelimitedFiles, Printf, Statistics
-using NCDatasets, Glob, JLD2, FileIO
 using Crayons
+using Dates
+using DelimitedFiles
 using GeoRegions
+using Glob
+using JLD2
+using Logging
+using NCDatasets
+using Printf
+using Statistics
 
 ## Exporting the following functions:
 export
-        eramodule, eraparameters, erapressure, eratime, eraregion,
-        erastartup, erainitialize, eraroot, erawelcome, eradownload, eraanalysis,
-        eratmp2raw, erasubregion,
+        erastartup, erainitialize, eradownload, eraanalysis, erasubregion, erancread,
+        erarawname, erarawfolder, erarawread, erarawsave,
+        eraananame, eraanafolder, eraanaread,
+        erafolder, eraregfolder, eravarfolder, eraimgfolder,
         erarawregion, erarawpoint, erarawgrid,
-        eraparameterscopy, eraparametersload, eraparametersadd,
-        erarawname, eraananame, erancread, erarawread, eraanaread, erarawsave,
-        eraregfolder, eravarfolder, erarawfolder, eraanafolder, eraimgfolder, erafolder,
-        queryeaction, queryedataset, queryemod, queryepar,
+        eraparameterload, eraparametercopy, eraparameteradd, erapressureload,
+        queryeaction, queryedataset, queryemod, queryepar, putinfo,
         hrstep, hrindy
 
 ## Including other files in the module
 
 include("startup.jl")
-include("frontend.jl")
-include("backend.jl")
-include("query.jl")
-
 include("initialize.jl")
 include("download.jl")
 include("analysis.jl")
 #include("calculate.jl")
+
+include("frontend.jl")
+include("backend.jl")
+include("query.jl")
 
 end # module

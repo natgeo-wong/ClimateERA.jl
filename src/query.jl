@@ -4,7 +4,7 @@ function queryeaction(;parID::AbstractString="")
 
     if parID != ""
 
-        allepar = readdlm(eraparameterscopy(),',',comments=true);
+        allepar = readdlm(eraparametercopy(),',',comments=true);
         @info "$(Dates.now()) - Printing available actions for the given parID $(parID) ..."
 
         parIDs = allepar[:,2]; modIDs = allepar[:,1];
@@ -101,7 +101,7 @@ end
 
 function queryeparinfo(parID::AbstractString)
 
-    allepar = readdlm(eraparameterscopy(),',',comments=true);
+    allepar = readdlm(eraparametercopy(),',',comments=true);
 
     parIDs = allepar[:,2]
     if any(parIDs .== parID); parinfo = allepar[parIDs .== parID,:];
@@ -124,7 +124,7 @@ end
 
 function queryeparmod(parID::AbstractString, modID::AbstractString)
 
-    allepar = readdlm(eraparameterscopy(),',',comments=true);
+    allepar = readdlm(eraparametercopy(),',',comments=true);
 
     parIDs = allepar[:,2]
     if any(parIDs .== parID); pmodID = allepar[parIDs .== parID,1][1];
@@ -144,7 +144,7 @@ end
 
 function queryeparlist(modID::AbstractString)
 
-    allepar = readdlm(eraparameterscopy(),',',comments=true);
+    allepar = readdlm(eraparametercopy(),',',comments=true);
     mset = ["dsfc","dpre","msfc","mpre","csfc","cpre"]
     if any(mset .== modID)
 
