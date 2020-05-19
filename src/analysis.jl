@@ -10,8 +10,8 @@ are to be extracted from.  Functionalities include:
 """
 
 function erananmean(data)
-    dataii = @view data[data .!= NaN32]
-    if dataii != []; return mean(dataii); else; return NaN32; end
+    dataii = @view data[.!isnan.(data)]
+    if dataii != []; return mean(dataii); else; return NaN; end
 end
 
 function eraanalysis(
