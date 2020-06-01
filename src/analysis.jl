@@ -114,7 +114,7 @@ function eraanalysis(
         mmin[ilon,it,imo] = erananmean(@view dmin[ilon,:,it,imo]);
     end
 
-    eraanasave([davg,dstd,dmax,dmin],[zavg,zstd,zmax,zmin],[mavg,mstd,mmax,mmin],attr,
+    eraanasave([davg,dstd,dmax,dmin],[zavg,zstd,zmax,zmin],[mavg,mstd,mmax,mmin],
                emod,epar,ereg,yr,eroot)
 
 end
@@ -123,7 +123,7 @@ function eraanasave(
     data::Array{Array{Float32,4},1},
     zdata::Array{Array{Float32,3},1},
     mdata::Array{Array{Float32,3},1},
-    attr::Dict, emod::Dict, epar::Dict, ereg::Dict,
+    emod::Dict, epar::Dict, ereg::Dict,
     yr::Integer, eroot::Dict
 )
 
@@ -145,12 +145,12 @@ function eraanasave(
     ds.dim["hour"] = nt;
     ds.dim["month"] = 12;
 
-    nclon = defVar(ds,"lon",Float64,("longitude",),attrib = Dict(
+    nclon = defVar(ds,"longitude",Float64,("longitude",),attrib = Dict(
         "units"     => "degrees_east",
         "long_name" => "longitude",
     ))
 
-    nclat = defVar(ds,"lat",Float64,("latitude",),attrib = Dict(
+    nclat = defVar(ds,"latitude",Float64,("latitude",),attrib = Dict(
         "units"     => "degrees_north",
         "long_name" => "latitude",
     ))
@@ -164,317 +164,311 @@ function eraanasave(
         "level"     => epar["level"],
     );
 
-    dlon = defVar(ds,"longitude",Float32,("longitude",),attrib=attr["lon"])
-    dlon[:] = ereg["lon"];
-
-    dlat = defVar(ds,"latitude",Float32,("latitude",),attrib=attr["lat"])
-    dlat[:] = ereg["lat"];
-
     @debug "$(Dates.now()) - Saving analyzed $(uppercase(emod["dataset"])) $(epar["name"]) data for $yr to NetCDF file $(afnc) ..."
 
     v = defVar(ds,"domain_yearly_mean_climatology",Float32,
-               ("longitude","latitude"),attrib=attr["var"]);
+               ("longitude","latitude"),attrib=attr_var);
     v[:] = data[1][:,:,nt+1,end];
 
     v = defVar(ds,"domain_yearly_std_climatology",Float32,
-               ("longitude","latitude"),attrib=attr["var"]);
+               ("longitude","latitude"),attrib=attr_var);
     v[:] = data[2][:,:,nt+1,end];
 
     v = defVar(ds,"domain_yearly_maximum_climatology",Float32,
-               ("longitude","latitude"),attrib=attr["var"]);
+               ("longitude","latitude"),attrib=attr_var);
     v[:] = data[3][:,:,nt+1,end];
 
     v = defVar(ds,"domain_yearly_minimum_climatology",Float32,
-               ("longitude","latitude"),attrib=attr["var"]);
+               ("longitude","latitude"),attrib=attr_var);
     v[:] = data[4][:,:,nt+1,end];
 
 
     v = defVar(ds,"domain_yearly_mean_hourly",Float32,
-               ("longitude","latitude","hour"),attrib=attr["var"]);
+               ("longitude","latitude","hour"),attrib=attr_var);
     v[:] = data[1][:,:,1:nt,end];
 
     v = defVar(ds,"domain_yearly_std_hourly",Float32,
-           ("longitude","latitude","hour"),attrib=attr["var"]);
+           ("longitude","latitude","hour"),attrib=attr_var);
     v[:] = data[2][:,:,1:nt,end];
 
     v = defVar(ds,"domain_yearly_maximum_hourly",Float32,
-               ("longitude","latitude","hour"),attrib=attr["var"]);
+               ("longitude","latitude","hour"),attrib=attr_var);
     v[:] = data[3][:,:,1:nt,end];
 
     v = defVar(ds,"domain_yearly_minimum_hourly",Float32,
-               ("longitude","latitude","hour"),attrib=attr["var"]);
+               ("longitude","latitude","hour"),attrib=attr_var);
     v[:] = data[4][:,:,1:nt,end];
 
 
     v = defVar(ds,"domain_yearly_mean_diurnalvariance",Float32,
-           ("longitude","latitude"),attrib=attr["var"]);
+           ("longitude","latitude"),attrib=attr_var);
     v[:] = data[1][:,:,nt+2,end];
 
     v = defVar(ds,"domain_yearly_std_diurnalvariance",Float32,
-               ("longitude","latitude"),attrib=attr["var"]);
+               ("longitude","latitude"),attrib=attr_var);
     v[:] = data[2][:,:,nt+2,end];
 
     v = defVar(ds,"domain_yearly_maximum_diurnalvariance",Float32,
-               ("longitude","latitude"),attrib=attr["var"]);
+               ("longitude","latitude"),attrib=attr_var);
     v[:] = data[3][:,:,nt+2,end];
 
     v = defVar(ds,"domain_yearly_minimum_diurnalvariance",Float32,
-           ("longitude","latitude"),attrib=attr["var"]);
+           ("longitude","latitude"),attrib=attr_var);
     v[:] = data[4][:,:,nt+2,end];
 
 
     v = defVar(ds,"domain_monthly_mean_climatology",Float32,
-               ("longitude","latitude","month"),attrib=attr["var"]);
+               ("longitude","latitude","month"),attrib=attr_var);
     v[:] = data[1][:,:,nt+1,1:12];
 
     v = defVar(ds,"domain_monthly_std_climatology",Float32,
-               ("longitude","latitude","month"),attrib=attr["var"]);
+               ("longitude","latitude","month"),attrib=attr_var);
     v[:] = data[2][:,:,nt+1,1:12];
 
     v = defVar(ds,"domain_monthly_maximum_climatology",Float32,
-               ("longitude","latitude","month"),attrib=attr["var"]);
+               ("longitude","latitude","month"),attrib=attr_var);
     v[:] = data[3][:,:,nt+1,1:12];
 
     v = defVar(ds,"domain_monthly_minimum_climatology",Float32,
-               ("longitude","latitude","month"),attrib=attr["var"]);
+               ("longitude","latitude","month"),attrib=attr_var);
     v[:] = data[4][:,:,nt+1,1:12];
 
 
     v = defVar(ds,"domain_monthly_mean_hourly",Float32,
-               ("longitude","latitude","hour","month"),attrib=attr["var"]);
+               ("longitude","latitude","hour","month"),attrib=attr_var);
     v[:] = data[1][:,:,1:nt,1:12];
 
     v = defVar(ds,"domain_monthly_std_hourly",Float32,
-               ("longitude","latitude","hour","month"),attrib=attr["var"]);
+               ("longitude","latitude","hour","month"),attrib=attr_var);
     v[:] = data[2][:,:,1:nt,1:12];
 
     v = defVar(ds,"domain_monthly_maximum_hourly",Float32,
-               ("longitude","latitude","hour","month"),attrib=attr["var"]);
+               ("longitude","latitude","hour","month"),attrib=attr_var);
     v[:] = data[3][:,:,1:nt,1:12];
 
     v = defVar(ds,"domain_monthly_minimum_hourly",Float32,
-               ("longitude","latitude","hour","month"),attrib=attr["var"]);
+               ("longitude","latitude","hour","month"),attrib=attr_var);
     v[:] = data[4][:,:,1:nt,1:12];
 
 
     v = defVar(ds,"domain_monthly_mean_diurnalvariance",Float32,
-               ("longitude","latitude","month"),attrib=attr["var"]);
+               ("longitude","latitude","month"),attrib=attr_var);
     v[:] = data[1][:,:,nt+2,1:12];
 
     v = defVar(ds,"domain_monthly_std_diurnalvariance",Float32,
-               ("longitude","latitude","month"),attrib=attr["var"]);
+               ("longitude","latitude","month"),attrib=attr_var);
     v[:] = data[2][:,:,nt+2,1:12];
 
     v = defVar(ds,"domain_monthly_maximum_diurnalvariance",Float32,
-               ("longitude","latitude","month"),attrib=attr["var"]);
+               ("longitude","latitude","month"),attrib=attr_var);
     v[:] = data[3][:,:,nt+2,1:12];
 
     v = defVar(ds,"domain_monthly_minimum_diurnalvariance",Float32,
-               ("longitude","latitude","month"),attrib=attr["var"]);
+               ("longitude","latitude","month"),attrib=attr_var);
     v[:] = data[4][:,:,nt+2,1:12];
 
 
     v = defVar(ds,"zonalavg_yearly_mean_climatology",Float32,
-               ("latitude",),attrib=attr["var"]);
+               ("latitude",),attrib=attr_var);
     v[:] = zdata[1][:,nt+1,end];
 
     v = defVar(ds,"zonalavg_yearly_std_climatology",Float32,
-               ("latitude",),attrib=attr["var"]);
+               ("latitude",),attrib=attr_var);
     v[:] = zdata[2][:,nt+1,end];
 
     v = defVar(ds,"zonalavg_yearly_maximum_climatology",Float32,
-               ("latitude",),attrib=attr["var"]);
+               ("latitude",),attrib=attr_var);
     v[:] = zdata[3][:,nt+1,end];
 
     v = defVar(ds,"zonalavg_yearly_minimum_climatology",Float32,
-               ("latitude",),attrib=attr["var"]);
+               ("latitude",),attrib=attr_var);
     v[:] = zdata[4][:,nt+1,end];
 
 
     v = defVar(ds,"zonalavg_yearly_mean_hourly",Float32,
-               ("latitude","hour"),attrib=attr["var"]);
+               ("latitude","hour"),attrib=attr_var);
     v[:] = zdata[1][:,1:nt,end];
 
     v = defVar(ds,"zonalavg_yearly_std_hourly",Float32,
-               ("latitude","hour"),attrib=attr["var"]);
+               ("latitude","hour"),attrib=attr_var);
     v[:] = zdata[2][:,1:nt,end];
 
     v = defVar(ds,"zonalavg_yearly_maximum_hourly",Float32,
-               ("latitude","hour"),attrib=attr["var"]);
+               ("latitude","hour"),attrib=attr_var);
     v[:] = zdata[3][:,1:nt,end];
 
     v = defVar(ds,"zonalavg_yearly_minimum_hourly",Float32,
-               ("latitude","hour"),attrib=attr["var"]);
+               ("latitude","hour"),attrib=attr_var);
     v[:] = zdata[4][:,1:nt,end];
 
 
     v = defVar(ds,"zonalavg_yearly_mean_diurnalvariance",Float32,
-               ("latitude",),attrib=attr["var"]);
+               ("latitude",),attrib=attr_var);
     v[:] = zdata[1][:,nt+2,end];
 
     v = defVar(ds,"zonalavg_yearly_std_diurnalvariance",Float32,
-               ("latitude",),attrib=attr["var"]);
+               ("latitude",),attrib=attr_var);
     v[:] = zdata[2][:,nt+2,end];
 
     v = defVar(ds,"zonalavg_yearly_maximum_diurnalvariance",Float32,
-               ("latitude",),attrib=attr["var"]);
+               ("latitude",),attrib=attr_var);
     v[:] = zdata[3][:,nt+2,end];
 
     v = defVar(ds,"zonalavg_yearly_minimum_diurnalvariance",Float32,
-               ("latitude",),attrib=attr["var"]);
+               ("latitude",),attrib=attr_var);
     v[:] = zdata[4][:,nt+2,end];
 
 
     v = defVar(ds,"zonalavg_monthly_mean_climatology",Float32,
-               ("latitude","month"),attrib=attr["var"]);
+               ("latitude","month"),attrib=attr_var);
     v[:] = zdata[1][:,nt+1,1:12];
 
     v = defVar(ds,"zonalavg_monthly_std_climatology",Float32,
-               ("latitude","month"),attrib=attr["var"]);
+               ("latitude","month"),attrib=attr_var);
     v[:] = zdata[2][:,nt+1,1:12];
 
     v = defVar(ds,"zonalavg_monthly_maximum_climatology",Float32,
-               ("latitude","month"),attrib=attr["var"]);
+               ("latitude","month"),attrib=attr_var);
     v[:] = zdata[3][:,nt+1,1:12];
 
     v = defVar(ds,"zonalavg_monthly_minimum_climatology",Float32,
-               ("latitude","month"),attrib=attr["var"]);
+               ("latitude","month"),attrib=attr_var);
     v[:] = zdata[4][:,nt+1,1:12];
 
 
     v = defVar(ds,"zonalavg_monthly_mean_hourly",Float32,
-               ("latitude","hour","month"),attrib=attr["var"]);
+               ("latitude","hour","month"),attrib=attr_var);
     v[:] = zdata[1][:,1:nt,1:12];
 
     v = defVar(ds,"zonalavg_monthly_std_hourly",Float32,
-               ("latitude","hour","month"),attrib=attr["var"]);
+               ("latitude","hour","month"),attrib=attr_var);
     v[:] = zdata[2][:,1:nt,1:12];
 
     v = defVar(ds,"zonalavg_monthly_maximum_hourly",Float32,
-               ("latitude","hour","month"),attrib=attr["var"]);
+               ("latitude","hour","month"),attrib=attr_var);
     v[:] = zdata[3][:,1:nt,1:12];
 
     v = defVar(ds,"zonalavg_monthly_minimum_hourly",Float32,
-               ("latitude","hour","month"),attrib=attr["var"]);
+               ("latitude","hour","month"),attrib=attr_var);
     v[:] = zdata[4][:,1:nt,1:12];
 
 
     v = defVar(ds,"zonalavg_monthly_mean_diurnalvariance",Float32,
-               ("latitude","month"),attrib=attr["var"]);
+               ("latitude","month"),attrib=attr_var);
     v[:] = zdata[1][:,nt+2,1:12];
 
     v = defVar(ds,"zonalavg_monthly_std_diurnalvariance",Float32,
-               ("latitude","month"),attrib=attr["var"]);
+               ("latitude","month"),attrib=attr_var);
     v[:] = zdata[2][:,nt+2,1:12];
 
     v = defVar(ds,"zonalavg_monthly_maximum_diurnalvariance",Float32,
-               ("latitude","month"),attrib=attr["var"]);
+               ("latitude","month"),attrib=attr_var);
     v[:] = zdata[3][:,nt+2,1:12];
 
     v = defVar(ds,"zonalavg_monthly_minimum_diurnalvariance",Float32,
-               ("latitude","month"),attrib=attr["var"]);
+               ("latitude","month"),attrib=attr_var);
     v[:] = zdata[4][:,nt+2,1:12];
 
 
     v = defVar(ds,"meridionalavg_yearly_mean_climatology",Float32,
-               ("longitude",),attrib=attr["var"]);
+               ("longitude",),attrib=attr_var);
     v[:] = mdata[1][:,nt+1,end];
 
     v = defVar(ds,"meridionalavg_yearly_std_climatology",Float32,
-               ("longitude",),attrib=attr["var"]);
+               ("longitude",),attrib=attr_var);
     v[:] = mdata[2][:,nt+1,end];
 
     v = defVar(ds,"meridionalavg_yearly_maximum_climatology",Float32,
-               ("longitude",),attrib=attr["var"]);
+               ("longitude",),attrib=attr_var);
     v[:] = mdata[3][:,nt+1,end];
 
     v = defVar(ds,"meridionalavg_yearly_minimum_climatology",Float32,
-               ("longitude",),attrib=attr["var"]);
+               ("longitude",),attrib=attr_var);
     v[:] = mdata[4][:,nt+1,end];
 
 
     v = defVar(ds,"meridionalavg_yearly_mean_hourly",Float32,
-               ("longitude","hour"),attrib=attr["var"]);
+               ("longitude","hour"),attrib=attr_var);
     v[:] = mdata[1][:,1:nt,end];
 
     v = defVar(ds,"meridionalavg_yearly_std_hourly",Float32,
-               ("longitude","hour"),attrib=attr["var"]);
+               ("longitude","hour"),attrib=attr_var);
     v[:] = mdata[2][:,1:nt,end];
 
     v = defVar(ds,"meridionalavg_yearly_maximum_hourly",Float32,
-               ("longitude","hour"),attrib=attr["var"]);
+               ("longitude","hour"),attrib=attr_var);
     v[:] = mdata[3][:,1:nt,end];
 
     v = defVar(ds,"meridionalavg_yearly_minimum_hourly",Float32,
-               ("longitude","hour"),attrib=attr["var"]);
+               ("longitude","hour"),attrib=attr_var);
     v[:] = mdata[4][:,1:nt,end];
 
 
     v = defVar(ds,"meridionalavg_yearly_mean_diurnalvariance",Float32,
-               ("longitude",),attrib=attr["var"]);
+               ("longitude",),attrib=attr_var);
     v[:] = mdata[1][:,nt+2,end];
 
     v = defVar(ds,"meridionalavg_yearly_std_diurnalvariance",Float32,
-               ("longitude",),attrib=attr["var"]);
+               ("longitude",),attrib=attr_var);
     v[:] = mdata[2][:,nt+2,end];
 
     v = defVar(ds,"meridionalavg_yearly_maximum_diurnalvariance",Float32,
-               ("longitude",),attrib=attr["var"]);
+               ("longitude",),attrib=attr_var);
     v[:] = mdata[3][:,nt+2,end];
 
     v = defVar(ds,"meridionalavg_yearly_minimum_diurnalvariance",Float32,
-               ("longitude",),attrib=attr["var"]);
+               ("longitude",),attrib=attr_var);
     v[:] = mdata[4][:,nt+2,end];
 
 
     v = defVar(ds,"meridionalavg_monthly_mean_climatology",Float32,
-               ("longitude","month"),attrib=attr["var"]);
+               ("longitude","month"),attrib=attr_var);
     v[:] = mdata[1][:,nt+1,1:12];
 
     v = defVar(ds,"meridionalavg_monthly_std_climatology",Float32,
-               ("longitude","month"),attrib=attr["var"]);
+               ("longitude","month"),attrib=attr_var);
     v[:] = mdata[2][:,nt+1,1:12];
 
     v = defVar(ds,"meridionalavg_monthly_maximum_climatology",Float32,
-               ("longitude","month"),attrib=attr["var"]);
+               ("longitude","month"),attrib=attr_var);
     v[:] = mdata[3][:,nt+1,1:12];
 
     v = defVar(ds,"meridionalavg_monthly_minimum_climatology",Float32,
-               ("longitude","month"),attrib=attr["var"]);
+               ("longitude","month"),attrib=attr_var);
     v[:] = mdata[4][:,nt+1,1:12];
 
 
     v = defVar(ds,"meridionalavg_monthly_mean_hourly",Float32,
-               ("longitude","hour","month"),attrib=attr["var"]);
+               ("longitude","hour","month"),attrib=attr_var);
     v[:] = mdata[1][:,1:nt,1:12];
 
     v = defVar(ds,"meridionalavg_monthly_std_hourly",Float32,
-               ("longitude","hour","month"),attrib=attr["var"]);
+               ("longitude","hour","month"),attrib=attr_var);
     v[:] = mdata[2][:,1:nt,1:12];
 
     v = defVar(ds,"meridionalavg_monthly_maximum_hourly",Float32,
-               ("longitude","hour","month"),attrib=attr["var"]);
+               ("longitude","hour","month"),attrib=attr_var);
     v[:] = mdata[3][:,1:nt,1:12];
 
     v = defVar(ds,"meridionalavg_monthly_minimum_hourly",Float32,
-               ("longitude","hour","month"),attrib=attr["var"]);
+               ("longitude","hour","month"),attrib=attr_var);
     v[:] = mdata[4][:,1:nt,1:12];
 
 
     v = defVar(ds,"meridionalavg_monthly_mean_diurnalvariance",Float32,
-               ("longitude","month"),attrib=attr["var"]);
+               ("longitude","month"),attrib=attr_var);
     v[:] = mdata[1][:,nt+2,1:12];
 
     v = defVar(ds,"meridionalavg_monthly_std_diurnalvariance",Float32,
-               ("longitude","month"),attrib=attr["var"]);
+               ("longitude","month"),attrib=attr_var);
     v[:] = mdata[2][:,nt+2,1:12];
 
     v = defVar(ds,"meridionalavg_monthly_maximum_diurnalvariance",Float32,
-               ("longitude","month"),attrib=attr["var"]);
+               ("longitude","month"),attrib=attr_var);
     v[:] = mdata[3][:,nt+2,1:12];
 
     v = defVar(ds,"meridionalavg_monthly_minimum_diurnalvariance",Float32,
-               ("longitude","month"),attrib=attr["var"]);
+               ("longitude","month"),attrib=attr_var);
     v[:] = mdata[4][:,nt+2,1:12];
 
     close(ds);
