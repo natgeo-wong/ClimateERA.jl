@@ -285,7 +285,7 @@ function eraanaread(
     date::TimeType
 )
 
-    ebase = eraanafolder(epar,ereg,eroot,date);
+    ebase = eraanafolder(epar,ereg,eroot);
     enc = eraananame(emod,epar,ereg,date);
     eds = erancread(enc,ebase);
     return eds,eds[ID]
