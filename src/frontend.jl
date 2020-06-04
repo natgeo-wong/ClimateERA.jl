@@ -347,7 +347,7 @@ function erarawsave(
     ))
 
     nclongitude[:] = ereg["lon"]; nclatitude[:] = ereg["lat"]
-    nctime[:] = collect(1:nhr); ncvar[:] = data;
+    nctime[:] = (collect(1:nhr).-1) * ehr; ncvar[:] = data;
 
     close(ds)
 
