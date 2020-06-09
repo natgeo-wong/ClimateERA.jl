@@ -160,6 +160,7 @@ function eraanasave(
 
     attr_var = Dict(
         "long_name" => epar["era5"],
+        "full_name" => epar["name"],
         "units"     => epar["unit"],
         "level"     => epar["level"],
     );

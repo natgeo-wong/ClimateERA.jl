@@ -190,8 +190,10 @@ function erafolder(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
         mkpath(foltmp)
     end
 
-    return Dict("reg"=>folreg,"var"=>folvar,"raw"=>folraw,
-                "tmp"=>foltmp,"ana"=>folana,"img"=>folimg);
+    return Dict(
+        "reg"=>folreg,"var"=>folvar,"raw"=>folraw,
+        "tmp"=>foltmp,"ana"=>folana,"img"=>folimg
+    );
 
 end
 
@@ -233,8 +235,10 @@ function erafolder(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict,pre)
         mkpath(foltmp)
     end
 
-    return Dict("reg"=>folreg,"var"=>folvar,"raw"=>folraw,
-                "tmp"=>foltmp,"ana"=>folana,"img"=>folimg);
+    return Dict(
+        "reg"=>folreg,"var"=>folvar,"raw"=>folraw,
+        "tmp"=>foltmp,"ana"=>folana,"img"=>folimg
+    );
 
 end
 
@@ -322,28 +326,29 @@ function erarawsave(
     ds.dim["time"] = nhr
 
     nclongitude = defVar(ds,"longitude",Float32,("longitude",),attrib = Dict(
-        "units"                     => "degrees_east",
-        "long_name"                 => "longitude",
+        "units"     => "degrees_east",
+        "long_name" => "longitude",
     ))
 
     nclatitude = defVar(ds,"latitude",Float32,("latitude",),attrib = Dict(
-        "units"                     => "degrees_north",
-        "long_name"                 => "latitude",
+        "units"     => "degrees_north",
+        "long_name" => "latitude",
     ))
 
     nctime = defVar(ds,"time",Int32,("time",),attrib = Dict(
-        "units"                     => "hours since $(date) 00:00:00.0",
-        "long_name"                 => "time",
-        "calendar"                  => "gregorian",
+        "units"     => "hours since $(date) 00:00:00.0",
+        "long_name" => "time",
+        "calendar"  => "gregorian",
     ))
 
     ncvar = defVar(ds,epar["ID"],Int16,("longitude","latitude","time"),attrib = Dict(
-        "scale_factor"              => scale,
-        "add_offset"                => offset,
-        "_FillValue"                => Int16(-32767),
-        "missing_value"             => Int16(-32767),
-        "units"                     => "K",
-        "long_name"                 => epar["name"],
+        "long_name"     => epar["era5"],
+        "full_name"     => epar["name"],
+        "units"         => epar["unit"],
+        "scale_factor"  => scale,
+        "add_offset"    => offset,
+        "_FillValue"    => Int16(-32767),
+        "missing_value" => Int16(-32767),
     ))
 
     nclongitude[:] = ereg["lon"]; nclatitude[:] = ereg["lat"]
