@@ -373,6 +373,29 @@ function erasubregion(
 
 end
 
+function erasubregion(
+    init::AbstractDict, eroot::AbstractDict,
+    modID::AbstractString, parID::AbstractString,
+    regID::AbstractString, timeID::Union{Integer,Vector}=0,
+    pregID::AbstractString="GLB"
+)
+
+    _,_,preg,_ = erainitialize(
+        init;
+        modID=modID,parID=parID,regID=pregID,timeID=timeID,
+        gres=gres
+    );
+    
+    emod,epar,ereg,etime = erainitialize(
+        init;
+        modID=modID,parID=parID,regID=regID,timeID=timeID,
+        gres=gres
+    );
+
+    erasubregion(emod,epar,ereg,etime,eroot,preg)
+
+end
+
 function putinfo(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
     rfol = pwd(); efol = erafolder(emod,epar,ereg,etime,eroot,"sfc");
