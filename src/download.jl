@@ -116,7 +116,7 @@ function eradscriptdprint(fID,dataID::Integer,epar::Dict,yr::Integer,mo::Integer
         write(fID,"        ],\n");
     else
         write(fID,"    \"date\": \"$(yr)-$(mo)-01/to/$(yr)-$(mo)-$(ndy)\",\n");
-        if !(parID == "cape") && !(parID[1:4] == "prcp")
+        if !all(occursin.(["cape","prcp"],parID))
             write(fID,"    \"time\": \"00:00:00/06:00:00/12:00:00/18:00:00\",\n");
             write(fID,"    \"step\": \"0\",\n");
         else
