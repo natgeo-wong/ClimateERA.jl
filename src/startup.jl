@@ -54,7 +54,7 @@ function eramkroot(eroot::AbstractString)
     else;               @info "$(Dates.now()) - Root folder for ERA5 reanalysis data $(e5root) exists."
     end
 
-    eproot = joinpath(eroot,"plot");
+    eproot = joinpath(eroot,"eplot");
     if !isdir(eproot)
         mkpath(eproot); @info "$(Dates.now()) - Created root folder for ERA plotting data $(eproot)."
     else;               @info "$(Dates.now()) - Root folder for ERA plotting data $(eproot) exists."
