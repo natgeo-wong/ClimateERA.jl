@@ -311,6 +311,8 @@ function erarawsave(
     emod::Dict, epar::Dict, ereg::Dict, date::TimeType, eroot::Dict
 )
 
+    @info "$(Dates.now()) - Saving raw $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) for $(year(date)) $(Dates.monthname(date)) ..."
+
     fnc = joinpath(erarawfolder(epar,ereg,eroot,date),erarawname(emod,epar,ereg,date));
     if isfile(fnc)
         @info "$(Dates.now()) - Stale NetCDF file $(fnc) detected.  Overwriting ..."
@@ -356,6 +358,8 @@ function erarawsave(
 
     close(ds)
 
+    @info "$(Dates.now()) - Raw $(uppercase(emod["dataset"])) $(epar["name"]) in $(gregionfullname(ereg["region"])) for $(year(date)) $(Dates.monthname(date)) has been saved into $(fnc)."
+
 end
 
 function erasubregion(
@@ -366,6 +370,8 @@ function erasubregion(
     _,_,reginfo = gregiongridvec(ereg["region"],preg["lon"],preg["lat"])
 
     for yr = etime["Begin"] : etime["End"], mo = 1:12
+
+        @info "$(Dates.now()) - Extracting $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) from $(gregionfullname(preg["region"])) for $yr $(Dates.monthname(mo)) ..."
 
         date  = Date(yr,mo); nt = daysinmonth(date) * hrindy(emod)
         pdata = Array{Float32,2}(undef,preg["size"][1],preg["size"][2])
@@ -413,6 +419,9 @@ end
 function putinfo(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
     rfol = pwd(); efol = erafolder(emod,epar,ereg,etime,eroot,"sfc");
+
+    @info "$(Dates.now()) - Saving emodule, eparameter, and GeoRegion information ..."
+
     cd(efol["var"]); @save "info_par.jld2" emod epar;
     cd(efol["reg"]); @save "info_reg.jld2" ereg;
     cd(rfol);
