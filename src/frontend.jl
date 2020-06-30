@@ -374,9 +374,10 @@ function erasubregion(
 end
 
 function erasubregion(
-    init::AbstractDict, eroot::AbstractDict,
+    init::AbstractDict, eroot::AbstractDict;
     modID::AbstractString, parID::AbstractString,
     regID::AbstractString, timeID::Union{Integer,Vector}=0,
+    gres::Real=0,
     pregID::AbstractString="GLB"
 )
 
@@ -385,7 +386,7 @@ function erasubregion(
         modID=modID,parID=parID,regID=pregID,timeID=timeID,
         gres=gres
     );
-    
+
     emod,epar,ereg,etime = erainitialize(
         init;
         modID=modID,parID=parID,regID=regID,timeID=timeID,
