@@ -380,7 +380,6 @@ function erasubregion(
 
         close(pds);
         erarawsave(edata,emod,epar,ereg,date,eroot);
-        putinfo(emod,epar,ereg,etime,eroot);
 
     end
 
@@ -407,6 +406,7 @@ function erasubregion(
     );
 
     erasubregion(emod,epar,ereg,etime,eroot,preg)
+    putinfo(emod,epar,ereg,etime,eroot);
 
 end
 
