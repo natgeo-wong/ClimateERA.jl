@@ -363,11 +363,24 @@ function erasubregion(
     preg::Dict
 )
 
-    for yr = etime["Begin"] : etime["End"], mo = 1:12; date = Date(yr,mo);
+    _,_,reginfo = gregiongridvec(ereg["region"],preg["lon"],preg["lat"])
 
-        pds,pvar = erarawread(emod,epar,preg,eroot,date); pdata = pvar[:]*1; close(pds);
-        edata = regionextractgrid(pdata,ereg["grid"],preg["lon"],preg["lat"]);
-        erarawsave(edata,emod,epar,ereg,date,eroot); putinfo(emod,epar,ereg,etime,eroot);
+    for yr = etime["Begin"] : etime["End"], mo = 1:12
+
+        date  = Date(yr,mo); nt = daysinmonth(date) * hrindy(emod)
+        pdata = Array{Float32,2}(undef,preg["size"][1],preg["size"][2])
+        tdata = Array{Float32,2}(undef,preg["size"][1],preg["size"][2])
+        edata = Array{Float32,3}(undef,ereg["size"][1],ereg["size"][2],nt)
+        pds,pvar = erarawread(emod,epar,preg,eroot,date);
+
+        for it = 1 : nt
+            pdata = pvar[:,:,it]*1;
+            edata[:,:,it] .= regionextractgrid!(pdata,reginfo,tdata);
+        end
+
+        close(pds);
+        erarawsave(edata,emod,epar,ereg,date,eroot);
+        putinfo(emod,epar,ereg,etime,eroot);
 
     end
 
