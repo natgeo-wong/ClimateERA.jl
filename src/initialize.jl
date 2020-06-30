@@ -152,7 +152,7 @@ function eraregionfilter(gregID::AbstractString,greginfo::AbstractArray,init::Di
 
     isgeoregion(gregID,greginfo);
 
-    if (init["actionID"] == 2) && (gregionparent(gregID;levels=2) != "GLB")
+    if (init["actionID"] == 1) && (gregionparent(gregID;levels=2) != "GLB")
         error("$(Dates.now()) - ClimateERA.jl only has the option to analyse data from the $(gregionfullname(gregID,greginfo)) and not download it.")
     end
 
