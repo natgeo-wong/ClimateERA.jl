@@ -11,7 +11,7 @@ include:
 
 function eraregfolder(ereg::Dict,eroot::Dict)
 
-    fol = joinpath(eroot["era"],ereg["region"]);
+    fol = joinpath(eroot["era"],ereg["fol"]);
 
     if !isdir(fol)
         @info "$(Dates.now()) - The folder for the $(ereg["name"]) region at does not exist.  Creating now ..."
@@ -24,7 +24,7 @@ end
 
 function eravarfolder(epar::Dict,ereg::Dict,eroot::Dict)
 
-    fol = joinpath(eroot["era"],ereg["region"],epar["ID"]);
+    fol = joinpath(eroot["era"],ereg["fol"],epar["ID"]);
 
     if !isdir(fol)
         @info "$(Dates.now()) - The folder for the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
@@ -39,7 +39,7 @@ function erarawfolder(epar::Dict,ereg::Dict,eroot::Dict)
 
     if !haskey(epar,"level")
 
-        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"raw");
+        fol = joinpath(eroot["era"],ereg["fol"],epar["ID"],"raw");
         if !isdir(fol)
             @info "$(Dates.now()) - The folder for raw data of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
             mkpath(fol);
@@ -49,7 +49,7 @@ function erarawfolder(epar::Dict,ereg::Dict,eroot::Dict)
 
         if epar["level"] == "sfc";
 
-            fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"raw");
+            fol = joinpath(eroot["era"],ereg["fol"],epar["ID"],"raw");
             if !isdir(fol)
                 @info "$(Dates.now()) - The folder for raw data of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
                 mkpath(fol);
@@ -58,7 +58,7 @@ function erarawfolder(epar::Dict,ereg::Dict,eroot::Dict)
         else
 
             phPa = "$(epar["ID"])-$(epar["level"])hPa"
-            fol = joinpath(eroot["era"],ereg["region"],epar["ID"],phPa,"raw");
+            fol = joinpath(eroot["era"],ereg["fol"],epar["ID"],phPa,"raw");
             if !isdir(fol)
                 @info "$(Dates.now()) - The folder for raw data of the $(epar["name"]) parameter at pressure level $(epar["level"])hPa in the $(ereg["name"]) region does not exist.  Creating now ..."
                 mkpath(fol);
@@ -77,7 +77,7 @@ function erarawfolder(epar::Dict,ereg::Dict,eroot::Dict,date::TimeType)
 
     if epar["level"] == "sfc";
 
-        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"raw",yr);
+        fol = joinpath(eroot["era"],ereg["fol"],epar["ID"],"raw",yr);
         if !isdir(fol)
             @info "$(Dates.now()) - The folder for raw data of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
             mkpath(fol);
@@ -86,7 +86,7 @@ function erarawfolder(epar::Dict,ereg::Dict,eroot::Dict,date::TimeType)
     else
 
         phPa = "$(epar["ID"])-$(epar["level"])hPa"
-        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],phPa,"raw",yr);
+        fol = joinpath(eroot["era"],ereg["fol"],epar["ID"],phPa,"raw",yr);
         if !isdir(fol)
             @info "$(Dates.now()) - The folder for raw data of the $(epar["name"]) parameter at pressure level $(epar["level"])hPa in the $(ereg["name"]) region does not exist.  Creating now ..."
             mkpath(fol);
@@ -102,7 +102,7 @@ function eraanafolder(epar::Dict,ereg::Dict,eroot::Dict)
 
     if epar["level"] == "sfc";
 
-        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"ana");
+        fol = joinpath(eroot["era"],ereg["fol"],epar["ID"],"ana");
         if !isdir(fol)
             @info "$(Dates.now()) - The folder for analyzed data of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
             mkpath(fol);
@@ -111,7 +111,7 @@ function eraanafolder(epar::Dict,ereg::Dict,eroot::Dict)
     else
 
         phPa = "$(epar["ID"])-$(epar["level"])hPa"
-        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],phPa,"ana");
+        fol = joinpath(eroot["era"],ereg["fol"],epar["ID"],phPa,"ana");
         if !isdir(fol)
             @info "$(Dates.now()) - The folder for analyzed data of the $(epar["name"]) parameter at pressure level $(epar["level"])hPa in the $(ereg["name"]) region does not exist.  Creating now ..."
             mkpath(fol);
@@ -127,7 +127,7 @@ function eraimgfolder(epar::Dict,ereg::Dict,eroot::Dict)
 
     if epar["level"] == "sfc";
 
-        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],"img");
+        fol = joinpath(eroot["era"],ereg["fol"],epar["ID"],"img");
         if !isdir(fol)
             @info "$(Dates.now()) - The folder for images/maps of the $(epar["name"]) parameter in the $(ereg["name"]) region does not exist.  Creating now ..."
             mkpath(fol);
@@ -136,7 +136,7 @@ function eraimgfolder(epar::Dict,ereg::Dict,eroot::Dict)
     else
 
         phPa = "$(epar["ID"])-$(epar["level"])hPa"
-        fol = joinpath(eroot["era"],ereg["region"],epar["ID"],phPa,"img");
+        fol = joinpath(eroot["era"],ereg["fol"],epar["ID"],phPa,"img");
         if !isdir(fol)
             @info "$(Dates.now()) - The folder for images/maps of the $(epar["name"]) parameter at pressure level $(epar["level"])hPa in the $(ereg["name"]) region does not exist.  Creating now ..."
             mkpath(fol);
@@ -154,14 +154,14 @@ function erafolder(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
     yrbeg = etime["Begin"]; yrend = etime["End"];
 
-    folreg = joinpath(eroot["era"],ereg["region"]);
+    folreg = joinpath(eroot["era"],ereg["fol"]);
     if !isdir(folreg)
         @debug "$(Dates.now()) - Creating folder for the $(ereg["name"]) region at $(folreg) ..."
         mkpath(folreg);
     else; @debug "$(Dates.now()) - The folder for the $(ereg["name"]) region $(folreg) exists."
     end
 
-    folvar = joinpath(eroot["era"],ereg["region"],epar["ID"]);
+    folvar = joinpath(eroot["era"],ereg["fol"],epar["ID"]);
     if !isdir(folvar)
         @debug "$(Dates.now()) - Creating variable folder for the $(epar["name"]) parameter at $(folvar) ..."
         mkpath(folvar);
@@ -201,14 +201,14 @@ function erafolder(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict,pre)
 
     yrbeg = etime["Begin"]; yrend = etime["End"];
 
-    folreg = joinpath(eroot["era"],ereg["region"]);
+    folreg = joinpath(eroot["era"],ereg["fol"]);
     if !isdir(folreg)
         @debug "$(Dates.now()) - Creating folder for the $(ereg["name"]) region at $(folreg) ..."
         mkpath(folreg);
     else; @debug "$(Dates.now()) - The folder for the $(ereg["name"]) region $(folreg) exists."
     end
 
-    folvar = joinpath(eroot["era"],ereg["region"],epar["ID"]);
+    folvar = joinpath(eroot["era"],ereg["fol"],epar["ID"]);
     if !isdir(folvar)
         @debug "$(Dates.now()) - Creating variable folder for the $(epar["name"]) parameter at $(folvar) ..."
         mkpath(folvar);
@@ -247,8 +247,8 @@ end
 function erarawname(emod::Dict,epar::Dict,ereg::Dict,date::TimeType)
 
     if !(emod["levels"][1] == "sfc")
-          fname = "$(emod["prefix"])-$(ereg["region"])-$(epar["ID"])-$(epar["level"])hPa";
-    else; fname = "$(emod["prefix"])-$(ereg["region"])-$(epar["ID"])-sfc";
+          fname = "$(emod["prefix"])-$(ereg["fol"])-$(epar["ID"])-$(epar["level"])hPa";
+    else; fname = "$(emod["prefix"])-$(ereg["fol"])-$(epar["ID"])-sfc";
     end
 
     return "$(fname)-$(yrmo2str(date)).nc"
@@ -260,8 +260,8 @@ function eraananame(emod::Dict,epar::Dict,ereg::Dict,date::TimeType)
     prefix = replace(emod["prefix"],"era"=>"eraa")
 
     if !(emod["levels"][1] == "sfc")
-          fname = "$(prefix)-$(ereg["region"])-$(epar["ID"])-$(epar["level"])hPa";
-    else; fname = "$(prefix)-$(ereg["region"])-$(epar["ID"])-sfc";
+          fname = "$(prefix)-$(ereg["fol"])-$(epar["ID"])-$(epar["level"])hPa";
+    else; fname = "$(prefix)-$(ereg["fol"])-$(epar["ID"])-sfc";
     end
 
     return "$(fname)-$(yr2str(date)).nc"
@@ -311,7 +311,7 @@ function erarawsave(
     emod::Dict, epar::Dict, ereg::Dict, date::TimeType, eroot::Dict
 )
 
-    @info "$(Dates.now()) - Saving raw $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) for $(year(date)) $(Dates.monthname(date)) ..."
+    @info "$(Dates.now()) - Saving raw $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) for $(year(date)) $(Dates.monthname(date)) ..."
 
     fnc = joinpath(erarawfolder(epar,ereg,eroot,date),erarawname(emod,epar,ereg,date));
     if isfile(fnc)
@@ -358,7 +358,7 @@ function erarawsave(
 
     close(ds)
 
-    @info "$(Dates.now()) - Raw $(uppercase(emod["dataset"])) $(epar["name"]) in $(gregionfullname(ereg["region"])) for $(year(date)) $(Dates.monthname(date)) has been saved into $(fnc)."
+    @info "$(Dates.now()) - Raw $(uppercase(emod["dataset"])) $(epar["name"]) in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) for $(year(date)) $(Dates.monthname(date)) has been saved into $(fnc)."
 
 end
 
@@ -367,7 +367,7 @@ function erasubregion!(
     preg::Dict
 )
 
-    elon,elat,reginfo = gregiongridvec(ereg["region"],preg["lon"],preg["lat"])
+    elon,elat,reginfo = gregiongridvec(ereg["fol"],preg["lon"],preg["lat"])
     ereg["lon"]  = elon
     ereg["lat"]  = elat
     ereg["step"] = preg["step"]
@@ -375,7 +375,7 @@ function erasubregion!(
 
     for yr = etime["Begin"] : etime["End"], mo = 1:12
 
-        @info "$(Dates.now()) - Extracting $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) from $(gregionfullname(preg["region"])) for $yr $(Dates.monthname(mo)) ..."
+        @info "$(Dates.now()) - Extracting $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) from $(gregionfullname(preg["region"])) for $yr $(Dates.monthname(mo)) ..."
 
         date  = Date(yr,mo); nt = daysinmonth(date) * hrindy(emod)
         pdata = Array{Float32,2}(undef,preg["size"][1],preg["size"][2])

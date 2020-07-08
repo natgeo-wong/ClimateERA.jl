@@ -62,7 +62,7 @@ function eraanalysis(
 
     for mo = 1 : 12; ndy = daysinmonth(yr,mo)
 
-        @info "$(Dates.now()) - Analyzing $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) during $(Dates.monthname(mo)) $yr ..."
+        @info "$(Dates.now()) - Analyzing $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) during $(Dates.monthname(mo)) $yr ..."
 
         rds,rvar = erarawread(emod,epar,ereg,eroot,Date(yr,mo));
         raw = rvar[:]*1; close(rds); raw[ismissing.(raw)] .= NaN;
@@ -92,13 +92,13 @@ function eraanalysis(
 
     end
 
-    @info "$(Dates.now()) - Calculating yearly climatology for $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) during $yr ..."
+    @info "$(Dates.now()) - Calculating yearly climatology for $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) during $yr ..."
     davg[:,:,:,end] = mean(davg[:,:,:,1:12],dims=4);
     dstd[:,:,:,end] = mean(dstd[:,:,:,1:12],dims=4);
     dmax[:,:,:,end] = maximum(dmax[:,:,:,1:12],dims=4);
     dmin[:,:,:,end] = minimum(dmin[:,:,:,1:12],dims=4);
 
-    @info "$(Dates.now()) - Calculating zonal-averaged climatology for $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) during $yr ..."
+    @info "$(Dates.now()) - Calculating zonal-averaged climatology for $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) during $yr ..."
     for ilat = 1 : nlat, it = 1 : nt+1, imo = 1 : 13
         zavg[ilat,it,imo] = erananmean(@view davg[:,ilat,it,imo]);
         zstd[ilat,it,imo] = erananmean(@view dstd[:,ilat,it,imo]);
@@ -106,7 +106,7 @@ function eraanalysis(
         zmin[ilat,it,imo] = erananmean(@view dmin[:,ilat,it,imo]);
     end
 
-    @info "$(Dates.now()) - Calculating meridional-averaged climatology for $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) during $yr ..."
+    @info "$(Dates.now()) - Calculating meridional-averaged climatology for $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) during $yr ..."
     for imo = 1 : 13, it = 1 : nt+1, ilon = 1 : nlon;
         mavg[ilon,it,imo] = erananmean(@view davg[ilon,:,it,imo]);
         mstd[ilon,it,imo] = erananmean(@view dstd[ilon,:,it,imo]);
@@ -127,7 +127,7 @@ function eraanasave(
     yr::Integer, eroot::Dict
 )
 
-    @info "$(Dates.now()) - Saving analysed $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) for the year $yr ..."
+    @info "$(Dates.now()) - Saving analysed $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) for the year $yr ..."
 
     afol = eraanafolder(epar,ereg,eroot); fana = eraananame(emod,epar,ereg,Date(yr));
     afnc = joinpath(afol,fana);
@@ -474,6 +474,6 @@ function eraanasave(
 
     close(ds);
 
-    @info "$(Dates.now()) - Analysed $(uppercase(emod["dataset"])) $(epar["name"]) for the year $yr in $(gregionfullname(ereg["region"])) has been saved into file $(afnc) and moved to the data directory $(afol)."
+    @info "$(Dates.now()) - Analysed $(uppercase(emod["dataset"])) $(epar["name"]) for the year $yr in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) has been saved into file $(afnc) and moved to the data directory $(afol)."
 
 end

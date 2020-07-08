@@ -178,6 +178,9 @@ function eraregionvec(ereg::Dict,emod::Dict,step::Real)
     lon = convert(Array,W:step:E); if mod(E,360) == mod(W,360); pop!(lon); end
     lat = convert(Array,N:-step:S); nlon = size(lon,1); nlat = size(lat,1);
     ereg["lon"] = lon; ereg["lat"] = lat; ereg["size"] = [nlon,nlat];
+    ereg["fol"] = "$(ereg["region"])x$(@sprintf("%.2f",ereg["step"]))"
+
+
 
     return ereg
 

@@ -11,8 +11,8 @@ data, which includes the following functionalities:
 function eradscriptcreate(dataID::Integer,emod::Dict,epar::Dict,ereg::Dict)
 
     if !(epar["level"] == "sfc")
-          fname = "$(emod["prefix"])-$(ereg["region"])-$(epar["ID"])-$(epar["level"])hPa";
-    else; fname = "$(emod["prefix"])-$(ereg["region"])-$(epar["ID"])-$(epar["level"])";
+          fname = "$(emod["prefix"])-$(ereg["fol"])-$(epar["ID"])-$(epar["level"])hPa";
+    else; fname = "$(emod["prefix"])-$(ereg["fol"])-$(epar["ID"])-$(epar["level"])";
     end
 
     fID = open("$(fname).py","w");
