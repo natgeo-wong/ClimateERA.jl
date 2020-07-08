@@ -362,12 +362,16 @@ function erarawsave(
 
 end
 
-function erasubregion(
+function erasubregion!(
     emod::Dict, epar::Dict, ereg::Dict, etime::Dict, eroot::Dict,
     preg::Dict
 )
 
-    _,_,reginfo = gregiongridvec(ereg["region"],preg["lon"],preg["lat"])
+    elon,elat,reginfo = gregiongridvec(ereg["region"],preg["lon"],preg["lat"])
+    ereg["lon"]  = elon
+    ereg["lat"]  = elat
+    ereg["step"] = preg["step"]
+    ereg["size"] = [length(elon),length(elat)]
 
     for yr = etime["Begin"] : etime["End"], mo = 1:12
 
@@ -388,6 +392,8 @@ function erasubregion(
         erarawsave(edata,emod,epar,ereg,date,eroot);
 
     end
+
+    return
 
 end
 
@@ -411,7 +417,7 @@ function erasubregion(
         gres=gres
     );
 
-    erasubregion(emod,epar,ereg,etime,eroot,preg)
+    erasubregion!(emod,epar,ereg,etime,eroot,preg)
     putinfo(emod,epar,ereg,etime,eroot);
 
 end
