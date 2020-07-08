@@ -367,11 +367,12 @@ function erasubregion!(
     preg::Dict
 )
 
-    elon,elat,reginfo = gregiongridvec(ereg["fol"],preg["lon"],preg["lat"])
+    elon,elat,reginfo = gregiongridvec(ereg["region"],preg["lon"],preg["lat"])
     ereg["lon"]  = elon
     ereg["lat"]  = elat
     ereg["step"] = preg["step"]
     ereg["size"] = [length(elon),length(elat)]
+    ereg["fol"]  = "$(ereg["region"])x$(@sprintf("%.2f",ereg["step"]))"
 
     for yr = etime["Begin"] : etime["End"], mo = 1:12
 
