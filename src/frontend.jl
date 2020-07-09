@@ -403,8 +403,10 @@ function erasubregion(
     modID::AbstractString, parID::AbstractString,
     regID::AbstractString, timeID::Union{Integer,Vector}=0,
     gres::Real=0,
-    pregID::AbstractString="GLB"
+    pregID::AbstractString=""
 )
+
+    if pregID == ""; pregID = gregionparent(regID); end
 
     _,_,preg,_ = erainitialize(
         init;

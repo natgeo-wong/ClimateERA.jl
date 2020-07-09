@@ -26,7 +26,7 @@ end
 bold() = Crayon(bold=true)
 reset() = Crayon(reset=true)
 
-function checkegrid(step::Rational)
+function checkegrid(step::Real)
 
     if rem(360,step) == 0
           return true
