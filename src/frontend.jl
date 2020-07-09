@@ -427,7 +427,7 @@ end
 
 function putinfo(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
-    rfol = pwd(); efol = erafolder(emod,epar,ereg,etime,eroot,"sfc");
+    rfol = pwd(); efol = erafolder(emod,epar,ereg,etime,eroot);
 
     @info "$(Dates.now()) - Saving emodule, eparameter, and GeoRegion information ..."
 
