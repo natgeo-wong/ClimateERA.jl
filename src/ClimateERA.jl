@@ -23,6 +23,7 @@ export
         erafolder, eraregfolder, eravarfolder, eraimgfolder,
         erarawregion, erarawpoint, erarawgrid,
         eraparameterload, eraparametercopy, eraparameteradd, erapressureload,
+        eraregionstep,
         queryeaction, queryedataset, queryemod, queryepar, putinfo,
         hrstep, hrindy
 

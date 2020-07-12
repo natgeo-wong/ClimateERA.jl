@@ -158,11 +158,11 @@ function eraregionfilter(gregID::AbstractString,greginfo::AbstractArray,init::Di
 
 end
 
-function eraregionvec(ereg::Dict,emod::Dict,step::Real)
+function eraregionstep(gregID::AbstractString,step::Real=0)
 
     @debug "$(Dates.now()) - Determining spacing between grid points in the GeoRegion ..."
     if step == 0
-        if ereg["isglobe"] == true;
+        if gregID == "GLB";
               step = 1.0;
         else; step = 0.25;
         end
@@ -171,9 +171,16 @@ function eraregionvec(ereg::Dict,emod::Dict,step::Real)
             error("$(Dates.now()) - The grid resolution specified is not valid.")
         end
     end
-    ereg["step"] = step
 
-    N,S,E,W = ereg["grid"];
+    return step
+
+end
+
+function eraregionvec(ereg::Dict,emod::Dict,step::Real)
+
+
+    step = eraregionstep(ereg["region"],step); ereg["step"] = step; N,S,E,W = ereg["grid"]
+
     @info "$(Dates.now()) - Creating longitude and latitude vectors for the GeoRegion ..."
     lon = convert(Array,W:step:E); if mod(E,360) == mod(W,360); pop!(lon); end
     lat = convert(Array,N:-step:S); nlon = size(lon,1); nlat = size(lat,1);
