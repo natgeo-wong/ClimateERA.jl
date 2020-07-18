@@ -268,6 +268,17 @@ function eraananame(emod::Dict,epar::Dict,ereg::Dict,date::TimeType)
 
 end
 
+function eracmpname(emod::Dict,epar::Dict,ereg::Dict)
+
+    prefix = replace(emod["prefix"],"era"=>"erac")
+
+    if !(emod["levels"][1] == "sfc")
+          return "$(prefix)-$(ereg["fol"])-$(epar["ID"])-$(epar["level"])hPa.nc";
+    else; return "$(prefix)-$(ereg["fol"])-$(epar["ID"])-sfc.nc";
+    end
+
+end
+
 erancread(ncname::AbstractString,fol::AbstractString="") = Dataset(joinpath(fol,ncname))
 
 function erarawread(
@@ -291,6 +302,15 @@ function eraanaread(
 
     ebase = eraanafolder(epar,ereg,eroot);
     enc = eraananame(emod,epar,ereg,date);
+    eds = erancread(enc,ebase);
+    return eds,eds[ID]
+
+end
+
+function eracmpread(ID::AbstractString,emod::Dict,epar::Dict,ereg::Dict,eroot::Dict)
+
+    ebase = eraanafolder(epar,ereg,eroot);
+    enc = eracmpname(emod,epar,ereg);
     eds = erancread(enc,ebase);
     return eds,eds[ID]
 
