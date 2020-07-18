@@ -84,7 +84,7 @@ function eracompile(
     eian = dropdims(maximum(eavg,dims=3) .- minimum(eavg,dims=3),dims=3)
     eavg = dropdims(mean(eavg,dims=3),dims=3); eitr = dropdims(mean(eitr,dims=3),dims=3);
     esea = dropdims(mean(esea,dims=3),dims=3); edhr = dropdims(mean(edhr,dims=3),dims=3)
-    
+
     eracmpsave(eavg,edhr,eitr,esea,eian,emod,epar,ereg,eroot)
 
 end
@@ -95,7 +95,7 @@ function eracmpsave(
     emod::Dict, epar::Dict, ereg::Dict, eroot::Dict
 )
 
-    @info "$(Dates.now()) - Saving compiled $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) for the year $yr ..."
+    @info "$(Dates.now()) - Saving compiled $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) ..."
 
     cfol = eraanafolder(epar,ereg,eroot); fcmp = eracmpname(emod,epar,ereg);
     cfnc = joinpath(cfol,fcmp);
@@ -166,6 +166,6 @@ function eracmpsave(
 
     ncavg[:] = eavg; ncian[:] = eian; ncsea[:] = esea; ncitr[:] = eitr; ncdhr[:] = edhr
 
-    @info "$(Dates.now()) - Compiled $(uppercase(emod["dataset"])) $(epar["name"]) for the year $yr in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) has been saved into file $(cfnc) and moved to the data directory $(cfol)."
+    @info "$(Dates.now()) - Compiled $(uppercase(emod["dataset"])) $(epar["name"]) in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) has been saved into file $(cfnc) and moved to the data directory $(cfol)."
 
 end
