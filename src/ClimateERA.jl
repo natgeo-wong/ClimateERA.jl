@@ -17,9 +17,11 @@ using Statistics
 
 ## Exporting the following functions:
 export
-        erastartup, erainitialize, eradownload, eraanalysis, erasubregion, erancread,
-        erarawname, erarawfolder, erarawread, erarawsave,
-        eraananame, eraanafolder, eraanaread,
+        erastartup, erainitialize, eradownload, eraanalysis, eracompile,
+        erasubregion, erancread,
+        erarawname, erarawread, erarawfolder, erarawsave,
+        eraananame, eraanaread, eraanafolder,
+        eracmpname, eracmpread,
         erafolder, eraregfolder, eravarfolder, eraimgfolder,
         erarawregion, erarawpoint, erarawgrid,
         eraparameterload, eraparametercopy, eraparameteradd, erapressureload,
@@ -33,6 +35,7 @@ include("startup.jl")
 include("initialize.jl")
 include("download.jl")
 include("analysis.jl")
+include("compile.jl")
 #include("calculate.jl")
 
 include("frontend.jl")

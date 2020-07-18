@@ -81,10 +81,10 @@ function eracompile(
     end
 
     @info "$(Dates.now()) - Calculating yearly mean, and diurnal, seasonal and interannual variability ..."
+    eian = dropdims(maximum(eavg,dims=3) .- minimum(eavg,dims=3),dims=3)
     eavg = dropdims(mean(eavg,dims=3),dims=3); eitr = dropdims(mean(eitr,dims=3),dims=3);
     esea = dropdims(mean(esea,dims=3),dims=3); edhr = dropdims(mean(edhr,dims=3),dims=3)
-    eian = dropdims(maximum(eavg,dims=3) .- minimum(eavg,dims=3),dims=3)
-
+    
     eracmpsave(eavg,edhr,eitr,esea,eian,emod,epar,ereg,eroot)
 
 end
