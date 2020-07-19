@@ -338,7 +338,10 @@ function erarawsave(
         @info "$(Dates.now()) - Stale NetCDF file $(fnc) detected.  Overwriting ..."
         rm(fnc);
     end
-    ds = NCDataset(fnc,"c",attrib = Dict("Conventions"=>"CF-1.6"));
+    ds = NCDataset(fnc,"c",attrib = Dict(
+        "Conventions" => "CF-1.6",
+        "history"     => "Created on $(Dates.now())"
+    ));
 
     ehr = hrindy(emod); nhr = ehr * daysinmonth(date);
     scale,offset = erancoffsetscale(data);
