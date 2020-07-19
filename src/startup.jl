@@ -102,10 +102,15 @@ function erastartup(;
     end
 
     action = eraaction(aID); dataset = eradataset(dID);
+    
     @info "$(Dates.now()) - This script will $(action["name"]) $(dataset["name"]) data."
-    init = Dict("actionID"=>aID,"action"=>action["name"],
-                "datasetID"=>dID,"dataset"=>dataset["name"],
-                "prefix"=>dataset["short"])
+    init = Dict(
+        "actionID"=>aID,"action"=>action["name"],
+        "datasetID"=>dID,"dataset"=>dataset["name"],
+        "prefix"=>dataset["short"]
+    )
+
+    eplotsetup(eroot)
 
     return init,eroot
 

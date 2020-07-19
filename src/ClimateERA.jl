@@ -26,6 +26,7 @@ export
         erarawregion, erarawpoint, erarawgrid,
         eraparameterload, eraparametercopy, eraparameteradd, erapressureload,
         eraregionstep,
+        eplotsubregion, eplotlsm, eplotlsmgrid,
         queryeaction, queryedataset, queryemod, queryepar, putinfo,
         hrstep, hrindy
 
@@ -37,6 +38,7 @@ include("download.jl")
 include("analysis.jl")
 include("compile.jl")
 #include("calculate.jl")
+include("eraplots.jl")
 
 include("frontend.jl")
 include("backend.jl")
