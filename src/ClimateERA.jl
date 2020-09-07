@@ -17,7 +17,7 @@ using Statistics
 
 ## Exporting the following functions:
 export
-        erastartup, erainitialize, eradownload, eraanalysis, eracompile,
+        erastartup, erainitialize, eradownload, eraanalysis, eracompile, eralvlsplit,
         erasubregion, erancread,
         erarawname, erarawread, erarawfolder, erarawsave,
         eraananame, eraanaread, eraanafolder,

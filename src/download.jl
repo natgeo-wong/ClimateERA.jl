@@ -225,25 +225,42 @@ function eradownload(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
 end
 
-function eratmp2raw(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
+function eralvlsplit(
+    init::Dict, eroot::Dict;
+    modID::AbstractString, parID::AbstractString,
+    regID::AbstractString="GLB", timeID::Union{Integer,Vector}=0,
+    gres::Real=0
+)
 
-    prelist = emod["levels"]; dataID = emod["datasetID"];
+    emod,epar,ereg,etime = erainitialize(
+        init;
+        modID=modID,parID=parID,regID=regID,timeID=timeID,
+        gres=gres
+    );
+    eralvlsplit(emod,epar,ereg,etime,eroot)
 
-    for preii in prelist
+end
 
-        efol = erafolder(emod,epar,ereg,etime,eroot,preii);
+function eralvlsplit(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
 
-        @info "$(Dates.now()) - Retrieving list of downloaded data files in ERA reanalysis tmp folder."
-        tfnc = glob("-$(yr)*.nc",efol["tmp"]); lf = size(tfnc,1);
-        rfnc = replace.(tfnc,"tmp".=>joinpath("raw","$(yr)"));
+    datevec = collect(Date(etime["Begin"],1):Month(1):Date(etime["End"],12));
 
-        if lf > 0
-            @info "$(Dates.now()) - Moving ERA reanalysis data from tmp to raw folder."
-            for ii = 1 : lf; mv(tfnc[ii],rfnc[ii],force=true); end
-            @info "$(Dates.now()) - Downloaded ERA reanalysis data has been moved raw folder."
-        else
-            @info "$(Dates.now()) - ERA reanalysis tmp folder is empty.  Nothing to shift."
+    for dtii in datevec
+
+        fol = joinpath(eroot["era"],ereg["fol"],epar["ID"],"raw",yr2str(dtii));
+        fnc = "$(emod["prefix"])-$(ereg["fol"])-$(epar["ID"])-$(yrmo2str(dtii)).nc"
+        eds = NCDataset(joinpath(fol,fnc))
+        pre = eds["level"][:]; np = length(pre)
+
+        for ip in 1 : np; epar["level"] = pre[ip];
+
+            efol = erafolder(emod,epar,ereg,etime,eroot,epar["level"]);
+            dataii = eds[epar["IDnc"]][:,:,ip,:]*1
+            erarawsave(dataii,emod,epar,ereg,dtii,eroot)
+
         end
+
+        close(eds); rm(joinpath(fol,fnc),force=true)
 
     end
 
