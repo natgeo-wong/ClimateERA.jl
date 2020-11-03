@@ -229,7 +229,7 @@ function eralvlsplit(
     init::Dict, eroot::Dict;
     modID::AbstractString, parID::AbstractString,
     regID::AbstractString="GLB", timeID::Union{Integer,Vector}=0,
-    gres::Real=0
+    gres::Real=0, plist::Union{Integer,Vector{<:Real}}=0
 )
 
     emod,epar,ereg,etime = erainitialize(
@@ -237,30 +237,74 @@ function eralvlsplit(
         modID=modID,parID=parID,regID=regID,timeID=timeID,
         gres=gres
     );
-    eralvlsplit(emod,epar,ereg,etime,eroot)
+    eralvlsplit(emod,epar,ereg,etime,eroot,plist)
 
 end
 
-function eralvlsplit(emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict)
+function eralvlsplit(
+    emod::Dict,epar::Dict,ereg::Dict,etime::Dict,eroot::Dict,
+    plist::Union{Integer,Vector{<:Real}}=0
+)
 
     datevec = collect(Date(etime["Begin"],1):Month(1):Date(etime["End"],12));
 
-    for dtii in datevec
+    if typeof(plist) <: Array
 
-        fol = joinpath(eroot["era"],ereg["fol"],epar["ID"],"raw",yr2str(dtii));
-        fnc = "$(emod["prefix"])-$(ereg["fol"])-$(epar["ID"])-$(yrmo2str(dtii)).nc"
-        eds = NCDataset(joinpath(fol,fnc))
-        pre = eds["level"][:]; np = length(pre)
+        for dtii in datevec
 
-        for ip in 1 : np; epar["level"] = pre[ip];
+            fol = joinpath(eroot["era"],ereg["fol"],epar["ID"],"raw",yr2str(dtii));
+            fnc = "$(emod["prefix"])-$(ereg["fol"])-$(epar["ID"])-$(yrmo2str(dtii)).nc"
+            eds = NCDataset(joinpath(fol,fnc))
+            pre = eds["level"][:]
+
+            for preii in plist
+                ip = argmin(abs.(pre.-preii)); epar["level"] = pre[ip];
+                efol = erafolder(emod,epar,ereg,etime,eroot,epar["level"]);
+                dataii = eds[epar["IDnc"]][:,:,ip,:]*1
+                erarawsave(dataii,emod,epar,ereg,dtii,eroot)
+            end
+
+            close(eds); rm(joinpath(fol,fnc),force=true)
+
+        end
+
+    elseif iszero(plist)
+
+        for dtii in datevec
+
+            fol = joinpath(eroot["era"],ereg["fol"],epar["ID"],"raw",yr2str(dtii));
+            fnc = "$(emod["prefix"])-$(ereg["fol"])-$(epar["ID"])-$(yrmo2str(dtii)).nc"
+            eds = NCDataset(joinpath(fol,fnc))
+            pre = eds["level"][:]; np = length(pre)
+
+            for ip in 1 : np; epar["level"] = pre[ip];
+
+                efol = erafolder(emod,epar,ereg,etime,eroot,epar["level"]);
+                dataii = eds[epar["IDnc"]][:,:,ip,:]*1
+                erarawsave(dataii,emod,epar,ereg,dtii,eroot)
+
+            end
+
+            close(eds); rm(joinpath(fol,fnc),force=true)
+
+        end
+
+    else
+
+        for dtii in datevec
+
+            fol = joinpath(eroot["era"],ereg["fol"],epar["ID"],"raw",yr2str(dtii));
+            fnc = "$(emod["prefix"])-$(ereg["fol"])-$(epar["ID"])-$(yrmo2str(dtii)).nc"
+            eds = NCDataset(joinpath(fol,fnc))
+            pre = eds["level"][:]; ip = argmin(abs.(pre.-plist)); epar["level"] = pre[ip];
 
             efol = erafolder(emod,epar,ereg,etime,eroot,epar["level"]);
             dataii = eds[epar["IDnc"]][:,:,ip,:]*1
             erarawsave(dataii,emod,epar,ereg,dtii,eroot)
 
-        end
+            close(eds); rm(joinpath(fol,fnc),force=true)
 
-        close(eds); rm(joinpath(fol,fnc),force=true)
+        end
 
     end
 
