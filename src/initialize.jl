@@ -40,12 +40,33 @@ function eraparametercopy(;overwrite::Bool=false)
 
     if !overwrite
         if !isfile(fpar)
+
             @debug "$(Dates.now()) - Unable to find eraparameters.txt, copying data from epartemplate.txt ..."
-            cp(ftem,fpar,force=true);
+
+            open(fpar,"w") do io
+                open(ftem) do f
+                    for line in readlines(f)
+                        write(io,"$line\n")
+                    end
+                end
+            end
+
         end
     else
-        @warn "$(Dates.now()) - Overwriting eraparameters.txt in $jfol ..."
-        cp(ftem,fpar,force=true);
+
+        if isfile(fpar)
+            @warn "$(Dates.now()) - Overwriting eraparameters.txt in $jfol ..."
+            rm(fpar,force=true)
+        end
+
+        open(fpar,"w") do io
+            open(ftem) do f
+                for line in readlines(f)
+                    write(io,"$line\n")
+                end
+            end
+        end
+
     end
 
     return fpar
