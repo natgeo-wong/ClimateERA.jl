@@ -77,14 +77,16 @@ end
 
 function eradscriptregion(fID,dataID::Integer,emod::Dict,ereg::Dict)
 
-    estep = ereg["step"];
+    estep = ereg["step"]; N,S,E,W = ereg["grid"]
+    if W == E; E = W + 0.1 end
+    if N == S; S = N - 0.1 end
     if dataID == 1
-        if !ereg["isglobe"]; N,S,E,W = ereg["grid"];
+        if !ereg["isglobe"]
               write(fID,"        \"area\": [$(N),$(W),$(S),$(E)],\n");
         end
         write(fID,"        \"grid\": [$(estep),$(estep)],\n");
     else
-        if !ereg["isglobe"]; N,S,E,W = ereg["grid"];
+        if !ereg["isglobe"]
               write(fID,"    \"area\": \"$(N)/$(W)/$(S)/$(E)\",\n");
         end
         write(fID,"    \"grid\": \"$(estep)/$(estep)\",\n");
