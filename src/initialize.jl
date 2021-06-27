@@ -159,23 +159,11 @@ end
 function eraregionload(gregID::AbstractString,init::Dict)
 
     @info "$(Dates.now()) - Loading available GeoRegions ..."
-    greginfo = gregioninfoload(); eraregionfilter(gregID,greginfo,init);
-    gregfull = gregionfullname(gregID,greginfo)
-    greggrid = gregionbounds(gregID,greginfo)
+    geo = GeoRegion(gregID); greggrid = [geo.N,geo.S,geo.E,geo.W]
     if gregID == "GLB"; regglbe = true; else; regglbe = false; end
 
-    @info "$(Dates.now()) - Storing GeoRegion properties and information for the $(gregfull) region ..."
-    return Dict("region"=>gregID,"grid"=>greggrid,"name"=>gregfull,"isglobe"=>regglbe)
-
-end
-
-function eraregionfilter(gregID::AbstractString,greginfo::AbstractArray,init::Dict)
-
-    isgeoregion(gregID,greginfo);
-
-    if (init["actionID"] == 1) && (gregionparent(gregID;levels=2) != "GLB")
-        error("$(Dates.now()) - ClimateERA.jl only has the option to analyse data from the $(gregionfullname(gregID,greginfo)) and not download it.")
-    end
+    @info "$(Dates.now()) - Storing GeoRegion properties and information for the $(geo.name) region ..."
+    return Dict("region"=>gregID,"grid"=>greggrid,"name"=>geo.name,"isglobe"=>regglbe)
 
 end
 
@@ -203,7 +191,7 @@ function eraregionvec(ereg::Dict,emod::Dict,step::Real)
     step = eraregionstep(ereg["region"],step); ereg["step"] = step; N,S,E,W = ereg["grid"]
 
     @info "$(Dates.now()) - Creating longitude and latitude vectors for the GeoRegion ..."
-    lon = convert(Array,W:step:E); if mod(E,360) == mod(W,360); pop!(lon); end
+    lon = convert(Array,W:step:E); if (mod(E,360) == mod(W,360)) && (E!=W); pop!(lon); end
     lat = convert(Array,N:-step:S); nlon = size(lon,1); nlat = size(lat,1);
     ereg["lon"] = lon; ereg["lat"] = lat; ereg["size"] = [nlon,nlat];
     ereg["fol"] = "$(ereg["region"])x$(@sprintf("%.2f",ereg["step"]))"
@@ -212,26 +200,6 @@ function eraregionvec(ereg::Dict,emod::Dict,step::Real)
 
     return ereg
 
-end
-
-function eraregionparent(gregID::AbstractString,emod::Dict)
-    @info "$(Dates.now()) - Extracting parent GeoRegion properties/information ..."
-    parentID = gregionparent(gregID); return eraregion(gregID,emod);
-end
-
-function eraregionparent(gregID::AbstractString,reginfo::AbstractArray,emod::Dict)
-    @info "$(Dates.now()) - Extracting parent GeoRegion properties/information ..."
-    parentID = gregionparent(gregID,reginfo); return eraregion(parentID,emod);
-end
-
-function eraregionextract(data::AbstractArray,gregID::AbstractString,emod::Dict)
-    @info "$(Dates.now()) - Extracting data for GeoRegion from parent GeoRegion ..."
-    preg = eraregionparent(gregID,emod); return regionextractgrid(data,reg,plon,plat)
-end
-
-function eraregionextract(data::AbstractArray,preg::Dict,reg::AbstractString)
-    @info "$(Dates.now()) - Extracting data for GeoRegion from parent GeoRegion ..."
-    return regionextractgrid(data,reg,preg["lon"],preg["lat"])
 end
 
 # Initialization
