@@ -8,7 +8,7 @@ dsfc,t_sst,sst,sea_surface_temperature,34.128,Sea Surface Temperature,K
 dsfc,t_skt,skt,skin_temperature,235.128,Skin Temperature,K
 dsfc,p_sfc,sp,surface_pressure,134.128,Surface Pressure,hPa
 dsfc,p_msl,msl,mean_sea_level_pressure,151.128,Sea Level Pressure,hPa
-dsfc,z_sfc,z,orography,129.128,Orography Geopotential,m^2 s^{-2}
+dsfc,z_sfc,z,geopotential,129.128,Surface Geopotential,m^2 s^{-2}
 dpre,u_air,u,u_component_of_wind,131.128,u-Wind,m s^{-1}
 dpre,v_air,v,v_component_of_wind,132.128,v-Wind,m s^{-1}
 dpre,w_air,w,vertical_velocity,135.128,w-Wind,m s^{-1}
