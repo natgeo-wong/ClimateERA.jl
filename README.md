@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://www.repostatus.org/#active">
-    <img alt="Repo Status" src="https://www.repostatus.org/badges/latest/active.svg?style=flat-square" />
+    <img alt="Repo Status" src="https://www.repostatus.org/badges/latest/inactive.svg?style=flat-square" />
   </a>
   <a href="https://travis-ci.com/github/natgeo-wong/ClimateERA.jl">
     <img alt="Travis CI" src="https://travis-ci.com/natgeo-wong/ClimateERA.jl.svg?branch=master&style=flat-square">
@@ -24,6 +24,8 @@
 </p>
 
 **Created By:** Nathanael Wong (nathanaelwong@fas.harvard.edu)
+
+**ClimateERA.jl is currently in maintanence mode only and will eventually be supplanted by [ERA5Reanalysis.jl](https://github.com/natgeo-wong/ERA5Reanalysis.jl).  Patch releases will still be provided until ERA5Reanalysis.jl is able to take over the functionalities of ERA5 handling in ClimateERA.jl in the future.**
 
 **Developer To-Do for v1.0:**
 * [x] Testing of `analysis` functions
