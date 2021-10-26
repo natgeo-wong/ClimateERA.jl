@@ -331,7 +331,7 @@ function erarawsave(
     emod::Dict, epar::Dict, ereg::Dict, date::TimeType, eroot::Dict
 )
 
-    @info "$(Dates.now()) - Saving raw $(uppercase(emod["dataset"])) $(epar["name"]) data in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) for $(year(date)) $(Dates.monthname(date)) ..."
+    @info "$(Dates.now()) - Saving raw $(uppercase(emod["dataset"])) $(epar["name"]) data in $(ereg["name"]) (Horizontal Resolution: $(ereg["step"])) for $(year(date)) $(Dates.monthname(date)) ..."
 
     fnc = joinpath(erarawfolder(epar,ereg,eroot,date),erarawname(emod,epar,ereg,date));
     if isfile(fnc)
@@ -381,7 +381,7 @@ function erarawsave(
 
     close(ds)
 
-    @info "$(Dates.now()) - Raw $(uppercase(emod["dataset"])) $(epar["name"]) in $(gregionfullname(ereg["region"])) (Horizontal Resolution: $(ereg["step"])) for $(year(date)) $(Dates.monthname(date)) has been saved into $(fnc)."
+    @info "$(Dates.now()) - Raw $(uppercase(emod["dataset"])) $(epar["name"]) in $(ereg["name"]) (Horizontal Resolution: $(ereg["step"])) for $(year(date)) $(Dates.monthname(date)) has been saved into $(fnc)."
 
 end
 
